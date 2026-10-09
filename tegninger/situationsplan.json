@@ -1,0 +1,96 @@
+{
+  "_note": "Alle mål i meter. Husets akse følger det eksisterende hus (u = langs huset mod øst, v = vinkelret mod nord), målt fra husets midte. Ret tallene her og kør situationsplan.py igen.",
+  "hus_osm_id": 725835481,
+  "stald_osm_id": 725835241,
+  "skel": {
+    "_note": "ANTAGET. Skellet er ikke hentet fra matriklen; linjen er lagt i levende hegnet vest for huset ud fra luftfotoet.",
+    "side": "vest",
+    "afstand_fra_husets_vestgavl": 14.0,
+    "nabo_matrikel": "1cb"
+  },
+  "tilbygning": {
+    "_note": "Fløj mod vest. Nordfacaden flugter med husets nordfacade, og fløjen går forbi husets sydfacade ned i haven.",
+    "bredde": 8.0,
+    "forbi_husets_sydfacade": 7.0
+  },
+  "hal": {
+    "laengde": 20.0,
+    "bredde": 10.0,
+    "afstand_til_skel": 11.5,
+    "afstand_til_tilbygning": 20.0,
+    "_note": "Lukket rum (privat) ligger i nordenden nærmest huset. Resten er én åben hal med driftszone og privat zone (lift/værksted og trailere). Kun én port, i sydgavlen. Afstanden til tilbygningen måles fra tilbygningens sydgavl.",
+    "rum_laengde": 4.0,
+    "privat_i_aaben_hal_m2": 52
+  },
+  "hus_ydermaal": {
+    "_note": "Husets ydre mål efter ejers oplysning (ca. 8 x 16 m, BBR 123 m²). Kortdata viser tagfladen inkl. udhæng (16,8 x 9,2 m). Skal måles op.",
+    "laengde": 16.0,
+    "bredde": 8.0
+  },
+  "jordvarme": {
+    "_note": "ANSLÅET ud fra foto af ældre luftfoto (IMG_2986), usikkerhed ca. +/- 2 m. Punkter som [afstand fra antaget skel mod øst, v (meter nord for husets midte)]. Skal findes på stedet eller i kommunens sag om jordvarmeanlægget. Slangerne ligger midt i de gravede felter; 'oestligste_slange' er midten af det østligste felt.",
+    "vestkant": [
+      [
+        5.0,
+        2
+      ],
+      [
+        2.8,
+        -27
+      ],
+      [
+        4.9,
+        -51
+      ],
+      [
+        4.9,
+        -96
+      ]
+    ],
+    "oestkant": [
+      [
+        9.5,
+        2
+      ],
+      [
+        10.3,
+        -27
+      ],
+      [
+        10.9,
+        -51
+      ],
+      [
+        10.3,
+        -75
+      ],
+      [
+        11.5,
+        -96
+      ]
+    ],
+    "sikkerhedsafstand": 1.5,
+    "oestligste_slange": [
+      [
+        7.3,
+        2
+      ],
+      [
+        8.2,
+        -27
+      ],
+      [
+        9.9,
+        -51
+      ],
+      [
+        9.1,
+        -75
+      ],
+      [
+        10.3,
+        -93
+      ]
+    ]
+  }
+}
