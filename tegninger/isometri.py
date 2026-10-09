@@ -23,7 +23,7 @@ grund = json.loads((HER / "data/grundkort.json").read_text(encoding="utf-8"))
 cfg = json.loads((HER / "situationsplan.json").read_text(encoding="utf-8"))
 
 HOEJDER = {
-    "hus_tagfod": 2.7, "hus_haeldning": 30.0,       # antaget; tilbygningen følger huset
+    "hus_tagfod": 2.5, "hus_haeldning": 25.0,       # anslået fra foto IMG_0985; tilbygningen følger huset
     "stald_tagfod": 2.6, "stald_haeldning": 25.0,   # antaget
     "hal_side": 4.0, "hal_haeldning": 30.0, "hal_sokkel": 0.3,
 }
@@ -32,8 +32,8 @@ ELEV = math.radians(24)
 VISNINGER = [("sydøst", "sydoest", 142), ("sydvest", "sydvest", 218), ("nordvest", "nordvest", 322), ("nordøst", "nordoest", 38)]
 
 SORT, SORT_TAG, SOKKEL, PORTFARVE = "#17181a", "#26282b", "#b9b9b4", "#4a4e54"
-HUSVAEG, HUSTAG, STALD, STALDTAG = "#ece8df", "#3a3d42", "#c9c9c9", "#8d8f93"
-NYVAEG, NYKANT, GLAS = "#f7e3bd", "#b36b00", "#9cc7e8"   # tilbygningens vægge fremhævet
+HUSVAEG, HUSTAG, STALD, STALDTAG = "#f6f6f3", "#232528", "#c9c9c9", "#8d8f93"   # hus: hvide vægge, sort tag (IMG_0985)
+NYVAEG, NYKANT, GLAS = "#fbeccb", "#b36b00", "#5f7f99"   # tilbygningens vægge fremhævet
 
 
 # --- Geometri fra situationsplanens data ---
@@ -64,7 +64,7 @@ hal_u1 = hal_u0 + h["bredde"]
 hal_v1 = tb_v0 - h["afstand_til_tilbygning"]
 hal_v0 = hal_v1 - h["laengde"]
 stald = [uv(p) for p in bygning(cfg["stald_osm_id"])[:-1]]
-G = (-29, -57, 13, 31)   # terrænudsnit u0, v0, u1, v1
+G = (-29, -57, 21, 31)   # terrænudsnit u0, v0, u1, v1
 
 S, N, W, E = (0, -1, 0), (0, 1, 0), (-1, 0, 0), (1, 0, 0)
 
@@ -117,13 +117,29 @@ def scene():
     sadeltag(min(p[0] for p in floej), min(p[1] for p in floej), max(p[0] for p in floej), skil_v,
              HOEJDER["stald_tagfod"], HOEJDER["stald_haeldning"], "v", STALD, STALDTAG, udelad="N")
 
+    # Skur øst for staldens sydfløj (eksisterende, vist som kasse med fladt tag; højde antaget)
+    if "skur" in cfg:
+        sp = [uv(p) for p in cfg["skur"]["punkter"]]
+        su0, su1 = min(p[0] for p in sp), max(p[0] for p in sp)
+        sv0, sv1 = min(p[1] for p in sp), max(p[1] for p in sp)
+        sh = cfg["skur"]["hoejde"]
+        for pts, nrm in (([(su0, sv0, 0), (su1, sv0, 0), (su1, sv0, sh), (su0, sv0, sh)], S), ([(su0, sv1, 0), (su1, sv1, 0), (su1, sv1, sh), (su0, sv1, sh)], N),
+                         ([(su0, sv0, 0), (su0, sv1, 0), (su0, sv1, sh), (su0, sv0, sh)], W), ([(su1, sv0, 0), (su1, sv1, 0), (su1, sv1, sh), (su1, sv0, sh)], E)):
+            flade(pts, nrm, STALD)
+        flade([(su0, sv0, sh), (su1, sv0, sh), (su1, sv1, sh), (su0, sv1, sh)], (0, 0, 1), STALDTAG)
+
     # Eksisterende hus (kip øst-vest) og tilbygning (fløj med kip nord-syd, samme tagfod, hældning og bredde)
     e = HOEJDER["hus_tagfod"]
     t, s, c = (f(math.radians(HOEJDER["hus_haeldning"])) for f in (math.tan, math.sin, math.cos))
     kip = e + HB / 2 * t
     hu0, hu1, hv0, hv1 = -HL / 2, HL / 2, -HB / 2, HB / 2
     tu0, tu1, tum = hu0 - TB, hu0, hu0 - TB / 2
-    flade([(hu0, hv0, 0), (hu1, hv0, 0), (hu1, hv0, e), (hu0, hv0, e)], S, HUSVAEG)
+    hus_syd = flade([(hu0, hv0, 0), (hu1, hv0, 0), (hu1, hv0, e), (hu0, hv0, e)], S, HUSVAEG)
+    for ab in cfg.get("hus_sydfacade", {}).get("aabninger", []):        # eksisterende vinduer og glasparti, sorte rammer
+        hus_syd["paa"].append(([(ab["u0"], hv0, ab["z0"]), (ab["u1"], hv0, ab["z0"]), (ab["u1"], hv0, ab["z1"]), (ab["u0"], hv0, ab["z1"])], GLAS, "#111111"))
+        for i in range(1, ab.get("fag", 1)):
+            uu = ab["u0"] + (ab["u1"] - ab["u0"]) * i / ab["fag"]
+            hus_syd["paa"].append(([(uu, hv0, ab["z0"]), (uu, hv0, ab["z1"])], "none", "#111111"))
     flade([(hu0, hv1, 0), (hu1, hv1, 0), (hu1, hv1, e), (hu0, hv1, e)], N, HUSVAEG)
     flade([(hu1, hv0, 0), (hu1, hv1, 0), (hu1, hv1, e), (hu1, 0, kip), (hu1, hv0, e)], E, HUSVAEG)
     flade([(hu0, hv0, e), (hu1, hv0, e), (hu1, 0, kip), (tum, 0, kip)], (0, -s, c), HUSTAG)     # løber ind i fløjens tag i en skotrende
@@ -136,11 +152,11 @@ def scene():
     flade([(tu1, tb_v0, e), (tu1, hv0, e), (tum, 0, kip), (tum, tb_v0, kip)], (s, 0, c), HUSTAG, NYKANT, 0.8)
     flade([(tu1, hv1, e), (tum, hv1, kip), (tum, 0, kip)], (s, 0, c), HUSTAG, NYKANT, 0.8)
     # åbninger som på tilbygning_plan: terrassedør mod syd, to garageporte mod nord, to vinduer mod vest
-    syd["paa"].append(([(tu0 + 2.5, tb_v0, 0.05), (tu0 + 5.5, tb_v0, 0.05), (tu0 + 5.5, tb_v0, 2.15), (tu0 + 2.5, tb_v0, 2.15)], GLAS, "#333333"))
+    syd["paa"].append(([(tu0 + 2.5, tb_v0, 0.05), (tu0 + 5.5, tb_v0, 0.05), (tu0 + 5.5, tb_v0, 2.15), (tu0 + 2.5, tb_v0, 2.15)], GLAS, "#111111"))
     for x in (1.05, 4.25):
         nord["paa"].append(([(tu0 + x, hv1, 0.05), (tu0 + x + 2.7, hv1, 0.05), (tu0 + x + 2.7, hv1, 2.25), (tu0 + x, hv1, 2.25)], "#d9d4c8", "#666666"))
     for y0, bb in ((0.9, 1.2), (5.6, 0.8)):
-        vest["paa"].append(([(tu0, tb_v0 + y0, 0.9), (tu0, tb_v0 + y0 + bb, 0.9), (tu0, tb_v0 + y0 + bb, 2.1), (tu0, tb_v0 + y0, 2.1)], GLAS, "#333333"))
+        vest["paa"].append(([(tu0, tb_v0 + y0, 0.9), (tu0, tb_v0 + y0 + bb, 0.9), (tu0, tb_v0 + y0 + bb, 2.1), (tu0, tb_v0 + y0, 2.1)], GLAS, "#111111"))
 
     # Hal: sort stål, kip nord-syd, port i sydgavl (ingen dør), dør i nordgavl
     hs, sok = HOEJDER["hal_side"], HOEJDER["hal_sokkel"]
@@ -164,6 +180,7 @@ def scene():
         (f"Tilbygning {TB:.0f} × {HB / 2 - tb_v0:.0f} m", (tum, (tb_v0 + hv1) / 2, kip), 9),
         (f"Eksisterende hus {HL:.0f} × {HB:.0f} m", (3, 0, kip), 6),
         ("Hestestald", (-2, (skil_v + max(p[1] for p in hoved)) / 2, 4.5), 6),
+        ("Skur", ((su0 + su1) / 2, (sv0 + sv1) / 2, sh), 4),
     ]
     return fl, etiketter
 
@@ -205,9 +222,9 @@ def tegn(ax, retning):
     ax.set_ylim(y0 - 1, y1 + 3)
 
 
-FODNOTE1 = ("FORELØBIGE SKITSER i parallelprojektion, ikke målfaste. Hallens mål er de ønskede. Tagfod og taghældning på hus og tilbygning (2,7 m, 30°) "
-            "og stald (2,6 m, 25°) er antaget og skal måles op.")
-FODNOTE2 = "Husets farver, vinduer og døre er ikke kendt og er ikke vist. Tilbygningen er fremhævet med gul væg. Skel er antaget ud fra luftfoto."
+FODNOTE1 = ("FORELØBIGE SKITSER i parallelprojektion, ikke målfaste. Hallens mål er de ønskede. Tagfod og taghældning på hus og tilbygning (2,5 m, 25°, anslået fra foto) "
+            "og stald (2,6 m, 25°) samt skurets højde er antaget og skal måles op.")
+FODNOTE2 = "Husets sydfacade (hvid væg, sort tag, glasparti og to vinduer) er anslået fra foto; øvrige facader er ikke kendt. Tilbygningen er fremhævet med gul væg. Skel er antaget."
 
 # Samlet A3-ark med de fire hjørner
 fig = plt.figure(figsize=(420 / 25.4, 297 / 25.4))

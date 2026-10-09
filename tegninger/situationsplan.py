@@ -111,6 +111,10 @@ def tegn(luftfoto):
     ax.add_patch(Polygon(rekt(hus_u0, hus_v0, hus_u1, hus_v1), closed=True, fc="#9a9a9a", ec=streg if luftfoto else "black",
                          lw=0.8, alpha=0.9 if not luftfoto else 0.25, zorder=3))
     ax.text(*xy(0, 0), f"Eksisterende hus\n{hus_l:.1f} × {hus_b:.1f} m = {hus_l * hus_b:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
+    if "skur" in cfg:
+        sk = cfg["skur"]["punkter"]
+        ax.add_patch(Polygon(sk, closed=True, fc="#9a9a9a", ec=streg if luftfoto else "black", lw=0.8, alpha=0.9 if not luftfoto else 0.25, zorder=3))
+        ax.text(sum(p[0] for p in sk) / len(sk), sum(p[1] for p in sk) / len(sk), "Skur", fontsize=6, ha="center", va="center", zorder=7)
     st = bygning(cfg["stald_osm_id"])
     ax.text(sum(p[0] for p in st[:-1]) / (len(st) - 1) + 1, max(p[1] for p in st) - 4, "Hestestald", fontsize=6, ha="center", zorder=7)
 
@@ -129,7 +133,7 @@ def tegn(luftfoto):
         if "oestligste_slange" in jv:
             sl = [xy(skel_u + d, v) for d, v in jv["oestligste_slange"]]
             ax.plot(*zip(*sl), color="#d1007a", lw=1.4, zorder=5)
-        ax.text(*xy(skel_u + 7.5, hal_v0 - 9), "Jordvarme: gravet felt (skraveret)\nog østligste slange (linje), ± 2 m", fontsize=6, color="#d1007a", ha="center", va="center", zorder=7,
+        ax.text(*xy(skel_u + 20, hal_v0 - 9), "Jordvarme: gravet felt (skraveret)\nog østligste slange (linje), ± 2 m", fontsize=6, color="#d1007a", ha="center", va="center", zorder=7,
                 bbox=dict(fc="white", ec="none", alpha=0.85, pad=1))
 
     # Tilbygning

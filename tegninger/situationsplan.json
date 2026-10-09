@@ -92,5 +92,62 @@
         -93
       ]
     ]
+  },
+  "skur": {
+    "_note": "Eksisterende skur bygget helt op ad østsiden af staldens sydfløj, godkendt i BBR. Ejer oplyser, at det mod nord kun er godt halvt så dybt som først tegnet, så dybden er sat til 2,8 m fra sydkanten. Ca. 8,3 x 2,8 m. Østkant og sydkant målt på Apple-luftfotoet (+/- 0,5 m). Højde antaget. Lokale koordinater (x øst, y nord).",
+    "punkter": [
+      [
+        7.62,
+        10.8
+      ],
+      [
+        16.0,
+        10.8
+      ],
+      [
+        16.0,
+        13.6
+      ],
+      [
+        7.71,
+        13.6
+      ]
+    ],
+    "hoejde": 2.5
+  },
+  "hus_sydfacade": {
+    "_note": "Åbninger i det eksisterende hus' sydfacade, anslået ud fra IMG_0985 (+/- 0,5 m). u = meter fra husets midte mod øst; z = højde over terræn. Glaspartiet har fire fag. Facadens vestligste ca. 4 m ses ikke på fotoet.",
+    "aabninger": [
+      {
+        "navn": "glasparti, 4 fag",
+        "u0": -1.35,
+        "u1": 2.45,
+        "z0": 0.05,
+        "z1": 2.1,
+        "fag": 4
+      },
+      {
+        "navn": "vindue",
+        "u0": 4.1,
+        "u1": 5.0,
+        "z0": 0.9,
+        "z1": 2.1,
+        "fag": 1
+      },
+      {
+        "navn": "vindue",
+        "u0": 6.4,
+        "u1": 7.1,
+        "z0": 0.9,
+        "z1": 2.1,
+        "fag": 1
+      }
+    ],
+    "farver": {
+      "vaeg": "hvid, pudset/malet murværk",
+      "tag": "sort bølgeplade",
+      "vinduer": "sorte rammer",
+      "tagrender": "lysegrå"
+    }
   }
 }

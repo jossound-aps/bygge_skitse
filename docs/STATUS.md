@@ -35,6 +35,7 @@ Kommunens kontakt: Kirstine Reese, Team Land, byggeri@aalborg.dk. Hendes mail me
 
 ### Øvrigt
 
+- Skuret øst for hestestaldens sydfløj er godkendt i BBR og skal med på alle oversigtstegninger. Det er bygget helt op ad stalden og er tegnet ind som ca. 8,3 × 2,8 m (ca. 23 m²) efter luftfoto og ejers rettelse; BBR-areal, højde og anvendelse mangler.
 - Naboerne har givet skriftlig accept af hallen. Den skal vedlægges ansøgningen.
 - Alle naboer har heste og egne haller til traktor og maskiner; det bruges som argument.
 - Den eksisterende hestestald kan ikke bruges til maskiner: der er heste i den, og man kan ikke køre ind.
@@ -56,7 +57,8 @@ Kommunens kontakt: Kirstine Reese, Team Land, byggeri@aalborg.dk. Hendes mail me
 | Antagelse | Værdi | Skal erstattes af |
 |---|---|---|
 | Husets ydre mål | 16,0 × 8,0 m (ejers skøn; BBR siger 123 m²) | Opmåling |
-| Husets tagfod og taghældning | 2,7 m og 30° | Opmåling eller gamle tegninger fra weblager.dk |
+| Husets tagfod og taghældning | 2,5 m og 25° (anslået fra foto IMG_0985) | Opmåling eller gamle tegninger fra weblager.dk |
+| Husets sydfacade | Hvid væg, sort bølgepladetag, sorte vinduer; glasparti med 4 fag ca. midt på og to vinduer mod øst, placeret ± 0,5 m efter IMG_0985 | Opmåling |
 | Staldens tagfod og taghældning | 2,6 m og 25° | Opmåling |
 | Skel mod vest | 14 m fra husets vestgavl (tagflade) | Matrikelkort |
 | Maskinmål | Traktor 4,8 × 2,1, balletrailer 6,5 × 2,5, møgvogn 4,5 × 2,0 | Faktiske mål |
