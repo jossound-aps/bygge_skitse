@@ -1,6 +1,6 @@
 # Status for projektet, Nældevej 42, 9000 Aalborg
 
-Sidst opdateret 9. oktober 2026. Læs denne fil først, når arbejdet genoptages.
+Sidst opdateret 9. oktober 2026 (sent aften, efter skur, sydfacade og jordvarme). Læs denne fil først, når arbejdet genoptages.
 
 ## Projektet
 
@@ -79,9 +79,10 @@ Kommunens kontakt: Kirstine Reese, Team Land, byggeri@aalborg.dk. Hendes mail me
 | ../tegninger/situationsplan.py | Situationsplan 1:500, med og uden luftfoto |
 | ../tegninger/tilbygning_plan.py | Plan af tilbygningen 1:100 |
 | ../tegninger/hal_plan.py | Plan og indretning af hallen 1:100. Maskin- og trailermål står øverst i filen |
-| ../tegninger/isometri.py | Rumlige skitser fra fire hjørner |
+| ../tegninger/isometri.py | Rumlige skitser fra fire hjørner: isometri.png/pdf (samlet A3) og isometri_sydoest/sydvest/nordvest/nordoest.png |
 | ../tegninger/data/ | Grundkort fra OpenStreetMap, renset Apple-luftfoto (markør fjernet digitalt, kun arbejdskort) og ældre Esri-foto |
 | ../IMG_2986.JPEG | Ejers foto af ældre luftfoto med jordvarmefelterne |
+| ../IMG_0985.JPEG | Ejers foto af husets sydfacade (hvid væg, sort bølgepladetag, glasparti med 4 fag, to vinduer) |
 | ../Screenshot From 2026-10-09 22-08-58.png | Ejers originale skærmbillede fra Apple Kort |
 
 Tegningerne genereres med:
@@ -102,11 +103,17 @@ python3 tegninger/isometri.py
 - Brandadskillelsen mellem garage og bolig i tilbygningen er ikke gennemgået (brandbilag 1a).
 - Beskyttelseslinjer, § 3-natur, lokalplan og servitutter er ikke tjekket for adressen.
 - De offentlige registre kunne ikke slås op automatisk: adresse-API'et er lukket, og matrikel og BBR kræver login eller en gratis nøgle fra Dataforsyningen.
-- Intet er committet i git.
+- På de rumlige skitser er tilbygningen fremhævet med gul væg; i virkeligheden skal den være hvid som huset.
+- Kun husets sydfacade er kendt. Nord-, øst- og vestfacade samt de vestligste ca. 4 m af sydfacaden mangler.
+- Der findes endnu ingen egentlige facadetegninger eller snit af hus med tilbygning eller af hallen. Kommunen forventer dem i ansøgningen.
+- Hallens kip (6,9 m) ligger ca. 2,5 m over husets anslåede kip (4,4 m). Kan have betydning for kommunens landskabelige vurdering.
+- Git: ejer committer selv (branch develop, remote origin via SSH-aliaset github-new). Tjek `git status` ved opstart.
 
 ## Forslag til næste skridt
 
 1. Ejer henter: BBR-meddelelse, bekræftelse på landbrugsnotering og grundareal, matrikelkort, husets gamle tegninger og jordvarmesagen (weblager.dk), samt måler hus, maskiner og trailere op.
 2. Ejer afklarer: rummets anvendelse, trailernes brug, om hallen opvarmes, paneltykkelse og tagpanel.
-3. Derefter: ret skel, hus og jordvarme i situationsplan.json, løs tilbygningens konflikt med slangen, og skriv hal-begrundelse.md om.
-4. Send en vejledende forespørgsel ("Planmæssig forespørgsel" på Byg og Miljø) med situationsplan, halplan, rumlige skitser og kort driftsbeskrivelse, før de endelige tegninger laves.
+3. Ejer tager fotos af husets tre øvrige facader og måler facadelængde og højde til tagrende.
+4. Derefter: ret skel, hus og jordvarme i situationsplan.json, løs tilbygningens konflikt med slangen, og skriv hal-begrundelse.md om.
+5. Tegn facader og snit af hus med tilbygning og af hallen.
+6. Send en vejledende forespørgsel ("Planmæssig forespørgsel" på Byg og Miljø) med situationsplan, halplan, rumlige skitser og kort driftsbeskrivelse, før de endelige tegninger laves.
