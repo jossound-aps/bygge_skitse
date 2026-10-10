@@ -16,7 +16,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Polygon
+from matplotlib.patches import Circle, Polygon
 
 HER = Path(__file__).parent
 grund = json.loads((HER / "data/grundkort.json").read_text(encoding="utf-8"))
@@ -24,7 +24,7 @@ cfg = json.loads((HER / "situationsplan.json").read_text(encoding="utf-8"))
 
 HOEJDER = {
     "hus_tagfod": 2.5, "hus_haeldning": 25.0,       # anslået fra foto IMG_0985; tilbygningen følger huset
-    "stald_tagfod": 2.6, "stald_haeldning": 25.0,   # antaget
+    "stald_tagfod": cfg.get("stald", {}).get("tagfod", 2.6), "stald_haeldning": cfg.get("stald", {}).get("haeldning", 25.0),   # anslået fra foto IMG_9768
     "hal_side": 4.0, "hal_haeldning": 30.0, "hal_sokkel": 0.3,
 }
 ELEV = math.radians(24)
@@ -32,7 +32,8 @@ ELEV = math.radians(24)
 VISNINGER = [("sydøst", "sydoest", 142), ("sydvest", "sydvest", 218), ("nordvest", "nordvest", 322), ("nordøst", "nordoest", 38)]
 
 SORT, SORT_TAG, SOKKEL, PORTFARVE = "#17181a", "#26282b", "#b9b9b4", "#4a4e54"
-HUSVAEG, HUSTAG, STALD, STALDTAG = "#f6f6f3", "#232528", "#c9c9c9", "#8d8f93"   # hus: hvide vægge, sort tag (IMG_0985)
+HUSVAEG, HUSTAG, STALD, STALDTAG = "#f6f6f3", "#232528", "#f1f1ee", "#2b2d31"   # hus og stald: hvide vægge, sort tag (IMG_0985, IMG_9768)
+DOER, HEGN, SAND = "#5b4636", "#2a2a2a", "#eadfc6"
 NYVAEG, NYKANT, GLAS = "#fbeccb", "#b36b00", "#5f7f99"   # tilbygningens vægge fremhævet
 
 
@@ -59,14 +60,48 @@ TB = cfg["tilbygning"]["bredde"]
 tb_v0 = -HB / 2 - cfg["tilbygning"]["forbi_husets_sydfacade"]
 h = cfg["hal"]
 skel_u = -tag_l / 2 - cfg["skel"]["afstand_fra_husets_vestgavl"]
-hal_u0 = skel_u + h["afstand_til_skel"]
+if "position" in h:
+    hal_u0, hal_v1 = h["position"]["u_vest"], h["position"]["v_nord"]
+else:
+    hal_u0, hal_v1 = skel_u + h["afstand_til_skel"], tb_v0 - h["afstand_til_tilbygning"]
 hal_u1 = hal_u0 + h["bredde"]
-hal_v1 = tb_v0 - h["afstand_til_tilbygning"]
 hal_v0 = hal_v1 - h["laengde"]
+PORT_NORD = h.get("port_mod") == "nord"
 stald = [uv(p) for p in bygning(cfg["stald_osm_id"])[:-1]]
-G = (-29, -57, 21, 31)   # terrænudsnit u0, v0, u1, v1
+G = (-29, -52, 73, 42)   # terrænudsnit u0, v0, u1, v1
 
 S, N, W, E = (0, -1, 0), (0, 1, 0), (-1, 0, 0), (1, 0, 0)
+
+
+
+def koerevej_linjer(port_xy, retning_xy):
+    """Midterlinje og de to kanter for kørevejen: faste punkter fra json og en S-kurve (Bezier) ind til porten."""
+    kv = cfg["koerevej"]
+    pts = [tuple(p) for p in kv["punkter"]]
+    p0, p3 = pts[-1], port_xy
+    d0 = (pts[-1][0] - pts[-2][0], pts[-1][1] - pts[-2][1])
+    n0 = math.hypot(*d0)
+    l = math.dist(p0, p3) * 0.45
+    p1 = (p0[0] + d0[0] / n0 * l, p0[1] + d0[1] / n0 * l)
+    p2 = (p3[0] - retning_xy[0] * l, p3[1] - retning_xy[1] * l)
+    for i in range(1, 25):
+        s = i / 24
+        pts.append(tuple((1 - s) ** 3 * a + 3 * (1 - s) ** 2 * s * b + 3 * (1 - s) * s ** 2 * c_ + s ** 3 * d
+                         for a, b, c_, d in zip(p0, p1, p2, p3)))
+    kanter = ([], [])
+    for i, p in enumerate(pts):
+        a, b = pts[max(i - 1, 0)], pts[min(i + 1, len(pts) - 1)]
+        tx, ty = b[0] - a[0], b[1] - a[1]
+        n = math.hypot(tx, ty)
+        for k, sgn in zip(kanter, (1, -1)):
+            k.append((p[0] - sgn * ty / n * kv["bredde"] / 2, p[1] + sgn * tx / n * kv["bredde"] / 2))
+    # mindste krumningsradius på midterlinjen (til vurdering af, om en lastbil kan følge den)
+    rmin = 1e9
+    for a, b, c_ in zip(pts[:-2], pts[1:-1], pts[2:]):
+        areal = abs((b[0] - a[0]) * (c_[1] - a[1]) - (c_[0] - a[0]) * (b[1] - a[1])) / 2
+        if areal > 1e-9:
+            rmin = min(rmin, math.dist(a, b) * math.dist(b, c_) * math.dist(a, c_) / (4 * areal))
+    return pts, kanter, rmin
 
 
 def scene():
@@ -112,10 +147,71 @@ def scene():
     hoved = [p for p in stald if p[1] > 15]
     floej = [p for p in stald if p[1] <= 15]
     skil_v = min(p[1] for p in hoved)
-    sadeltag(min(p[0] for p in hoved), skil_v, max(p[0] for p in hoved), max(p[1] for p in hoved),
-             HOEJDER["stald_tagfod"], HOEJDER["stald_haeldning"], "u", STALD, STALDTAG)
-    sadeltag(min(p[0] for p in floej), min(p[1] for p in floej), max(p[0] for p in floej), skil_v,
-             HOEJDER["stald_tagfod"], HOEJDER["stald_haeldning"], "v", STALD, STALDTAG, udelad="N")
+    _, sv_h = sadeltag(min(p[0] for p in hoved), skil_v, max(p[0] for p in hoved), max(p[1] for p in hoved),
+                       HOEJDER["stald_tagfod"], HOEJDER["stald_haeldning"], "u", STALD, STALDTAG)
+    _, sv_f = sadeltag(min(p[0] for p in floej), min(p[1] for p in floej), max(p[0] for p in floej), skil_v,
+                       HOEJDER["stald_tagfod"], HOEJDER["stald_haeldning"], "v", STALD, STALDTAG, udelad="N")
+    # fløjens tag føres ind i hovedlængens sydlige tagflade (skotrender), så L-formens tage hænger sammen
+    st_e = HOEJDER["stald_tagfod"]
+    st_t, st_s, st_c = (f(math.radians(HOEJDER["stald_haeldning"])) for f in (math.tan, math.sin, math.cos))
+    fw0, fw1 = min(p[0] for p in floej), max(p[0] for p in floej)
+    fum, fkip = (fw0 + fw1) / 2, st_e + (fw1 - fw0) / 2 * st_t
+    moede = (fum, skil_v + (fw1 - fw0) / 2, fkip)          # her møder fløjens kip hovedlængens tagflade
+    flade([(fw0, skil_v, st_e), (fum, skil_v, fkip), moede], (-st_s, 0, st_c), STALDTAG)
+    flade([(fw1, skil_v, st_e), (fum, skil_v, fkip), moede], (st_s, 0, st_c), STALDTAG)
+
+    # staldens åbninger: brøkdele af facadelængden (se situationsplan.json)
+    hu_w, hu_e, hv_n = min(p[0] for p in hoved), max(p[0] for p in hoved), max(p[1] for p in hoved)
+    fu_w, fu_e, fv_s = min(p[0] for p in floej), max(p[0] for p in floej), min(p[1] for p in floej)
+    st = cfg.get("stald", {})
+    for liste, vaeg, punkt in (
+        ("nord", sv_h["N"], lambda f, z: (hu_w + f * (hu_e - hu_w), hv_n, z)),
+        ("syd", sv_h["S"], lambda f, z: (hu_w + f * (hu_e - hu_w), skil_v, z)),
+        ("oestgavl", sv_h["E"], lambda f, z: (hu_e, hv_n - f * (hv_n - skil_v), z)),
+        ("floej_vest", sv_f["W"], lambda f, z: (fu_w, skil_v - f * (skil_v - fv_s), z)),
+        ("floej_oest", sv_f["E"], lambda f, z: (fu_e, skil_v - f * (skil_v - fv_s), z)),
+    ):
+        for ab in st.get(liste, []):
+            if liste == "syd" and hu_w + ab["f0"] * (hu_e - hu_w) > fu_w:      # dækket af sydfløjen
+                continue
+            vaeg["paa"].append(([punkt(ab["f0"], ab["z0"]), punkt(ab["f1"], ab["z0"]), punkt(ab["f1"], ab["z1"]), punkt(ab["f0"], ab["z1"])],
+                                DOER if ab.get("doer") else GLAS, "#111111"))
+    # møddingsplads: lave hvide mure
+    for noegle, farve in (("moedding", "#b9b4a8"), ("mur", STALD)):
+        if noegle in cfg:
+            mp = [uv(p) for p in cfg[noegle]["punkter"]]
+            for (a0, b0), (a1, b1) in zip(mp[:-1], mp[1:]):
+                flade([(a0, b0, 0), (a1, b1, 0), (a1, b1, cfg[noegle]["hoejde"]), (a0, b0, cfg[noegle]["hoejde"])], None, farve, "#555555", 0.5)
+
+    # Læbælter og træer (eksisterende): stamme og rund krone, kun inden for terrænudsnittet
+    lb = cfg.get("laebaelter", {})
+    traeer = [(*uv((tr["x"], tr["y"])), tr["radius"], tr["hoejde"]) for tr in lb.get("enkelttraeer", [])]
+    for baelte in lb.get("baelter", []):
+        r, pts = baelte["bredde"] / 2, [uv(p) for p in baelte["linje"]]
+        for (a0, b0), (a1, b1) in zip(pts[:-1], pts[1:]):
+            antal = max(1, round(math.hypot(a1 - a0, b1 - b0) / (1.8 * r)))
+            for i in range(antal + 1):
+                traeer.append((a0 + (a1 - a0) * i / antal, b0 + (b1 - b0) * i / antal, r, baelte["hoejde"]))
+    for i, (tu, tv, r, hh) in enumerate(traeer):
+        if G[0] + r <= tu <= G[2] - r and G[1] + r <= tv <= G[3] - r:
+            fl.append({"pts": [(tu, tv, hh / 2)], "n": None, "trae": (tu, tv, r, hh, i), "paa": [], "linjer": []})
+
+    # Hegn (eksisterende): stolper og to rækker brædder
+    for linje in cfg.get("hegn", {}).get("linjer", []):
+        el = linje["type"] == "el"
+        pkt_ = [uv(p) for p in linje["punkter"]]
+        for (a0, b0), (a1, b1) in zip(pkt_[:-1], pkt_[1:]):
+            antal = max(1, round(math.hypot(a1 - a0, b1 - b0) / (4.0 if el else 3.0)))
+            for i in range(antal):
+                q0 = (a0 + (a1 - a0) * i / antal, b0 + (b1 - b0) * i / antal)
+                q1 = (a0 + (a1 - a0) * (i + 1) / antal, b0 + (b1 - b0) * (i + 1) / antal)
+                if el:        # elhegn: stolper og én tråd
+                    f = flade([(q0[0], q0[1], 0), (q1[0], q1[1], 0), (q1[0], q1[1], 1.3), (q0[0], q0[1], 1.3)], None, "none", "none", 0)
+                    f["linjer"] += [[(q0[0], q0[1], 0), (q0[0], q0[1], 1.3)], [(q1[0], q1[1], 0), (q1[0], q1[1], 1.3)], [(q0[0], q0[1], 1.1), (q1[0], q1[1], 1.1)]]
+                    f["tynd"] = True
+                else:         # bræddehegn: stolper og to rækker brædder
+                    f = flade([(q0[0], q0[1], 0), (q1[0], q1[1], 0), (q1[0], q1[1], 1.2), (q0[0], q0[1], 1.2)], None, "none", HEGN, 0.6)
+                    f["linjer"].append([(q0[0], q0[1], 0.65), (q1[0], q1[1], 0.65)])
 
     # Skur øst for staldens sydfløj (eksisterende, vist som kasse med fladt tag; højde antaget)
     if "skur" in cfg:
@@ -125,8 +221,12 @@ def scene():
         sh = cfg["skur"]["hoejde"]
         for pts, nrm in (([(su0, sv0, 0), (su1, sv0, 0), (su1, sv0, sh), (su0, sv0, sh)], S), ([(su0, sv1, 0), (su1, sv1, 0), (su1, sv1, sh), (su0, sv1, sh)], N),
                          ([(su0, sv0, 0), (su0, sv1, 0), (su0, sv1, sh), (su0, sv0, sh)], W), ([(su1, sv0, 0), (su1, sv1, 0), (su1, sv1, sh), (su1, sv0, sh)], E)):
-            flade(pts, nrm, STALD)
-        flade([(su0, sv0, sh), (su1, sv0, sh), (su1, sv1, sh), (su0, sv1, sh)], (0, 0, 1), STALDTAG)
+            f_ = flade(pts, nrm, STALD)
+            sd = cfg["skur"].get("doer")
+            if sd and nrm == N and sd["side"] == "nord":          # dør i nordsiden, op mod stalden
+                d0 = su0 + sd["afstand_fra_stald"]
+                f_["paa"].append(([(d0, sv1, 0.05), (d0 + sd["bredde"], sv1, 0.05), (d0 + sd["bredde"], sv1, sd["hoejde"]), (d0, sv1, sd["hoejde"])], DOER, "#111111"))
+        flade([(su0, sv0, sh), (su1, sv0, sh), (su1, sv1, sh), (su0, sv1, sh)], (0, 0, 1), "#3a3c40")
 
     # Eksisterende hus (kip øst-vest) og tilbygning (fløj med kip nord-syd, samme tagfod, hældning og bredde)
     e = HOEJDER["hus_tagfod"]
@@ -140,14 +240,19 @@ def scene():
         for i in range(1, ab.get("fag", 1)):
             uu = ab["u0"] + (ab["u1"] - ab["u0"]) * i / ab["fag"]
             hus_syd["paa"].append(([(uu, hv0, ab["z0"]), (uu, hv0, ab["z1"])], "none", "#111111"))
-    flade([(hu0, hv1, 0), (hu1, hv1, 0), (hu1, hv1, e), (hu0, hv1, e)], N, HUSVAEG)
+    hus_nord = flade([(hu0, hv1, 0), (hu1, hv1, 0), (hu1, hv1, e), (hu0, hv1, e)], N, HUSVAEG)
+    for ab in cfg.get("hus_nordfacade", {}).get("aabninger", []):
+        hus_nord["paa"].append(([(ab["u0"], hv1, ab["z0"]), (ab["u1"], hv1, ab["z0"]), (ab["u1"], hv1, ab["z1"]), (ab["u0"], hv1, ab["z1"])], DOER if ab.get("doer") else GLAS, "#111111"))
     flade([(hu1, hv0, 0), (hu1, hv1, 0), (hu1, hv1, e), (hu1, 0, kip), (hu1, hv0, e)], E, HUSVAEG)
     flade([(hu0, hv0, e), (hu1, hv0, e), (hu1, 0, kip), (tum, 0, kip)], (0, -s, c), HUSTAG)     # løber ind i fløjens tag i en skotrende
     flade([(hu0, hv1, e), (hu1, hv1, e), (hu1, 0, kip), (tum, 0, kip)], (0, s, c), HUSTAG)
     syd = flade([(tu0, tb_v0, 0), (tu1, tb_v0, 0), (tu1, tb_v0, e), (tum, tb_v0, kip), (tu0, tb_v0, e)], S, NYVAEG, NYKANT, 0.8)
     nord = flade([(tu0, hv1, 0), (tu1, hv1, 0), (tu1, hv1, e), (tum, hv1, kip), (tu0, hv1, e)], N, NYVAEG, NYKANT, 0.8)
     vest = flade([(tu0, tb_v0, 0), (tu0, hv1, 0), (tu0, hv1, e), (tu0, tb_v0, e)], W, NYVAEG, NYKANT, 0.8)
-    flade([(tu1, tb_v0, 0), (tu1, hv0, 0), (tu1, hv0, e), (tu1, tb_v0, e)], E, NYVAEG, NYKANT, 0.8)
+    oest = flade([(tu1, tb_v0, 0), (tu1, hv0, 0), (tu1, hv0, e), (tu1, tb_v0, e)], E, NYVAEG, NYKANT, 0.8)
+    vs = cfg["vindue_standard"]
+    vz0, vz1, vb = vs["brystning"], vs["brystning"] + vs["hoejde"], vs["bredde"]
+    oest["paa"].append(([(tu1, tb_v0 + 1.6, vz0), (tu1, tb_v0 + 1.6 + vb, vz0), (tu1, tb_v0 + 1.6 + vb, vz1), (tu1, tb_v0 + 1.6, vz1)], GLAS, "#111111"))   # soveværelsesvindue mod øst
     flade([(tu0, tb_v0, e), (tu0, hv1, e), (tum, hv1, kip), (tum, tb_v0, kip)], (-s, 0, c), HUSTAG, NYKANT, 0.8)
     flade([(tu1, tb_v0, e), (tu1, hv0, e), (tum, 0, kip), (tum, tb_v0, kip)], (s, 0, c), HUSTAG, NYKANT, 0.8)
     flade([(tu1, hv1, e), (tum, hv1, kip), (tum, 0, kip)], (s, 0, c), HUSTAG, NYKANT, 0.8)
@@ -155,16 +260,19 @@ def scene():
     syd["paa"].append(([(tu0 + 2.5, tb_v0, 0.05), (tu0 + 5.5, tb_v0, 0.05), (tu0 + 5.5, tb_v0, 2.15), (tu0 + 2.5, tb_v0, 2.15)], GLAS, "#111111"))
     for x in (1.05, 4.25):
         nord["paa"].append(([(tu0 + x, hv1, 0.05), (tu0 + x + 2.7, hv1, 0.05), (tu0 + x + 2.7, hv1, 2.25), (tu0 + x, hv1, 2.25)], "#d9d4c8", "#666666"))
-    for y0, bb in ((0.9, 1.2), (5.6, 0.8)):
-        vest["paa"].append(([(tu0, tb_v0 + y0, 0.9), (tu0, tb_v0 + y0 + bb, 0.9), (tu0, tb_v0 + y0 + bb, 2.1), (tu0, tb_v0 + y0, 2.1)], GLAS, "#111111"))
+    for y0 in (1.0, 5.7):          # soveværelse og bad mod vest
+        vest["paa"].append(([(tu0, tb_v0 + y0, vz0), (tu0, tb_v0 + y0 + vb, vz0), (tu0, tb_v0 + y0 + vb, vz1), (tu0, tb_v0 + y0, vz1)], GLAS, "#111111"))
 
     # Hal: sort stål, kip nord-syd, port i sydgavl (ingen dør), dør i nordgavl
     hs, sok = HOEJDER["hal_side"], HOEJDER["hal_sokkel"]
     hkip, hv_ = sadeltag(hal_u0, hal_v0, hal_u1, hal_v1, hs, HOEJDER["hal_haeldning"], "v", SORT, SORT_TAG, sokkel=sok, kant="#8a8a8a")
     hum, PORT = (hal_u0 + hal_u1) / 2, 4.0
-    hv_["S"]["paa"].append(([(hum - PORT / 2, hal_v0, 0.05), (hum + PORT / 2, hal_v0, 0.05), (hum + PORT / 2, hal_v0, 4.0), (hum - PORT / 2, hal_v0, 4.0)], PORTFARVE, "#b5b5b5"))
-    hv_["N"]["paa"].append(([(hal_u0 + 3.95, hal_v1, 0.05), (hal_u0 + 4.85, hal_v1, 0.05), (hal_u0 + 4.85, hal_v1, 2.15), (hal_u0 + 3.95, hal_v1, 2.15)], PORTFARVE, "#b5b5b5"))
-    z = sok + 1.06                                   # vandrette panelsamlinger, 1,06 m dækbredde
+    pg, pv, dg, dv = ("N", hal_v1, "S", hal_v0) if PORT_NORD else ("S", hal_v0, "N", hal_v1)       # portgavl og dørgavl
+    du = hal_u0 + 0.6                                  # gangdør i portgavlen, i siden mod huset
+    dg, dv = pg, pv
+    hv_[pg]["paa"].append(([(hum - PORT / 2, pv, 0.05), (hum + PORT / 2, pv, 0.05), (hum + PORT / 2, pv, 4.0), (hum - PORT / 2, pv, 4.0)], PORTFARVE, "#b5b5b5"))
+    hv_[dg]["paa"].append(([(du, dv, 0.05), (du + 0.9, dv, 0.05), (du + 0.9, dv, 2.15), (du, dv, 2.15)], PORTFARVE, "#b5b5b5"))
+    z = 1.0                                          # vandrette panelsamlinger: paneler à 1 m, fire i højden på siderne
     while z < hkip:
         if z < hs:
             hv_["W"]["linjer"].append([(hal_u0, hal_v0, z), (hal_u0, hal_v1, z)])
@@ -174,13 +282,14 @@ def scene():
             d = (z - hs) / math.tan(math.radians(HOEJDER["hal_haeldning"]))
         for k, vv in (("S", hal_v0), ("N", hal_v1)):
             hv_[k]["linjer"].append([(hal_u0 + d, vv, z), (hal_u1 - d, vv, z)])
-        z += 1.06
+        z += 1.0
     etiketter = [
         (f"Ny hal {h['laengde']:.0f} × {h['bredde']:.0f} m, sort\nside {hs:.1f} m, kip {hkip:.1f} m".replace(".", ","), (hum, (hal_v0 + hal_v1) / 2, hkip), 7),
         (f"Tilbygning {TB:.0f} × {HB / 2 - tb_v0:.0f} m", (tum, (tb_v0 + hv1) / 2, kip), 9),
         (f"Eksisterende hus {HL:.0f} × {HB:.0f} m", (3, 0, kip), 6),
         ("Hestestald", (-2, (skil_v + max(p[1] for p in hoved)) / 2, 4.5), 6),
         ("Skur", ((su0 + su1) / 2, (sv0 + sv1) / 2, sh), 4),
+        ("Mødding", (*uv((57.7, 6.1)), 1.5), 4),
     ]
     return fl, etiketter
 
@@ -195,6 +304,37 @@ def tegn(ax, retning):
     ax.set_aspect("equal")
     ax.axis("off")
     ax.add_patch(Polygon(np.array([(G[0], G[1], 0), (G[2], G[1], 0), (G[2], G[3], 0), (G[0], G[3], 0)], float) @ P, closed=True, fc="#dfe8d6", ec="none", zorder=0))
+    bel = cfg.get("belaegning", {})
+    for vej in grund["veje"]:              # grusvej, klippet til terrænudsnittet
+        (xa, ya), (xb, yb) = vej["punkter"][-1], vej["punkter"][-2]
+        kant = []
+        for uu in (G[0], G[2]):
+            # vejen er næsten parallel med u-aksen; find punktet på midterlinjen ud for uu
+            s = (uu - uv((xa, ya))[0]) / (uv((xb, yb))[0] - uv((xa, ya))[0])
+            kant.append(uv((xa + s * (xb - xa), ya + s * (yb - ya))))
+        hb = bel.get("vej_bredde", 4.0) / 2
+        q = np.array([(kant[0][0], kant[0][1] - hb, 0), (kant[1][0], kant[1][1] - hb, 0), (kant[1][0], min(kant[1][1] + hb, G[3]), 0), (kant[0][0], min(kant[0][1] + hb, G[3]), 0)], float) @ P
+        ax.add_patch(Polygon(q, closed=True, fc="#d6d1c6", ec="none", zorder=0.4))
+    for fl_ in bel.get("grus", []):
+        q = np.array([(*uv(p_), 0) for p_ in fl_["punkter"]], float) @ P
+        ax.add_patch(Polygon(q, closed=True, fc="#d6d1c6", ec="none", zorder=0.4))
+    if "ridebane" in cfg:
+        rb = np.array([(*uv(p), 0) for p in cfg["ridebane"]["punkter"]], float) @ P
+        ax.add_patch(Polygon(rb, closed=True, fc=SAND, ec="#b3a67f", lw=0.5, zorder=0.5))
+        ax.text(rb[:, 0].mean(), rb[:, 1].mean(), "Ridebane", fontsize=6.5, color="#6b5f3f", ha="center", va="center", zorder=0.6)
+    if "sandfold" in cfg:
+        sf = np.array([(*uv(p), 0) for p in cfg["sandfold"]["punkter"]], float) @ P
+        ax.add_patch(Polygon(sf, closed=True, fc="#efe7d3", ec="none", zorder=0.5))
+    if "gangsti" in cfg:
+        q = np.array([(u_, v_, 0) for u_, v_ in cfg["gangsti"]["punkter_uv"]], float) @ P
+        ax.plot(q[:, 0], q[:, 1], color="#c9b98f", lw=2.2, solid_capstyle="butt", zorder=0.8)
+    if "koerevej" in cfg:
+        pu, pvv = (hal_u0 + hal_u1) / 2, hal_v1 if PORT_NORD else hal_v0
+        port_xy = (cx + pu * ux - pvv * uy, cy + pu * uy + pvv * ux)
+        ret = (uy, -ux) if PORT_NORD else (-uy, ux)
+        for k in koerevej_linjer(port_xy, ret)[1]:
+            q = np.array([(*uv(p_), 0) for p_ in k], float) @ P
+            ax.plot(q[:, 0], q[:, 1], color="#555555", lw=0.8, ls=(0, (5, 2)), zorder=0.8)
     sk = np.array([(skel_u, G[1] + 2, 0), (skel_u, G[3] - 2, 0)], float) @ P
     ax.plot(sk[:, 0], sk[:, 1], color="red", lw=0.9, ls=(0, (6, 3)), zorder=1)
     m = np.array([(skel_u - 1.5, hal_v0 + 8, 0)], float) @ P
@@ -205,26 +345,38 @@ def tegn(ax, retning):
     ax.annotate("N", xy=np_[1], xytext=np_[0], fontsize=8, ha="center", va="center", arrowprops=dict(arrowstyle="-|>", lw=1.0), zorder=1)
 
     flader, etiketter = scene()
-    synlige = [f for f in flader if np.array(f["n"], float) @ F < -1e-9]
+    synlige = [f for f in flader if f["n"] is None or np.array(f["n"], float) @ F < -1e-9]
     for f in sorted(synlige, key=lambda f: -float((np.array(f["pts"], float) @ F).mean())):
+        if "trae" in f:
+            tu, tv, r, hh, i = f["trae"]
+            fod, top = np.array([tu, tv, 0.0]) @ P, np.array([tu, tv, max(hh - r, r)]) @ P
+            ax.plot([fod[0], top[0]], [fod[1], top[1]], color="#6b4f2a", lw=0.8, zorder=2)
+            ax.add_patch(Circle(top, r, fc=("#7fae6a", "#6f9f5c", "#8ab874")[i % 3], ec="#4f7a3f", lw=0.4, alpha=0.6, zorder=2))
+            continue
         ax.add_patch(Polygon(np.array(f["pts"], float) @ P, closed=True, fc=f["fyld"], ec=f["kant"], lw=f["lw"], joinstyle="round", zorder=2))
         for l in f["linjer"]:
             q = np.array(l, float) @ P
-            ax.plot(q[:, 0], q[:, 1], color="#5a5d61", lw=0.35, zorder=2)
+            ax.plot(q[:, 0], q[:, 1], color=HEGN if f["n"] is None else "#5a5d61", lw=(0.35 if f.get("tynd") else 0.6) if f["n"] is None else 0.35, zorder=2)
         for pts, fyld, kant in f["paa"]:
             ax.add_patch(Polygon(np.array(pts, float) @ P, closed=True, fc=fyld, ec=kant, lw=0.7, zorder=2))
-    for tekst, p, dy in etiketter:
-        q = np.array(p, float) @ P
-        ax.annotate(tekst, xy=q, xytext=(q[0], q[1] + dy), fontsize=6.5, ha="center", va="center", zorder=5,
-                    arrowprops=dict(arrowstyle="-", lw=0.5, color="#444444"), bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="#888888", lw=0.5))
+    # tekstskilte lægges i to rækker oven over hele motivet, så de ikke dækker bygninger; tynde henvisningsstreger peger ned
     ax.autoscale_view()
+    x0, x1 = ax.get_xlim()
     y0, y1 = ax.get_ylim()
-    ax.set_ylim(y0 - 1, y1 + 3)
+    maal_ = sorted(((np.array(p, float) @ P, tekst) for tekst, p, _ in etiketter), key=lambda m: m[0][0])
+    n = len(maal_)
+    for i, (q, tekst) in enumerate(maal_):
+        lx = x0 + (x1 - x0) * (0.08 + 0.84 * i / max(n - 1, 1))
+        ly = y1 + 3.0 + 4.5 * (i % 2)
+        ax.annotate(tekst, xy=q, xytext=(lx, ly), fontsize=6.5, ha="center", va="center", zorder=5,
+                    arrowprops=dict(arrowstyle="-", lw=0.4, color="#666666", shrinkB=0), bbox=dict(boxstyle="round,pad=0.25", fc="white", ec="#888888", lw=0.5))
+        ax.plot([q[0]], [q[1]], marker="o", ms=2.2, color="#444444", zorder=5)
+    ax.set_ylim(y0 - 1, y1 + 11)
 
 
 FODNOTE1 = ("FORELØBIGE SKITSER i parallelprojektion, ikke målfaste. Hallens mål er de ønskede. Tagfod og taghældning på hus og tilbygning (2,5 m, 25°, anslået fra foto) "
-            "og stald (2,6 m, 25°) samt skurets højde er antaget og skal måles op.")
-FODNOTE2 = "Husets sydfacade (hvid væg, sort tag, glasparti og to vinduer) er anslået fra foto; øvrige facader er ikke kendt. Tilbygningen er fremhævet med gul væg. Skel er antaget."
+            "og stald (2,6 m, 38°) samt skurets højde er anslået fra fotos og skal måles op.")
+FODNOTE2 = "Farver og åbninger i hus og stald følger mæglerens vejledende plantegning (2024) og ejers fotos og er ikke opmålt. Ridebane, hegn, grusarealer og læbælter efter luftfoto (træhøjder skønnet). Tilbygningen er fremhævet med gul væg."
 
 # Samlet A3-ark med de fire hjørner
 fig = plt.figure(figsize=(420 / 25.4, 297 / 25.4))

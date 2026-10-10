@@ -9,22 +9,29 @@
     "nabo_matrikel": "1cb"
   },
   "tilbygning": {
-    "_note": "Fløj mod vest. Nordfacaden flugter med husets nordfacade, og fløjen går forbi husets sydfacade ned i haven.",
+    "_note": "Fløj mod vest. Nordfacaden flugter med husets nordfacade, og fløjen går forbi husets sydfacade ned i haven. 'bredde' måles fra vestfacaden til husets vestgavl, som bruges som fælles væg. Syd for huset står den nye østvæg uden på denne linje, så rummet er lige bredt indvendigt hele vejen.",
     "bredde": 8.0,
-    "forbi_husets_sydfacade": 7.0
+    "forbi_husets_sydfacade": 7.0,
+    "oestvaeg_syd": 0.45
   },
   "hal": {
     "laengde": 20.0,
     "bredde": 10.0,
     "afstand_til_skel": 11.5,
     "afstand_til_tilbygning": 20.0,
-    "_note": "Lukket rum (privat) ligger i nordenden nærmest huset. Resten er én åben hal med driftszone og privat zone (lift/værksted og trailere). Kun én port, i sydgavlen. Afstanden til tilbygningen måles fra tilbygningens sydgavl.",
+    "_note": "Hallen er vendt, så porten sidder i nordgavlen mod ridebanen. Det lukkede rum og døren ligger i sydenden. Resten er én åben hal med driftszone og privat zone. Kun én port.",
     "rum_laengde": 4.0,
-    "privat_i_aaben_hal_m2": 52
+    "privat_i_aaben_hal_m2": 52,
+    "position": {
+      "_note": "Hallens placering i husets akser (u mod øst, v mod nord, fra husets midte): vestvæggens u og nordgavlens v. Hallen står i den første fold øst for haven, parallelt med huset. Når 'position' er sat, bruges afstand_til_skel og afstand_til_tilbygning ikke.",
+      "u_vest": 21.0,
+      "v_nord": 0.5
+    },
+    "port_mod": "nord"
   },
   "hus_ydermaal": {
-    "_note": "Husets ydre mål efter ejers oplysning (ca. 8 x 16 m, BBR 123 m²). Kortdata viser tagfladen inkl. udhæng (16,8 x 9,2 m). Skal måles op.",
-    "laengde": 16.0,
+    "_note": "Fra mæglerens vejledende plantegning (2024): indvendigt ca. 14,7 x 7,35 m plus ydervægge. Passer med BBR 123 m². Skal måles op.",
+    "laengde": 15.4,
     "bredde": 8.0
   },
   "jordvarme": {
@@ -94,7 +101,7 @@
     ]
   },
   "skur": {
-    "_note": "Eksisterende skur bygget helt op ad østsiden af staldens sydfløj, godkendt i BBR. Ejer oplyser, at det mod nord kun er godt halvt så dybt som først tegnet, så dybden er sat til 2,8 m fra sydkanten. Ca. 8,3 x 2,8 m. Østkant og sydkant målt på Apple-luftfotoet (+/- 0,5 m). Højde antaget. Lokale koordinater (x øst, y nord).",
+    "_note": "Eksisterende skur bygget helt op ad østsiden af staldens sydfløj, godkendt i BBR. Ejer oplyser, at det mod nord kun er godt halvt så dybt som først tegnet, så dybden er sat til 2,8 m fra sydkanten. Ca. 8,3 x 2,8 m. Østkant og sydkant målt på Apple-luftfotoet (+/- 0,5 m). Højde antaget. Lokale koordinater (x øst, y nord). IMG_9768 viser hvide vægge og fladt, mørkt tag.",
     "punkter": [
       [
         7.62,
@@ -113,34 +120,39 @@
         13.6
       ]
     ],
-    "hoejde": 2.5
+    "hoejde": 2.3,
+    "doer": {
+      "_note": "Port/dør i skurets nordside, helt op mod staldbygningen (ejers oplysning). Højde er et skøn.",
+      "side": "nord",
+      "afstand_fra_stald": 0.2,
+      "bredde": 2.5,
+      "hoejde": 2.0
+    }
   },
   "hus_sydfacade": {
-    "_note": "Åbninger i det eksisterende hus' sydfacade, anslået ud fra IMG_0985 (+/- 0,5 m). u = meter fra husets midte mod øst; z = højde over terræn. Glaspartiet har fire fag. Facadens vestligste ca. 4 m ses ikke på fotoet.",
+    "_note": "Sydfacade: glasparti med 4 fag (IMG_0985) placeret efter mæglerens plan, hvor stuens dør og vinduesparti sidder; to værelsesvinduer mod øst. u = meter fra husets midte mod øst.",
     "aabninger": [
       {
         "navn": "glasparti, 4 fag",
-        "u0": -1.35,
-        "u1": 2.45,
+        "u0": -4.6,
+        "u1": -0.8,
         "z0": 0.05,
         "z1": 2.1,
         "fag": 4
       },
       {
-        "navn": "vindue",
-        "u0": 4.1,
-        "u1": 5.0,
+        "navn": "vindue værelse",
+        "u0": 1.75,
+        "u1": 2.75,
         "z0": 0.9,
-        "z1": 2.1,
-        "fag": 1
+        "z1": 2.1
       },
       {
-        "navn": "vindue",
-        "u0": 6.4,
-        "u1": 7.1,
+        "navn": "vindue værelse",
+        "u0": 5.5,
+        "u1": 6.5,
         "z0": 0.9,
-        "z1": 2.1,
-        "fag": 1
+        "z1": 2.1
       }
     ],
     "farver": {
@@ -148,6 +160,674 @@
       "tag": "sort bølgeplade",
       "vinduer": "sorte rammer",
       "tagrender": "lysegrå"
+    }
+  },
+  "ridebane": {
+    "_note": "Eksisterende ridebane, tegnet af efter Apple-luftfotoet (+/- 1 m). Lokale koordinater (x øst, y nord). De østlige hjørner er afrundede.",
+    "punkter": [
+      [
+        22.6,
+        29.1
+      ],
+      [
+        58.5,
+        29.1
+      ],
+      [
+        61.5,
+        26.1
+      ],
+      [
+        61.5,
+        11.8
+      ],
+      [
+        58.5,
+        8.8
+      ],
+      [
+        22.6,
+        8.8
+      ]
+    ]
+  },
+  "hegn": {
+    "_note": "Hegn efter ejers ønsker 10.10.2026 (delvist nyt forløb). 'braedder' = sort stolpehegn med brædder (eksisterende, ridebane og sandfold), 'el' = stolper med tråd. Fold 1 og 2 er lagt sammen bag (syd for) og øst for hallen; fold 3 går op til møddingen; hegnet mellem have og fold er fjernet, så der er fri passage mellem hus og hal. Hestene går fra stalden gennem sandfolden og en drivgang syd for ridebanen til foldene. Lokale koordinater (x øst, y nord), +/- 1 m.",
+    "linjer": [
+      {
+        "type": "braedder",
+        "punkter": [
+          [
+            22.7,
+            28.6
+          ],
+          [
+            22.7,
+            9.1
+          ],
+          [
+            61.0,
+            9.1
+          ],
+          [
+            61.0,
+            28.6
+          ],
+          [
+            22.7,
+            28.6
+          ]
+        ]
+      },
+      {
+        "type": "braedder",
+        "punkter": [
+          [
+            10.2,
+            20.8
+          ],
+          [
+            22.7,
+            20.8
+          ]
+        ]
+      },
+      {
+        "type": "braedder",
+        "punkter": [
+          [
+            16.1,
+            10.8
+          ],
+          [
+            16.1,
+            5.5
+          ],
+          [
+            22.7,
+            5.5
+          ]
+        ]
+      },
+      {
+        "type": "el",
+        "punkter": [
+          [
+            22.7,
+            5.5
+          ],
+          [
+            34.0,
+            5.5
+          ],
+          [
+            34.0,
+            -23.0
+          ],
+          [
+            19.0,
+            -23.0
+          ],
+          [
+            19.0,
+            -48.6
+          ],
+          [
+            61.5,
+            -48.6
+          ],
+          [
+            61.5,
+            3.4
+          ],
+          [
+            48.5,
+            3.4
+          ]
+        ]
+      },
+      {
+        "type": "el",
+        "punkter": [
+          [
+            48.5,
+            9.1
+          ],
+          [
+            48.5,
+            -48.6
+          ]
+        ]
+      }
+    ]
+  },
+  "hus_nordfacade": {
+    "_note": "Nordfacade efter mæglerens plan og IMG_9768: bryggersdør, to køkkenvinduer, hoveddør, badvindue, værelsesvindue. Bryggersdøren nærmest tilbygningen erstattes af et vindue i standardstørrelse (adgangen sker fremover fra garagen).",
+    "aabninger": [
+      {
+        "navn": "bryggersvindue (tidligere dør)",
+        "u0": -6.45,
+        "u1": -5.45,
+        "z0": 0.9,
+        "z1": 2.1
+      },
+      {
+        "navn": "køkkenvindue",
+        "u0": -3.6,
+        "u1": -2.6,
+        "z0": 0.9,
+        "z1": 2.1
+      },
+      {
+        "navn": "køkkenvindue",
+        "u0": -0.8,
+        "u1": 0.2,
+        "z0": 0.9,
+        "z1": 2.1
+      },
+      {
+        "navn": "hoveddør",
+        "u0": 1.1,
+        "u1": 2.0,
+        "z0": 0.05,
+        "z1": 2.05,
+        "doer": true
+      },
+      {
+        "navn": "badvindue",
+        "u0": 3.35,
+        "u1": 4.35,
+        "z0": 0.9,
+        "z1": 2.1
+      },
+      {
+        "navn": "værelsesvindue",
+        "u0": 5.85,
+        "u1": 6.85,
+        "z0": 0.9,
+        "z1": 2.1
+      }
+    ]
+  },
+  "stald": {
+    "_note": "Efter mæglerens vejledende plan (2024) og fotos: hvide vægge, sort tag, ca. 38 grader. Åbninger angivet som brøkdel af facadens længde: hovedlængens nord/syd regnes fra vest, østgavlen fra nord, fløjens vest/øst fra hovedlængens sydvæg mod syd. Nordfacaden mod vejen har seks ens vinduer (tegnet 0,9 x 0,8 m) og ét langt, lavt vindue (ca. 1,8 x 0,5 m) i vestenden mod indkørslen til huset (ejers oplysning; mål er skøn).",
+    "tagfod": 2.6,
+    "haeldning": 38,
+    "indhold": "Lejlighed ca. 44 m² (ikke godkendt til beboelse), to sadelrum, værksted, bad, 4 hestebokse og 2 ponybokse, løsdrift/garage 5,83 x 7,72 m i sydfløjen",
+    "nord": [
+      {
+        "f0": 0.064,
+        "f1": 0.147,
+        "z0": 1.45,
+        "z1": 1.95
+      },
+      {
+        "f0": 0.2169,
+        "f1": 0.2581,
+        "z0": 1.1,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.3269,
+        "f1": 0.3681,
+        "z0": 1.1,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.4919,
+        "f1": 0.5331,
+        "z0": 1.1,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.6369,
+        "f1": 0.6781,
+        "z0": 1.1,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.7569,
+        "f1": 0.7981,
+        "z0": 1.1,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.8769,
+        "f1": 0.9181,
+        "z0": 1.1,
+        "z1": 1.9
+      }
+    ],
+    "syd": [
+      {
+        "f0": 0.245,
+        "f1": 0.285,
+        "z0": 0.05,
+        "z1": 2.05,
+        "doer": true
+      },
+      {
+        "f0": 0.305,
+        "f1": 0.35,
+        "z0": 1.3,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.425,
+        "f1": 0.475,
+        "z0": 1.2,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.54,
+        "f1": 0.585,
+        "z0": 1.2,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.615,
+        "f1": 0.66,
+        "z0": 0.05,
+        "z1": 2.1,
+        "doer": true
+      }
+    ],
+    "oestgavl": [
+      {
+        "f0": 0.52,
+        "f1": 0.64,
+        "z0": 0.05,
+        "z1": 2.1,
+        "doer": true
+      },
+      {
+        "f0": 0.76,
+        "f1": 0.9,
+        "z0": 1.2,
+        "z1": 2.0
+      },
+      {
+        "f0": 0.42,
+        "f1": 0.58,
+        "z0": 3.0,
+        "z1": 4.3,
+        "doer": true
+      }
+    ],
+    "floej_vest": [
+      {
+        "f0": 0.2,
+        "f1": 0.3,
+        "z0": 1.4,
+        "z1": 1.9
+      },
+      {
+        "f0": 0.6,
+        "f1": 0.7,
+        "z0": 1.4,
+        "z1": 1.9
+      }
+    ],
+    "floej_oest": [
+      {
+        "f0": 0.2,
+        "f1": 0.42,
+        "z0": 0.05,
+        "z1": 2.2,
+        "doer": true
+      }
+    ]
+  },
+  "laebaelter": {
+    "_note": "Eksisterende læbælter og træer, tegnet af efter Apple-luftfotoet (+/- 2 m). Lokale koordinater (x øst, y nord). Højder er skøn og skal vurderes på stedet. Det østlige bælte er kanten af et større skovstykke.",
+    "baelter": [
+      {
+        "navn": "Læbælte mod vest (langs skel)",
+        "linje": [
+          [
+            -22.0,
+            33
+          ],
+          [
+            -22.0,
+            -18
+          ],
+          [
+            -22.5,
+            -90
+          ]
+        ],
+        "bredde": 5.5,
+        "hoejde": 7
+      },
+      {
+        "navn": "Læbælte nord for ridebanen",
+        "linje": [
+          [
+            19,
+            33
+          ],
+          [
+            63,
+            33
+          ]
+        ],
+        "bredde": 4.0,
+        "hoejde": 4
+      },
+      {
+        "navn": "Skovbryn mod øst",
+        "linje": [
+          [
+            66.5,
+            36
+          ],
+          [
+            67.0,
+            -90
+          ]
+        ],
+        "bredde": 9.0,
+        "hoejde": 10
+      }
+    ],
+    "enkelttraeer": [
+      {
+        "x": -6.5,
+        "y": -15.0,
+        "radius": 1.8,
+        "hoejde": 3.5
+      }
+    ]
+  },
+  "ejendom": {
+    "_note": "Fra salgsopstilling af 9.9.2024 (Salgsopstilling_villa_2_641.pdf). Arealer ifølge ESR/BBR dengang.",
+    "matrikler": {
+      "1cc Restrup Hgd., Sønderholm": 19977,
+      "1rp": 5516,
+      "57b": 13637
+    },
+    "grundareal_m2": 39130,
+    "heraf_vej_m2": 680,
+    "ejendomstype": "Boliglandbrug (vurderet som landbrugsejendom; skifter ved ejerskifte kategori til ejerbolig)",
+    "zone": "Landzone",
+    "BFE": "1416157 m.fl.",
+    "bbr": {
+      "bygning 4 stuehus": 123,
+      "bygning 2 bygning til træning og opstaldning af heste": 284
+    },
+    "bemaerkninger": [
+      "Udhus på 20 m² er ikke registreret i BBR (2024)",
+      "Lejlighed på ca. 44 m² i stalden er ikke godkendt til beboelse",
+      "Kloak: mekanisk rensning med privat udledning direkte til vandløb",
+      "Vand: privat vandforsyning. Vej: privat fællesvej",
+      "Opført 1992, ombygget 2024. Jordvarme fra 2018"
+    ]
+  },
+  "hus_rum": {
+    "_note": "Rum i det eksisterende hus efter mæglerens vejledende plantegning (ikke målfast). Mål i meter fra husets indvendige sydvestlige hjørne: [navn, x, y, bredde øst-vest, dybde nord-syd]. Stuens loftshøjde 2,31 m.",
+    "rum": [
+      [
+        "Stue",
+        0,
+        0,
+        8.15,
+        4.0
+      ],
+      [
+        "Bryggers",
+        0,
+        4.1,
+        2.8,
+        3.25
+      ],
+      [
+        "Køkken",
+        2.9,
+        4.1,
+        5.25,
+        3.25
+      ],
+      [
+        "Værelse",
+        8.25,
+        0,
+        2.8,
+        3.6
+      ],
+      [
+        "Værelse",
+        11.15,
+        0,
+        3.52,
+        3.6
+      ],
+      [
+        "Gang",
+        8.25,
+        3.7,
+        4.05,
+        1.3
+      ],
+      [
+        "Entré",
+        8.25,
+        5.1,
+        1.4,
+        2.25
+      ],
+      [
+        "Bad",
+        9.75,
+        5.1,
+        2.41,
+        2.25
+      ],
+      [
+        "Værelse",
+        12.37,
+        3.7,
+        2.3,
+        3.65
+      ]
+    ]
+  },
+  "sandfold": {
+    "_note": "Sandfold mellem skur/have og ridebane (ses på IMG_9768 og ejers foto).",
+    "punkter": [
+      [
+        16.1,
+        20.8
+      ],
+      [
+        22.7,
+        20.8
+      ],
+      [
+        22.7,
+        5.5
+      ],
+      [
+        16.1,
+        5.5
+      ]
+    ]
+  },
+  "moedding": {
+    "_note": "Møddingsplads op ad ridebanens sydside ved det sydøstlige hjørne, mellem ridebanen og den tredje fold (ejers oplysning). Afskærmning mod nord, øst og syd, åben mod vest. Størrelse er et skøn (+/- 2 m).",
+    "punkter": [
+      [
+        54.5,
+        8.6
+      ],
+      [
+        61.0,
+        8.6
+      ],
+      [
+        61.0,
+        3.6
+      ],
+      [
+        54.5,
+        3.6
+      ]
+    ],
+    "hoejde": 1.5
+  },
+  "folde": [
+    {
+      "navn": "Fold 1+2",
+      "x": 41.0,
+      "y": -30
+    },
+    {
+      "navn": "Fold 3",
+      "x": 55.0,
+      "y": -22
+    },
+    {
+      "navn": "Drivgang",
+      "x": 41.0,
+      "y": 7.3
+    }
+  ],
+  "mur": {
+    "_note": "Lav hvid mur i L-form nord for staldens nordøstlige hjørne, målt på Apple-luftfotoet (+/- 0,5 m): 5,5 m mod nord i forlængelse af staldens østgavl og derfra 3,4 m mod øst. Højde skønnet.",
+    "punkter": [
+      [
+        8.1,
+        26.2
+      ],
+      [
+        8.1,
+        31.7
+      ],
+      [
+        11.5,
+        31.7
+      ]
+    ],
+    "hoejde": 1.2
+  },
+  "koerevej": {
+    "_note": "Kørevej for lastbil fra Nældevej til hallens port. 'punkter' er midterlinjen fra vejen ned over gårdspladsen og gennem sandfolden (lokale koordinater, x øst, y nord); det sidste stykke hen til porten beregnes som en S-kurve af tegnescripts. Forløbet er et forslag efter luftfotoet.",
+    "punkter": [
+      [
+        18.0,
+        37.5
+      ],
+      [
+        18.2,
+        30.0
+      ],
+      [
+        19.0,
+        22.0
+      ],
+      [
+        19.4,
+        14.0
+      ]
+    ],
+    "bredde": 3.5
+  },
+  "gangsti": {
+    "_note": "Gangsti fra husets hoveddør (nordfacaden) øst om gavlen til gangdøren i hallens portgavl. Punkter i husets akser (u mod øst, v mod nord fra husets midte). Forløbet er et forslag.",
+    "punkter_uv": [
+      [
+        1.55,
+        4.0
+      ],
+      [
+        1.55,
+        5.6
+      ],
+      [
+        9.5,
+        5.6
+      ],
+      [
+        20.0,
+        2.6
+      ],
+      [
+        22.05,
+        1.8
+      ],
+      [
+        22.05,
+        0.5
+      ]
+    ],
+    "bredde": 1.2
+  },
+  "vindue_standard": {
+    "_note": "Alle små vinduer i huset er ens (ejers oplysning), og tilbygningen får samme vindue. Målene er anslået fra foto IMG_0985 og skal måles op.",
+    "bredde": 1.0,
+    "hoejde": 1.2,
+    "brystning": 0.9
+  },
+  "belaegning": {
+    "_note": "Belægninger tegnet af efter Apple-luftfotoet (+/- 1-2 m). Lokale koordinater (x øst, y nord). Nældevej er en grusvej; dens midterlinje kommer fra kortdata, bredden er anslået. Gruset er ført helt ned til husets nordfacade og hen foran tilbygningens garageporte (nyt grus vest for det eksisterende).",
+    "vej_bredde": 4.0,
+    "grus": [
+      {
+        "navn": "Gårdsplads (grus)",
+        "label": [
+          -8.0,
+          13.5
+        ],
+        "punkter": [
+          [
+            -18.0,
+            37.6
+          ],
+          [
+            19.0,
+            36.6
+          ],
+          [
+            22.6,
+            33.0
+          ],
+          [
+            22.6,
+            20.8
+          ],
+          [
+            8.1,
+            20.8
+          ],
+          [
+            8.1,
+            10.0
+          ],
+          [
+            9.0,
+            10.0
+          ],
+          [
+            9.0,
+            4.0
+          ],
+          [
+            -17.0,
+            4.6
+          ],
+          [
+            -18.0,
+            6.0
+          ]
+        ]
+      }
+    ],
+    "parkering": {
+      "label": [
+        -9.0,
+        32.5
+      ],
+      "tekst": "Parkering (grus)"
     }
   }
 }

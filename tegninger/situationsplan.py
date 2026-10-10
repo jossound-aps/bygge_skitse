@@ -12,13 +12,15 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
+from matplotlib.patches import Circle, Polygon
+from nordpil import nordpil
 
 HER = Path(__file__).parent
 MAALESTOK = 500
+GRUS = "#d6d1c6"
 A4 = (210, 297)  # mm
 FELT = (10, 32, 190, 255)  # tegnefelt: venstre, bund, bredde, højde i mm
-CENTRUM = (-6.0, -20.0)  # midten af tegnefeltet i lokale meter
+CENTRUM = (22.5, -20.0)  # midten af tegnefeltet i lokale meter
 
 grund = json.loads((HER / "data/grundkort.json").read_text(encoding="utf-8"))
 cfg = json.loads((HER / "situationsplan.json").read_text(encoding="utf-8"))
@@ -63,14 +65,50 @@ tb_b = cfg["tilbygning"]["bredde"]
 tb = (hus_u0 - tb_b, hus_v0 - cfg["tilbygning"]["forbi_husets_sydfacade"], hus_u0, hus_v1)
 tb_l = tb[3] - tb[1]
 h = cfg["hal"]
-hal_u0 = skel_u + h["afstand_til_skel"]
+if "position" in h:
+    hal_u0, hal_v1 = h["position"]["u_vest"], h["position"]["v_nord"]
+else:
+    hal_u0, hal_v1 = skel_u + h["afstand_til_skel"], tb[1] - h["afstand_til_tilbygning"]
 hal_u1 = hal_u0 + h["bredde"]
-hal_v1 = tb[1] - h["afstand_til_tilbygning"]
 hal_v0 = hal_v1 - h["laengde"]
-skille_v = hal_v1 - h["rum_laengde"]
+PORT_NORD = h.get("port_mod") == "nord"
+# det lukkede rum ligger i den ende, der vender væk fra porten
+rum_v0, rum_v1 = (hal_v0, hal_v0 + h["rum_laengde"]) if PORT_NORD else (hal_v1 - h["rum_laengde"], hal_v1)
+aab_v0, aab_v1 = (rum_v1, hal_v1) if PORT_NORD else (hal_v0, rum_v0)
 rum_m2 = h["bredde"] * h["rum_laengde"]
 privat_m2 = rum_m2 + h["privat_i_aaben_hal_m2"]
 drift_m2 = h["bredde"] * h["laengde"] - privat_m2
+
+
+
+def koerevej_linjer(port_xy, retning_xy):
+    """Midterlinje og de to kanter for kørevejen: faste punkter fra json og en S-kurve (Bezier) ind til porten."""
+    kv = cfg["koerevej"]
+    pts = [tuple(p) for p in kv["punkter"]]
+    p0, p3 = pts[-1], port_xy
+    d0 = (pts[-1][0] - pts[-2][0], pts[-1][1] - pts[-2][1])
+    n0 = math.hypot(*d0)
+    l = math.dist(p0, p3) * 0.45
+    p1 = (p0[0] + d0[0] / n0 * l, p0[1] + d0[1] / n0 * l)
+    p2 = (p3[0] - retning_xy[0] * l, p3[1] - retning_xy[1] * l)
+    for i in range(1, 25):
+        s = i / 24
+        pts.append(tuple((1 - s) ** 3 * a + 3 * (1 - s) ** 2 * s * b + 3 * (1 - s) * s ** 2 * c_ + s ** 3 * d
+                         for a, b, c_, d in zip(p0, p1, p2, p3)))
+    kanter = ([], [])
+    for i, p in enumerate(pts):
+        a, b = pts[max(i - 1, 0)], pts[min(i + 1, len(pts) - 1)]
+        tx, ty = b[0] - a[0], b[1] - a[1]
+        n = math.hypot(tx, ty)
+        for k, sgn in zip(kanter, (1, -1)):
+            k.append((p[0] - sgn * ty / n * kv["bredde"] / 2, p[1] + sgn * tx / n * kv["bredde"] / 2))
+    # mindste krumningsradius på midterlinjen (til vurdering af, om en lastbil kan følge den)
+    rmin = 1e9
+    for a, b, c_ in zip(pts[:-2], pts[1:-1], pts[2:]):
+        areal = abs((b[0] - a[0]) * (c_[1] - a[1]) - (c_[0] - a[0]) * (b[1] - a[1])) / 2
+        if areal > 1e-9:
+            rmin = min(rmin, math.dist(a, b) * math.dist(b, c_) * math.dist(a, c_) / (4 * areal))
+    return pts, kanter, rmin
 
 
 def maal(ax, p, q, tekst, forskyd=(0, 0), farve="black"):
@@ -97,9 +135,55 @@ def tegn(luftfoto):
         e, dy = lf["extent"], lf.get("forskydning_y", 0.0)
         ax.imshow(plt.imread(HER / "data" / lf["fil"]), extent=[e[0], e[1], e[2] + dy, e[3] + dy], zorder=0)
     else:
-        for vej in grund["veje"]:
-            ax.plot(*zip(*vej["punkter"]), color="#bbbbbb", lw=6, solid_capstyle="round", zorder=1)
-            ax.text(ax.get_xlim()[0] + 12, ax.get_ylim()[1] - 15, vej["navn"], fontsize=7, color="#444444")
+        bel = cfg.get("belaegning", {})
+        for vej in grund["veje"]:          # grusvej i anslået bredde
+            ax.plot(*zip(*vej["punkter"]), color=GRUS, lw=bel.get("vej_bredde", 4.0) * 1000 / MAALESTOK / 25.4 * 72, solid_capstyle="butt", zorder=0.9)
+            ax.text(40, 39.3, vej["navn"] + " (grusvej)", fontsize=6.5, color="#444444", ha="center", va="center", rotation=-1.5, zorder=7)
+        for fl in bel.get("grus", []):
+            ax.add_patch(Polygon(fl["punkter"], closed=True, fc=GRUS, ec="none", zorder=0.9))
+            ax.text(*fl["label"], fl["navn"], fontsize=6, color="#555555", ha="center", va="center", zorder=7)
+        if "parkering" in bel:
+            ax.text(*bel["parkering"]["label"], bel["parkering"]["tekst"], fontsize=6, color="#555555", ha="center", va="center", zorder=7)
+
+    # Læbælter og træer (eksisterende)
+    lb = cfg.get("laebaelter", {})
+    for baelte in lb.get("baelter", []):
+        r = baelte["bredde"] / 2
+        pts = baelte["linje"]
+        for (x0, y0), (x1, y1) in zip(pts[:-1], pts[1:]):
+            antal = max(1, round(math.hypot(x1 - x0, y1 - y0) / (1.6 * r)))
+            for i in range(antal + 1):
+                ax.add_patch(Circle((x0 + (x1 - x0) * i / antal, y0 + (y1 - y0) * i / antal), r, fc="none" if luftfoto else "#cfe6c4",
+                                    ec="#d8ffd0" if luftfoto else "#4f8a3c", lw=0.5, alpha=0.9, zorder=1.5))
+        mx, my = pts[len(pts) // 2] if len(pts) > 2 else ((pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2)
+        lodret = abs(pts[-1][1] - pts[0][1]) > abs(pts[-1][0] - pts[0][0])
+        ax.text(mx, my + (30 if lodret else 0), baelte["navn"], fontsize=6, color="#2f6b1f", rotation=90 if lodret else 0, ha="center", va="center", zorder=7,
+                bbox=dict(fc="white", ec="none", alpha=0.75, pad=0.8))
+    for tr in lb.get("enkelttraeer", []):
+        ax.add_patch(Circle((tr["x"], tr["y"]), tr["radius"], fc="none" if luftfoto else "#cfe6c4", ec="#d8ffd0" if luftfoto else "#4f8a3c", lw=0.5, zorder=1.5))
+
+    # Ridebane og hegn (eksisterende)
+    if "ridebane" in cfg:
+        rb = cfg["ridebane"]["punkter"]
+        ax.add_patch(Polygon(rb, closed=True, fc="none" if luftfoto else "#efe6d2", ec=streg if luftfoto else "#8a7a55", lw=0.8, zorder=1))
+        ax.text(sum(p[0] for p in rb) / len(rb), sum(p[1] for p in rb) / len(rb), "Ridebane", fontsize=7, ha="center", va="center", color=streg if luftfoto else "#5c5035", zorder=7)
+    if "sandfold" in cfg:
+        sf = cfg["sandfold"]["punkter"]
+        ax.add_patch(Polygon(sf, closed=True, fc="none" if luftfoto else "#f3ecdc", ec="none", zorder=1))
+        ax.text(sum(p[0] for p in sf) / len(sf), sum(p[1] for p in sf) / len(sf), "Sand-\nfold", fontsize=5.5, ha="center", va="center", color=streg if luftfoto else "#5c5035", zorder=7)
+    for noegle, navn in (("moedding", "Mødding"), ("mur", "Lav mur")):
+        if noegle in cfg:
+            md = cfg[noegle]["punkter"]
+            ax.plot(*zip(*md), color=streg if luftfoto else "black", lw=1.2, zorder=3)
+            ax.text(sum(p[0] for p in md) / len(md), sum(p[1] for p in md) / len(md), navn, fontsize=5.5, ha="center", va="center", color=streg, zorder=7)
+    for linje in cfg.get("hegn", {}).get("linjer", []):
+        el = linje["type"] == "el"
+        ax.plot(*zip(*linje["punkter"]), color="#ffffff" if luftfoto else "#3a2a1a", lw=0.6 if el else 1.0, ls=(0, (4, 2)) if el else "-", marker="o", ms=1.4, zorder=2)
+    if "hegn" in cfg and not luftfoto:
+        ax.text(20.0, -36, "Elhegn (stiplet)", fontsize=6, color="#3a2a1a", rotation=90, ha="left", va="center", zorder=7)
+    for fo in cfg.get("folde", []):
+        ax.text(fo["x"], fo["y"], fo["navn"], fontsize=7, color=streg if luftfoto else "#5c5035", ha="center", va="center", zorder=7)
+        ax.text(42, 11.0, "Bræddehegn om ridebane og sandfold", fontsize=6, color="#3a2a1a", ha="center", va="center", zorder=7)
 
     # Eksisterende bygninger
     for b_ in grund["bygninger"]:
@@ -115,6 +199,10 @@ def tegn(luftfoto):
         sk = cfg["skur"]["punkter"]
         ax.add_patch(Polygon(sk, closed=True, fc="#9a9a9a", ec=streg if luftfoto else "black", lw=0.8, alpha=0.9 if not luftfoto else 0.25, zorder=3))
         ax.text(sum(p[0] for p in sk) / len(sk), sum(p[1] for p in sk) / len(sk), "Skur", fontsize=6, ha="center", va="center", zorder=7)
+        sd = cfg["skur"].get("doer")
+        if sd:
+            xs0, yn = min(p[0] for p in sk) + sd["afstand_fra_stald"], max(p[1] for p in sk)
+            ax.plot([xs0, xs0 + sd["bredde"]], [yn, yn], color="#cc0000", lw=2.0, solid_capstyle="butt", zorder=6)
     st = bygning(cfg["stald_osm_id"])
     ax.text(sum(p[0] for p in st[:-1]) / (len(st) - 1) + 1, max(p[1] for p in st) - 4, "Hestestald", fontsize=6, ha="center", zorder=7)
 
@@ -137,32 +225,59 @@ def tegn(luftfoto):
                 bbox=dict(fc="white", ec="none", alpha=0.85, pad=1))
 
     # Tilbygning
-    ax.add_patch(Polygon(rekt(*tb), closed=True, fc="#ffd27f", ec="#b36b00", lw=1.2, hatch="///", zorder=4))
-    ax.text(*xy((tb[0] + tb[2]) / 2, (tb[1] + tb[3]) / 2), f"Tilbygning\n{tb_b:.1f} × {tb_l:.1f} m\n{tb_b * tb_l:.0f} m²", fontsize=6, ha="center", va="center", zorder=7,
+    ov = cfg["tilbygning"].get("oestvaeg_syd", 0.0)      # syd for huset står østvæggen uden på gavlens linje
+    tb_omrids = [xy(tb[0], tb[1]), xy(tb[2] + ov, tb[1]), xy(tb[2] + ov, hus_v0), xy(tb[2], hus_v0), xy(tb[2], tb[3]), xy(tb[0], tb[3])]
+    tb_areal = tb_b * hus_b + (tb_b + ov) * (hus_v0 - tb[1])
+    ax.add_patch(Polygon(tb_omrids, closed=True, fc="#ffd27f", ec="#b36b00", lw=1.2, hatch="///", zorder=4))
+    ax.text(*xy((tb[0] + tb[2]) / 2, (tb[1] + tb[3]) / 2), f"Tilbygning\n{tb_b:.1f} × {tb_l:.1f} m\n{tb_areal:.0f} m²", fontsize=6, ha="center", va="center", zorder=7,
             bbox=dict(fc="white", ec="none", alpha=0.8, pad=1))
 
     # Hal med opdeling
-    ax.add_patch(Polygon(rekt(hal_u0, skille_v, hal_u1, hal_v1), closed=True, fc="#9fc5e8", ec="#1f4e79", lw=1.2, zorder=4))
-    ax.add_patch(Polygon(rekt(hal_u0, hal_v0, hal_u1, skille_v), closed=True, fc="#b6d7a8", ec="#1f4e79", lw=1.2, zorder=4))
-    ax.text(*xy((hal_u0 + hal_u1) / 2, (skille_v + hal_v1) / 2), f"Rum {rum_m2:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
-    ax.text(*xy((hal_u0 + hal_u1) / 2, (hal_v0 + skille_v) / 2), f"Åben hal\ndrift ca. {drift_m2:.0f} m²\nprivat ca. {h['privat_i_aaben_hal_m2']:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
+    ax.add_patch(Polygon(rekt(hal_u0, rum_v0, hal_u1, rum_v1), closed=True, fc="#9fc5e8", ec="#1f4e79", lw=1.2, zorder=4))
+    ax.add_patch(Polygon(rekt(hal_u0, aab_v0, hal_u1, aab_v1), closed=True, fc="#b6d7a8", ec="#1f4e79", lw=1.2, zorder=4))
+    ax.text(*xy((hal_u0 + hal_u1) / 2, (rum_v0 + rum_v1) / 2), f"Rum {rum_m2:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
+    ax.text(*xy((hal_u0 + hal_u1) / 2, (aab_v0 + aab_v1) / 2), f"Åben hal\ndrift ca. {drift_m2:.0f} m²\nprivat ca. {h['privat_i_aaben_hal_m2']:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
     # Kip
     k0, k1 = xy((hal_u0 + hal_u1) / 2, hal_v0), xy((hal_u0 + hal_u1) / 2, hal_v1)
     ax.plot([k0[0], k1[0]], [k0[1], k1[1]], color="#1f4e79", lw=0.5, ls=":", zorder=5)
     # Åbninger: dør i nordgavl, port i sydgavl (drift), port i østlig langside (privat)
     um = (hal_u0 + hal_u1) / 2
     for (p, q), tekst, off in (
-        ((xy(um - 0.5, hal_v1), xy(um + 0.5, hal_v1)), "dør", (0, 1.6)),
-        ((xy(um - 2.0, hal_v0), xy(um + 2.0, hal_v0)), "port", (0, -1.8)),
+        ((xy(hal_u0 + 0.6, hal_v1 if PORT_NORD else hal_v0), xy(hal_u0 + 1.5, hal_v1 if PORT_NORD else hal_v0)), "dør", (-2.2, 0.9 if PORT_NORD else -0.9)),
+        ((xy(um - 2.0, hal_v1 if PORT_NORD else hal_v0), xy(um + 2.0, hal_v1 if PORT_NORD else hal_v0)), "port", (0, 1.8 if PORT_NORD else -1.8)),
     ):
         ax.plot([p[0], q[0]], [p[1], q[1]], color="#cc0000", lw=2.5, solid_capstyle="butt", zorder=6)
         ax.text((p[0] + q[0]) / 2 + off[0], (p[1] + q[1]) / 2 + off[1], tekst, fontsize=5.5, color="#cc0000", ha="center", va="center", zorder=7,
                 bbox=dict(fc="white", ec="none", alpha=0.8, pad=0.6))
 
+    # Gangsti fra hus til hal
+    if "gangsti" in cfg:
+        gs = [xy(u_, v_) for u_, v_ in cfg["gangsti"]["punkter_uv"]]
+        ax.plot(*zip(*gs), color="#fff3a0" if luftfoto else "#c9b98f", lw=cfg["gangsti"]["bredde"] * 1000 / MAALESTOK / 25.4 * 72, solid_capstyle="butt", solid_joinstyle="round", zorder=2.5)
+        ax.text(gs[1][0] + 4.0, gs[1][1] + 0.9, "Gangsti", fontsize=5.5, ha="center", va="bottom", color="#fff3a0" if luftfoto else "#6b5f3f", zorder=7)
+
+    # Kørevej for lastbil (kun streger)
+    if "koerevej" in cfg:
+        pv = hal_v1 if PORT_NORD else hal_v0
+        ret = (-vx, -vy) if PORT_NORD else (vx, vy)          # kørselsretning ind ad porten
+        _, kanter, rmin = koerevej_linjer(xy(um, pv), ret)
+        for k in kanter:
+            ax.plot(*zip(*k), color="#ffe24a" if luftfoto else "#444444", lw=0.9, ls=(0, (5, 2)), zorder=5)
+        ax.text(kanter[0][1][0] + 2.3, kanter[0][1][1] - 3, f"Kørevej\nlastbil\n{cfg['koerevej']['bredde']:.1f} m".replace(".", ","), fontsize=5.5, ha="left", va="center",
+                color="#ffe24a" if luftfoto else "#444444", zorder=7)
+
     # Mål
-    mv = (hal_v0 + skille_v) / 2
-    maal(ax, xy(skel_u, mv), xy(hal_u0, mv), f"{h['afstand_til_skel']:.1f} m", (-2.5, 2))
-    maal(ax, xy(um, hal_v1), xy(um, tb[1]), f"{h['afstand_til_tilbygning']:.1f} m", (3.2, 0))
+    if "position" in h:      # afstande til nærmeste bygninger (brandafstand) og til ridebanens hegn
+        maal(ax, xy(hus_u1, hal_v1 - 1.5), xy(hal_u0, hal_v1 - 1.5), f"{hal_u0 - hus_u1:.1f} m til huset", (0, -1.6))
+        if "skur" in cfg:
+            sk_o = max((p[0] - cx) * ux + (p[1] - cy) * uy for p in cfg["skur"]["punkter"])
+            sk_s = min((p[0] - cx) * vx + (p[1] - cy) * vy for p in cfg["skur"]["punkter"])
+            afst = math.hypot(max(0.0, hal_u0 - sk_o), max(0.0, sk_s - hal_v1))
+            maal(ax, xy(sk_o, sk_s), xy(hal_u0, hal_v1), f"{afst:.1f} m til skuret", (-6.5, 0.8))
+    else:
+        mv = (aab_v0 + aab_v1) / 2
+        maal(ax, xy(skel_u, mv), xy(hal_u0, mv), f"{h['afstand_til_skel']:.1f} m", (-2.5, 2))
+        maal(ax, xy(um, hal_v1), xy(um, tb[1]), f"{h['afstand_til_tilbygning']:.1f} m", (3.2, 0))
     maal(ax, xy(hal_u0, hal_v0 - 3.5), xy(hal_u1, hal_v0 - 3.5), f"{h['bredde']:.1f} m", (0, -1.6))
     maal(ax, xy(hal_u1 + 3, hal_v0), xy(hal_u1 + 3, hal_v1), f"{h['laengde']:.1f} m", (3.2, -7))
     maal(ax, xy(skel_u, hus_v1 + 2), xy(tb[0], hus_v1 + 2), f"{tb[0] - skel_u:.1f} m", (0, 1.6))
@@ -170,9 +285,7 @@ def tegn(luftfoto):
     maal(ax, xy(tb[2] + 2, tb[1]), xy(tb[2] + 2, hus_v0), f"{hus_v0 - tb[1]:.1f} m", (3.0, 0))
 
     # Nordpil og målestok
-    x_n, y_n = ax.get_xlim()[1] - 8, ax.get_ylim()[1] - 16
-    ax.annotate("N", xy=(x_n, y_n + 10), xytext=(x_n, y_n), ha="center", va="center", fontsize=9, color=streg,
-                arrowprops=dict(arrowstyle="-|>", color=streg, lw=1.2), zorder=8)
+    nordpil(fig, 0.905, 0.925)
     x_s, y_s = ax.get_xlim()[0] + 5, ax.get_ylim()[0] + 4
     for i in range(4):
         ax.add_patch(Polygon([(x_s + 5 * i, y_s), (x_s + 5 * i + 5, y_s), (x_s + 5 * i + 5, y_s + 1), (x_s + 5 * i, y_s + 1)],
@@ -183,8 +296,8 @@ def tegn(luftfoto):
     # Tegningshoved
     fig.text(0.05, 0.085, "Situationsplan, Nældevej 42, 9000 Aalborg", fontsize=11, weight="bold")
     fig.text(0.05, 0.065, f"Målestok 1:{MAALESTOK} (A4)   ·   Tilbygning til hus og ny hal {h['laengde']:.0f} × {h['bredde']:.0f} m", fontsize=8)
-    fig.text(0.05, 0.045, "FORELØBIG SKITSE. Skel er antaget ud fra luftfoto og er ikke hentet fra matriklen. "
-                          "Jordvarmezonen er anslået. Husets mål er ejers oplysning.", fontsize=7.5, color="red")
+    fig.text(0.05, 0.045, "FORELØBIG SKITSE. Skel er antaget ud fra luftfoto. "
+                          "Jordvarmezonen er anslået. Husets mål følger mæglerens plan (2024).", fontsize=7.5, color="red")
     fig.text(0.05, 0.028, "Bygningsomrids og vej: © OpenStreetMap-bidragydere (GeoDanmark)."
              + (" Luftfoto: Apple Kort, markør fjernet digitalt, kun arbejdskort." if luftfoto else ""), fontsize=6, color="#555555")
 
@@ -199,4 +312,6 @@ for lf in (False, True):
 
 print(f"Hus: {hus_l:.1f} x {hus_b:.1f} m (tagflade i kortdata {tag_l:.1f} x {tag_b:.1f} m)")
 print(f"Tilbygning: {tb_b:.1f} x {tb_l:.1f} m = {tb_b * tb_l:.0f} m², {tb[0] - skel_u:.1f} m til antaget skel")
+if "koerevej" in cfg:
+    print(f"Kørevej: mindste radius på midterlinjen {koerevej_linjer(xy((hal_u0 + hal_u1) / 2, hal_v1 if PORT_NORD else hal_v0), (-vx, -vy) if PORT_NORD else (vx, vy))[2]:.1f} m")
 print(f"Hal: {h['laengde']:.0f} x {h['bredde']:.0f} m, rum {rum_m2:.0f} m², privat i alt ca. {privat_m2:.0f} m², drift ca. {drift_m2:.0f} m²")
