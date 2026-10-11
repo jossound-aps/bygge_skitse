@@ -122,8 +122,8 @@ for i, (g, rr) in enumerate(grupper.items()):
     fig.text(0.03, yy - 0.024 * (i + 1), f"{g}:", fontsize=8)
     fig.text(0.25, yy - 0.024 * (i + 1), f"{dk(sum(areal(r[2]) for r in rr))} m²", fontsize=8, ha="right")
 fig.text(0.03, yy - 0.024 * 4.3, "Stalden er registreret med 284 m² i BBR. Forskellen skyldes vægge, og at planen ikke er målfast. Skuret (nr. 13) er ikke en del af stalden.", fontsize=7.5)
-fig.text(0.03, 0.075, "FORELØBIG TEGNING efter mæglerens vejledende plan (ikke målfast). Rumarealer er regnet til vægmidte og er omtrentlige.\n"
-                      "Døre, vinduer og porte er ikke vist. Skurets placering og mål er efter situationsplanen.", fontsize=7, color="#aa0000", linespacing=1.4)
+fig.text(0.03, 0.075, "Tegnet efter ejendomsmæglerens vejledende plan (ikke målfast). Rumarealer er regnet til vægmidte og er omtrentlige.\n"
+                      "Døre, vinduer og porte er ikke vist. Skurets placering og mål er efter situationsplanen.", fontsize=7, color="#444444", linespacing=1.4)
 
 nordpil(fig, 0.685, 0.89, vinkel=BYGNINGSDREJNING)
 tegningshoved(fig, "Stald, eksisterende indretning og brug", "1 : 100 (A3)", "A3.1", x=0.62, y=0.012, b=0.36, h=0.06)

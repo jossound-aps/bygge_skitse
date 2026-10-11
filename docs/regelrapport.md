@@ -1,5 +1,7 @@
 # Regelrapport: tilbygning og maskinhal i landzone
 
+> **Bemærk (11.10.2026):** Afsnit 8 indeholder ældre tal for hallens opdeling, højde og skel. De gældende tal står i docs/STATUS.md og ansoegning/landzoneansoegning.py.
+
 Udarbejdet 9. oktober 2026. Grundlag for skitser og ansøgning til Aalborg Kommune.
 
 Projektet ligger på **Nældevej 42, 9000 Aalborg** og består af to dele:

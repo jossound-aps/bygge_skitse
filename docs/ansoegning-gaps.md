@@ -1,6 +1,6 @@
 # Mangler i landzoneansøgningen, Nældevej 42
 
-Opdateret 10. oktober 2026. Ansøgningen ligger i [ansoegning/Landzoneansoegning_Naeldevej_42.pdf](../ansoegning/Landzoneansoegning_Naeldevej_42.pdf) og dannes af `ansoegning/landzoneansoegning.py`.
+Opdateret 11. oktober 2026. Ansøgningen ligger i [ansoegning/Landzoneansoegning_Naeldevej_42.pdf](../ansoegning/Landzoneansoegning_Naeldevej_42.pdf) og dannes af `ansoegning/landzoneansoegning.py`.
 
 ## Lukket i dag (slået op i Plandata og Danmarks Arealinformation)
 
@@ -25,12 +25,14 @@ Opdateret 10. oktober 2026. Ansøgningen ligger i [ansoegning/Landzoneansoegning
 | 3 | BBR-meddelelse: skurets nummer og areal, og om det er registreret | Ejer | Kommunen sammenholder med BBR og ældre luftfotos |
 | 4 | Lejligheden i stalden (ikke godkendt til beboelse): hvordan bruges den | Ejer | Kan blive taget op under sagen |
 | 5 | Antal heste, og om hesteholdet er privat eller erhvervsmæssigt | Ejer | Felt i teksten |
-| 6 | Faktiske mål på traktor, balletrailer, møgvogn og de tre trailere | Ejer | Plantegningen bruger antagne mål |
+| 6 | ~~Maskinmål~~ | Slået sammen med nr. 18 | |
 | 7 | Naboernes skriftlige accept, scannet | Ejer | Bilag B2 |
 | 8 | Afstand til nærmeste nabobeboelse | Ejer / kort | Målt på kortet: ca. 50 m fra hallen til nærmeste bygning på naboejendom mod sydøst. Ejer bekræfter, om det er boligen. Under ca. 80-100 m må vi regne med naboorientering |
-| 9 | Om hallen opvarmes, og hvordan toilettet afvandes | Ejer | Felt i teksten. Kan kræve spildevandstilladelse |
+| 9 | Hvordan toilettet afvandes (hallen står som uopvarmet) | Ejer | Felt i teksten. Kræver tilslutningstilladelse |
 | 10 | Terrænkote ved hallen (oversvømmelsesudpegningen) | Ejer / landinspektør | Felt i teksten |
-| 11 | Det rigtige skel (matrikelkort) | Ejer | Situationsplanen viser et antaget skel mod vest |
+| 11 | ~~Det rigtige skel~~ | Lukket 11.10.2026 | Tegnet af efter matriklen.dk (ca. ± 1 m). Tilbygningen ligger ca. 4,9 m fra vestskellet |
+| 22 | **Hallen ligger hen over skellet mellem 1cc og 1rp.** Er 1rp samme samlede faste ejendom (BFE) som 1cc? | Ejer (matriklen.dk eller tingbogen) | Er de to selvstændige ejendomme, må der ikke bygges hen over skellet, og bygningsreglementets afstand på 2,5 m til skel gælder. Så skal matriklerne lægges sammen ved landinspektør, eller hallen flyttes. Arkivet og salgsopstillingen tyder på, at 1rp har eget BFE-nummer |
+| 23 | Skel mod syd og matr.nr. 57b | Ejer | Ligger uden for skærmbilledet. Ikke afgørende for byggeriet, men 57b er ikke vist på tegningerne |
 | 12 | ~~Lastbiladgang~~ | Lukket | Ejer oplyser, at der allerede er kørevej fra Nældevej øst om stalden, hvor kørevejen er tegnet. Ingen ny overkørsel. Kun det sidste stykke ind til porten er nyt |
 | 13 | Luftfoto, der må bruges over for kommunen (bilag A0.2 er Apple-foto med retoucheret markør) | Ejer | Bør erstattes af det officielle ortofoto |
 | 14 | Udgang i hallens sydende | Ejer | Byggesagen, ikke landzonesagen |
@@ -39,7 +41,7 @@ Opdateret 10. oktober 2026. Ansøgningen ligger i [ansoegning/Landzoneansoegning
 | 17 | Tagvand: hvor pumpen leder vandet hen (ydelse 200 l/min og placering er oplyst) | Ejer | Besluttet 10.10.2026: tagvandet kobles på ridebanens eksisterende afløb med pumpe. Se hal-beskrivelse.md afsnit 8. Udløbsstedet afgør, om der skal søges udledningstilladelse |
 | 20 | Det gamle stuehus (staldens vestende, ca. 41 m²) står som gæsteværelse | Ejer | Ejer står inde for, at brugen er privat. Læs landzonesagen fra 1992. Skuret bruges til åbnede wrapballer (lukket) |
 | 21 | Skuret og BBR | Ejer | Kommunens arkiv har byggesag S2021-530504 (2020-1967) "Opførelse af skur". Salgsopstillingen (9.9.2024) skriver, at udhuset ikke er registreret i BBR. Åbn sagens dokument og BBR-meddelelsen og se, om der blev givet tilladelse, og om BBR er rettet |
-| 18 | Maskinliste med de faktiske maskiner | Ejer | De godkendte sager opremser hver maskine. Vores liste har pladsholdere. Rundballer: ca. 25 om året (oplyst) |
+| 18 | **To antagelser bag fordelingen 150/50:** at ladtraileren med kapel bruges til hø, halm og wrap, og at den store trailer (5,0 × 2,1 m) er en hestetrailer. Desuden maskinernes faktiske mål | Ejer | Er begge trailere private, bliver den private del ca. 85 m² i stedet for 49 m². Det østlige rum skal reelt bruges til foder, hesteudstyr og værktøj |
 | 19 | Bekræft, at nr. 42 ligger i Nørholm Fjordlandskab | Ejer / kommunens kort | Fremgår af afgørelsen for Nældevej 30. Laget findes ikke i Plandata |
 
 ## Kommunens byggesagsarkiv for Nældevej 42 (weblager, slået op 10.10.2026)
@@ -110,12 +112,14 @@ Samme løsning som i S2025-10959: hal på 150 m² (15 × 10 m) med landzonetilla
 - at ingen eksisterende bygning har en port, en traktor kan køre ind ad,
 - at skuret er ejendommens eneste øvrige udhus, og at der ikke er garage eller carport (værkstedet i stalden fra salgsopstillingen er nu sadelrum). Det vejer tungt: kommunen tæller eksisterende udhuse med i alle sagerne,
 - at der ikke drives erhverv fra hallen,
+- at ladtraileren med kapel og hestetraileren bruges til ejendommens hestehold, og at det østlige rum bruges til foder, hesteudstyr og værktøj,
+- at toilettet er til brug under arbejdet og ikke til overnatning,
 - at det gamle stuehus i staldens vestende kun bruges som gæsteværelse til private gæster.
 
 ## Svage punkter, som ikke kan løses med papir
 
 0. **Størrelsen.** Se "Det vigtigste, vi lærte" punkt 1 ovenfor. Det er sagens største risiko.
-1. **Kystnærhedszonen.** Tilladelse kræver, at hallen har "helt underordnet betydning" for kystinteresserne. Kommunen har givet tilladelser til udhuse på 55 og 148 m² i samme zone, men det var lovliggørelser af eksisterende, lave bygninger.
+1. **Kystnærhedszonen.** Tilladelse kræver, at hallen har "helt underordnet betydning" for kystinteresserne. Kommunen har givet tilladelser til udhuse på 55, 62, 64 og 148 m² i samme zone (Nældevej 30, 9 og 55, Nørholmsvej 149); de tre første var lovliggørelser eller små bygninger.
 2. **Højden.** Ejer har besluttet at beholde 30°. Med soklen 0,4 m over terræn er kiphøjden 7,3 m over terræn. Hallen i S2025-10959 er 6,7 m til kip og bruges som reference. Udhuset i sag S2025-326 blev bl.a. godkendt, fordi det var "af meget begrænset højde", så højden er et punkt, kommunen kan tage op.
-3. **Den private del** er ca. 90 m² mod 44 m² i sag S2025-326. Hestetraileren kan regnes til driften, og rummet på 40 m² kan gøres mindre.
+3. **Den private del** er nu ca. 49 m², som i sag S2025-10959. Det holder kun, hvis ladtraileren og hestetraileren reelt bruges til hesteholdet (nr. 18).
 4. **Oversvømmelsesudpegningen** kan give vilkår om sokkelhøjde eller afværge.

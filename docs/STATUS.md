@@ -1,6 +1,6 @@
 # Status for projektet, Nældevej 42, 9000 Aalborg
 
-Sidst opdateret 10. oktober 2026 (efter flytning af hallen til folden øst for haven, nyt hegnsforløb, kørevej, belægninger og gennemgang af landzonereglerne). Læs denne fil først, når arbejdet genoptages.
+Sidst opdateret 11. oktober 2026 (ansøgningen er gennemgået, referencerne kontrolleret mod kommunens afgørelser, og tegningerne er gjort klar til indsendelse). Læs denne fil først, når arbejdet genoptages.
 
 ## Projektet
 
@@ -17,13 +17,13 @@ Kommunens kontakt: Kirstine Reese, Team Land, byggeri@aalborg.dk. Hendes mail me
 
 | Emne | Beslutning |
 |---|---|
-| Mål | 20 × 10 m, gavle mod nord og syd, sidehøjde 4,0 m, taghældning 30°, kip ca. 6,9 m |
+| Mål | 20 × 10 m, gavle mod nord og syd, sidehøjde 4,0 m over soklen, taghældning 30°, kip 6,9 m over soklen = 7,3 m over terræn (sokkel 0,4 m) |
 | Udseende | Sorte sider og sort tag, i stil med Kronehuses stålhaller |
 | Leverandører | Spær fra Kaas Staalbyg, paneler FALK 1060 WB fra Panelbyg |
 | Åbninger | Kun én port (4,0 × 4,0 m), nu i nordgavlen mod ridebanen. Gangdøren sidder i samme gavl som porten, i siden mod huset (flyttet 10.10.2026). Ingen åbninger i sydgavlen eller langsiderne, så begge udgange ligger i samme ende |
-| Indretning | Lukket rum på 40 m² i sydenden (med toilet), kun med dør til hallen. Resten er én åben hal, hvor lift, værksted og private trailere står i samme rum som landbrugsmaskinerne. Alt køres ind ad porten i nordgavlen. Balletrailer, trailer 1-2 og redskaber står i siden mod huset; traktor, møgvogn og trailer 3 i østsiden |
+| Indretning | To lukkede rum på 20 m² i sydenden: øst til foder, hesteudstyr og værktøj med toilet (drift), vest privat. Resten er én åben hal: traktor i midterbanen inden for porten, ladtrailer med kapel langs vestvæggen, hestetrailer, møgtrailer, balleflytter, halmballe-elevator, to plænetraktorer og ridebaneharve (drift); lift og trailer 1 i sydvest (privat). Ejers beslutning 11.10.2026 |
 | Placering | **Ændret 10.10.2026:** i den første fold øst for haven, parallelt med huset. 11,3 m øst for husets østgavl og 11,4 m fra skuret (rykket 5 m mod nord og 1 m mod vest). Vendt, så porten sidder i nordgavlen mod ridebanen (ca. 5 m til foldens nordhegn, 8,6 m til ridebanens hegn); det lukkede rum og døren ligger i sydenden. Går fri af jordvarmeslangerne. Foldens hegn skal lægges om. Positionen står i situationsplan.json under hal.position |
-| Arealer på tegningen | Privat ca. 90 m² (rum 40 + lift 22 + trailerfelter 28), drift ca. 110 m² |
+| Arealer på tegningen | Privat ca. 49 m² (rum 20 + lift 22 + trailer 7), ejendommens drift ca. 151 m² (fordeling efter S2025-10959, 11.10.2026) |
 
 ### Tilbygningen
 
@@ -40,7 +40,7 @@ Kommunens kontakt: Kirstine Reese, Team Land, byggeri@aalborg.dk. Hendes mail me
 
 - Skuret øst for hestestaldens sydfløj er godkendt i BBR og skal med på alle oversigtstegninger. Det er bygget helt op ad stalden og er tegnet ind som ca. 8,3 × 2,8 m (ca. 23 m²) efter luftfoto og ejers rettelse; BBR-areal, højde og anvendelse mangler.
 - Naboerne har givet skriftlig accept af hallen. Den skal vedlægges ansøgningen.
-- Alle naboer har heste og egne haller til traktor og maskiner; det bruges som argument.
+- Naboerne har heste. Deres haller bruges ikke som argument (ejers beslutning 10.10.2026), fordi grundlaget for deres byggeri ikke kendes. Der henvises kun til kommunens egne afgørelser.
 - Den eksisterende hestestald kan ikke bruges til maskiner: der er heste i den, og man kan ikke køre ind.
 
 ## Fakta fra salgsopstillingen (9.9.2024)
@@ -62,7 +62,7 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 
 **Betydning for ansøgningen:**
 
-- Grundarealet på 3,9 ha er lille som grundlag for at kalde en hal på 108 m² erhvervsmæssigt nødvendig. Det gør spørgsmålet om landbrugspligt og om hesteholdets omfang endnu vigtigere.
+- Et privat hestehold er ikke erhvervsmæssig landbrugsdrift efter planloven (kommunens afgørelser S2022-171976 og S2025-326). Derfor søges § 35 til hele hallen; landbrugsnoteringen er ikke afgørende, men kommunen skriver den altid.
 - Stalden rummede ved købet et værksted (nu sadelrum) og en løsdrift, som mægler beskriver som mulig dobbeltgarage. Kommunen kan spørge, hvorfor de ikke kan bruges. Argumentet skal være, at løsdriften er i brug til heste (ejers foto viser dybstrøelse), og at værkstedet er for lille til maskiner.
 - Lejligheden er ikke godkendt til beboelse. En byggesag kan få kommunen til at se på hele ejendommen, så det bør afklares, inden der søges.
 - Udledning direkte til vandløb er en gammel løsning. Et nyt toilet i hallen og et ekstra bad i tilbygningen kan udløse krav om forbedret spildevandsrensning.
@@ -86,22 +86,26 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 - **Hallens højder (ejers beslutning 10.10.2026):** soklens overkant og gulvet ligger 0,4 m over terræn som stuehusets sokkel, og sidehøjden på 4,0 m måles fra soklen. Over terræn er tagfoden 4,4 m og kippen 7,3 m (før 6,9 m). Foran port og dør lægges en fliserampe (50 × 50) fra gulvhøjde skråt ned til kørevejen, uden vandret kant og med fald ud til siderne: 4 m lang, 2 m sidefald (forslag, står i situationsplan.json under hal.forplads).
 - **Sokler på hus og stald (fotos IMG_2991-2994, 10.10.2026):** grå sokkel på stuehus og tilbygning ca. 0,4 m, på stalden ca. 0,15 m. Står i situationsplan.json under "sokler". Husets gulv regnes i soklens overkant, og tagfoden er hævet fra 2,5 til 2,8 m over terræn efter fotoet (kip ca. 4,7 m). Vist på isometrier, A2.2 og A2.3.
 - **Garagen i tilbygningen** (ejers beslutning 10.10.2026): gulv i sokkelhøjde som resten af huset; gruset føres langsomt op til portene (6 m, forslag; situationsplan.json under tilbygning.garage_opkoersel).
+- **Matrikelskel (11.10.2026):** tegnet af efter ejers skærmbillede fra matriklen.dk og gemt i situationsplan.json under "matrikelskel" (ca. ± 1 m). Vist som røde stiplede linjer på situationsplan, luftfoto og isometrier. **Hallen ligger hen over skellet mellem 1cc og 1rp** (ca. 7 m på 1cc, ca. 3 m på 1rp). Tilbygningen ligger ca. 4,9 m fra vestskellet (før antaget 6,7 m). Uafklaret, om 1rp er samme samlede faste ejendom som 1cc; ellers kræves sammenlægning eller flytning af hallen.
+- **Hallens indretning (11.10.2026):** tegnet efter ejers fotos af maskinerne (IMG_3005-3010, P_20220430). Trailer 2 er udgået. Den indvendige perspektivtegning (hal_indvendig.py) og rumtegningen (hal_rum.py) viser den nye indretning.
+- **Fordeling 150/50 og toilet (ejers beslutning 11.10.2026):** hallen er lagt om til ca. 151 m² til ejendommens drift og hestehold og ca. 49 m² privat, som i kommunens sag S2025-10959. De to lukkede rum er på 20 m² hver: øst til foder, hesteudstyr og værktøj med toilet, vest privat. Toilettet beholdes og begrundes med arbejdet i hal, stald og på ridebane. Rettet på A1.1, hal_rum, hal_indvendig, situationsplan og i ansøgningen. To antagelser bærer fordelingen og skal bekræftes af ejer, før der sendes: at ladtraileren med kapel bruges til hø og halm, og at den store trailer er en hestetrailer.
+- **Gennemgang 11.10.2026:** ansøgningsteksten er skrevet igennem, og hver reference er kontrolleret mod afgørelsens tekst (sagsnummer, adresse, dato, areal, ejendomsstørrelse og hvad kommunen lagde vægt på). Alle tegninger har tegningshoved med status "LANDZONEANSØGNING" og dato 11.10.2026; "foreløbig"-markeringer er erstattet af neutrale noter. Tilbage i kantede parenteser står kun det, ejer skal oplyse (se "Det vigtigste, der er uafklaret").
 - **Største risiko:** kommunen har ikke godkendt private udhuse over 151 m² i området og kaldte i maj 2026 200 m² for meget på en ejendom på 1,65 ha. Plan B er 150 m² hal plus 50 m² fritliggende garage (ikke skrevet ind i ansøgningen).
 
 ## Det vigtigste, der er uafklaret
 
-1. **Er ejendommen noteret som landbrugsejendom?** Ejer mener ja. Det afgør, om hallens driftsdel kan anmeldes efter planlovens § 38 uden landzonetilladelse.
-2. **Accepterer kommunen hesteholdet som grundlag for en driftsbygning?** Størst risiko i projektet. Afvises det, er hele hallen 200 m² privat udhus, som praksis ikke tillader (grænse 100 m²).
-3. **Den private andel ligger på ca. 90 m²**, tæt på grænsen på 100 m². Den kan falde, hvis rummet på 40 m² delvist bruges til hestene, eller hvis en trailer bruges i driften. Ejer har ikke svaret på, hvad rummet skal bruges til.
-4. **Skellet er antaget** ud fra luftfoto (lagt i det levende hegn vest for huset). Det rigtige matrikelkort mangler. Det er også uafklaret, om 1cb faktisk ligger mod vest.
-5. **Jordvarmeslangerne er kun anslået** ud fra IMG_2986 (± 2 m). Den østligste slange løber ca. 1 m inden for tilbygningens vestvæg i hele dens længde. Enten omlægges slangen, eller tilbygningen gøres ca. 2,5 m smallere.
-6. **Fristen på 5 år** gælder landzonetilladelsen, ikke byggetilladelsen (1 år til påbegyndelse). Kommunen bør bekræfte skriftligt, hvordan tilbygningen er dækket, når den bygges senere. Se regelrapporten afsnit 8.7.
-7. **Brandkrav afhænger af klassifikationen** (driftsbygning, lager eller garage/udhus): om spærene skal være R15/brandmales, og om to udgange kræves. Port og gangdør sidder nu i samme gavl (nord), og sydenden har ingen udgang; ejer er gjort opmærksom på det og har ikke valgt en løsning (forslag: behold en dør i sydgavlen).
-10. **Kystnærhedszone, kommuneplan og beskyttelseslinjer** er ikke tjekket. Kystnærhedszonen kan gøre den private del væsentligt sværere. Se landzone-gennemgang.md afsnit 7 og 9.
-11. **Lastbiladgang:** svinget ind til porten er for snævert med hallens nuværende placering, og kørevejen er tegnet fra vejen øst for stalden, mens ejers indkørsel ligger vest for stalden. Ejer har ikke valgt løsning.
-12. **Lejligheden i stalden** (ikke godkendt til beboelse) og skurets BBR-status bør afklares, før der søges.
-8. **FALK-panelerne:** B-s1,d0 er bekræftet i produktbladet, men K1 10-klassifikation, PIR-kernens egen klasse og tagpanelets BROOF(t2) mangler. Tykkelse og tagpanel er ikke valgt.
-9. **Skal hallen opvarmes?** Ikke besvaret. Udkastet til kommunen siger uopvarmet.
+Felter i kantede parenteser i ansøgningen, som ejer udfylder før indsendelse:
+
+1. Navne, telefon og e-mail; dato for mødet med kommunen; antal heste; seneste år for tilbygningen.
+2. Landbrugsnotering (boligejer.dk eller tingbogen).
+3. **Er 1rp samme samlede faste ejendom (BFE) som 1cc?** Hallen ligger hen over skellet. Er de to ejendomme, skal matriklerne lægges sammen før byggeriet (står som vilkår, vi accepterer).
+4. Terrænkote ved hallen (oversvømmelsesudpegningen).
+5. Afstand til nærmeste nabobeboelse (målt ca. 50 m til nærmeste nabobygning).
+6. Hvordan toilettet og det nye bad afvandes (ejendommens spildevandsanlæg er mekanisk rensning med udledning).
+
+Oplysninger, der står som fakta i ansøgningen, og som ejer skal stå inde for: se ansoegning-gaps.md, afsnittet "Påstande i teksten".
+
+Uafklaret i øvrigt (hører til byggesagen, ikke landzonesagen): brandklassifikation og FALK-dokumentation, udgang i hallens sydende, portens højde i forhold til lastbil, jordvarmeslangen under tilbygningens vestvæg, opmåling af hus og maskiner.
 
 ## Sne og vind på hallen (kort)
 
@@ -135,9 +139,9 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 | Husets facader | Hvid væg, sort bølgepladetag, sorte vinduer. Åbninger mod syd og nord efter mæglerens plan og fotos (glasparti med 4 fag i stuen). Østgavlen har ingen åbninger; vestgavlen har et bryggersvindue | Opmåling |
 | Staldens tagfod og taghældning | 2,6 m og 38° (anslået fra IMG_9768) | Opmåling |
 | Skur | ca. 8,3 × 2,8 m, højde 2,3 m, fladt tag, bygget op ad staldfløjens østside. Dør på ca. 2,5 m i nordsiden helt op mod stalden | BBR og opmåling |
-| Skel mod vest | 14 m fra husets vestgavl (tagflade) | Matrikelkort |
-| Maskinmål | Traktor 4,8 × 2,1, balletrailer 6,5 × 2,5, møgvogn 4,5 × 2,0 | Faktiske mål |
-| Trailermål | To på 3,6 × 1,7 og én på 5,0 × 2,1 | Faktiske mål og anvendelse |
+| Matrikelskel | Tegnet af efter skærmbillede fra matriklen.dk, ± 1 m | Landinspektør eller matrikelkort i koordinater |
+| Maskinmål | Anslået fra fotos: traktor 4,8 × 2,1, ladtrailer 8,0 × 2,55, hestetrailer 5,0 × 2,1, møgtrailer 3,3 × 1,6, balleflytter 3,0 × 1,9, elevator 8,0 × 0,9, plænetraktorer ca. 2,0 × 1,3 | Faktiske mål |
+| Trailer 1 (privat) | 3,6 × 1,7 m | Faktiske mål |
 | Vægtykkelser | Tilbygning 45 cm ydervæg, hal 15 cm | Projektering |
 | Varmtvandsbeholder | 0,9 × 0,6 m | Datablad |
 | Slangeafstand til fundament | 1,5 m | Installatørens anvisning |
@@ -147,7 +151,8 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 | Fil | Indhold |
 |---|---|
 | [regelrapport.md](regelrapport.md) | Gennemgang af planloven, vejledningen om landzoneadministration og BR18, plus konkret vurdering af projektet i afsnit 8 |
-| [landzone-gennemgang.md](landzone-gennemgang.md) | **Nyeste gennemgang af landzonereglerne** krav for krav mod det nuværende projekt, med argumenter, svage punkter og tjekliste. Erstatter argumentationen i hal-begrundelse.md |
+| [landzone-gennemgang.md](landzone-gennemgang.md) | Gennemgang af landzonereglerne krav for krav (10.10.2026). Tallene for hallens opdeling, højde og skel er ældre end ansøgningen; argumentationen er indarbejdet i ansoegning/landzoneansoegning.py |
+| [ansoegning-gaps.md](ansoegning-gaps.md) | **Nyeste:** åbne punkter, kommunens byggesagsarkiv, sammenligning med de 26 godkendte sager og påstande, ejer skal stå inde for |
 | [ansoegning-plan.md](ansoegning-plan.md) | Plan for selve ansøgningen: hvad Aarhus-eksemplet viser, hvad vi mangler (facader, snit, tegningshoved), bilagsliste og udkast til teksten til den vejledende forespørgsel |
 | [hal-beskrivelse.md](hal-beskrivelse.md) | Teknisk beskrivelse af hallen med regler og vejledende værdier for sne- og vindlast (DK NA 2024), konstruktive forhold og spørgsmål til Kaas Staalbyg og Panelbyg |
 | [hal-begrundelse.md](hal-begrundelse.md) | Ældre udkast til bilag til kommunen. **Forældet:** beskriver 80/120 med fast skillevæg, 5 m til skel og to porte. Erstattet af side 2 i tegninger/hal_plan.pdf og af landzone-gennemgang.md |
@@ -192,8 +197,8 @@ python3 tegninger/tilbygning_teknisk.py
 - Tilbygningens plantegning tager ikke højde for jordvarmeslangen under vestvæggen.
 - Hallens plan har ingen særskilt reparationsplads til landbrugsmaskiner efter omlægningen til åben hal.
 - Brandadskillelsen mellem garage og bolig i tilbygningen er ikke gennemgået (brandbilag 1a).
-- Beskyttelseslinjer, § 3-natur, lokalplan og servitutter er ikke tjekket for adressen.
-- De offentlige registre kunne ikke slås op automatisk: adresse-API'et er lukket, og matrikel og BBR kræver login eller en gratis nøgle fra Dataforsyningen.
+- Servitutter er ikke tjekket (mægler: ingen). Beskyttelseslinjer, § 3-natur og lokalplan er slået op 10.10.2026.
+- Matrikelkortet er tegnet af efter ejers skærmbillede fra matriklen.dk; BBR-meddelelsen er ikke set.
 - På de rumlige skitser er tilbygningen fremhævet med gul væg; i virkeligheden skal den være hvid som huset.
 - Åbninger i hus og stald følger mæglerens vejledende plan fra 2024 og ejers fotos; intet er målt op. Staldens nordfacade mod vejen har seks ens vinduer og ét langt, lavt vindue i vestenden mod indkørslen til huset (ejers oplysning). Indkørslen til huset ligger altså vest for stalden.
 - Læbælter (mod vest langs skel, nord for ridebanen og skovbryn mod øst) er tegnet af efter luftfotoet (± 2 m); træhøjder på 7, 4 og 10 m er skøn.
@@ -202,15 +207,13 @@ python3 tegninger/tilbygning_teknisk.py
 - Belægninger: gårdspladsen omkring stalden og parkeringen ved vejen er grus, og Nældevej er en grusvej (tegnet 4 m bred). Tegnet af efter luftfotoet; afgrænsningen er et skøn. Bræddehegn om ridebane og sandfold, elhegn om foldene.
 - Tilbygningens plan (tilbygning_plan.png, nu A3) viser også det eksisterende hus' rum. Tilbygningen er koblet til huset med en ny dør fra garagen til bryggerset og en ny dør fra gangen til stuen; bryggersets vindue i vestgavlen forsvinder.
 - Facader og snit findes nu for hal og hus med tilbygning, men husets højder og åbninger er anslået. Overslagsberegningerne er ikke statisk dokumentation: kipning, samlinger, gavlrammer, stabilitet og jordbund er ikke eftervist. hal_rum, hal_indvendig og isometri har ikke tegningshoved.
-- Hallens kip (6,9 m) ligger ca. 2,5 m over husets anslåede kip (4,4 m). Kan have betydning for kommunens landskabelige vurdering.
-- Git: branch develop, remote origin via SSH-aliaset github-new. Seneste commit "flyttet hal" (10.10.2026) er lavet lokalt og ikke pushet. Tjek `git status` ved opstart.
+- Hallens kip (7,3 m over terræn) ligger ca. 2,6 m over husets anslåede kip (4,7 m). Kommunens reference er 6,7 m i sag S2025-10959.
+- Git: branch develop, remote origin via SSH-aliaset github-new. Seneste commit "flyttet hal" (10.10.2026) er lavet lokalt og ikke pushet. Alt siden er uncommittet. Tjek `git status` ved opstart.
 
 ## Forslag til næste skridt
 
-1. Ejer henter: BBR-meddelelse, bekræftelse på landbrugsnotering og grundareal, matrikelkort, husets gamle tegninger og jordvarmesagen (weblager.dk), samt måler hus, maskiner og trailere op.
-2. Ejer afklarer: rummets anvendelse, trailernes brug, om hallen opvarmes, paneltykkelse og tagpanel.
-3. Ejer tager fotos af husets tre øvrige facader og måler facadelængde og højde til tagrende.
-4. Tjek landbrugsnotering, kystnærhedszone og kommuneplan (landzone-gennemgang.md afsnit 9). De afgør strategien.
-5. Derefter: ret skel, hus og jordvarme i situationsplan.json, løs tilbygningens konflikt med slangen, og vælg løsning for lastbiladgang og udgang i hallens sydende.
-6. Tegn facader og snit af hus med tilbygning og af hallen.
-7. Send en vejledende forespørgsel ("Planmæssig forespørgsel" på Byg og Miljø) med situationsplan, halplan, rumlige skitser og kort driftsbeskrivelse, før de endelige tegninger laves.
+1. Ejer udfylder felterne i kantede parenteser (se "Det vigtigste, der er uafklaret") og bekræfter påstandene i ansoegning-gaps.md.
+2. Ejer tjekker på matriklen.dk, om 1rp og 1cc har samme BFE-nummer, og læser landzonesagen fra 1992 og skursagen fra 2020 på weblager.dk.
+3. Naboernes erklæring scannes og lægges i ansoegning/ som bilag B2.
+4. Kør `python3 ansoegning/landzoneansoegning.py` og send Landzoneansoegning_Naeldevej_42.pdf via Byg og Miljø (ansøgningstype "Ansøgning om Landzonetilladelse").
+5. Når landzonetilladelsen er givet: opmåling af hus og maskiner, brandklassifikation, FALK-dokumentation, spildevand og byggeansøgning.

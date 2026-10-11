@@ -1,5 +1,7 @@
 # Redegørelse for ny hal, Nældevej 42, 9000 Aalborg
 
+> **Forældet (11.10.2026):** Erstattet af ansoegning/landzoneansoegning.py og side 2 i tegninger/hal_plan.pdf. Beholdes kun som historik.
+
 **Udkast til bilag til anmeldelse efter planlovens § 38, stk. 2, og ansøgning om landzonetilladelse.**
 
 Felter i [kantede parenteser] og alle mål mærket "foreløbigt" skal erstattes med de faktiske oplysninger, før redegørelsen sendes.

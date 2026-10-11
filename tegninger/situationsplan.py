@@ -74,11 +74,26 @@ else:
 hal_u1 = hal_u0 + h["bredde"]
 hal_v0 = hal_v1 - h["laengde"]
 PORT_NORD = h.get("port_mod") == "nord"
+
+
+def afstand_til_linje(p, linje):
+    """Korteste afstand fra punkt til en brudt linje (liste af punkter)."""
+    bedst = 1e9
+    for a_, b_ in zip(linje[:-1], linje[1:]):
+        dx, dy = b_[0] - a_[0], b_[1] - a_[1]
+        t = max(0.0, min(1.0, ((p[0] - a_[0]) * dx + (p[1] - a_[1]) * dy) / (dx * dx + dy * dy)))
+        bedst = min(bedst, math.hypot(p[0] - a_[0] - t * dx, p[1] - a_[1] - t * dy))
+    return bedst
+
+
+SKEL = {s["navn"]: s for s in cfg.get("matrikelskel", {}).get("linjer", [])}
+VESTSKEL = SKEL["1cc mod vest (nabo 1cb)"]["punkter"]
+INTERNT = SKEL["1rp mod 1cc, vest"]["punkter"]
 # det lukkede rum ligger i den ende, der vender væk fra porten
 rum_v0, rum_v1 = (hal_v0, hal_v0 + h["rum_laengde"]) if PORT_NORD else (hal_v1 - h["rum_laengde"], hal_v1)
 aab_v0, aab_v1 = (rum_v1, hal_v1) if PORT_NORD else (hal_v0, rum_v0)
 rum_m2 = h["bredde"] * h["rum_laengde"]
-privat_m2 = rum_m2 + h["privat_i_aaben_hal_m2"]
+privat_m2 = h.get("privat_rum_m2", rum_m2) + h["privat_i_aaben_hal_m2"]     # privat rum + private felter i den åbne hal
 drift_m2 = h["bredde"] * h["laengde"] - privat_m2
 
 
@@ -208,12 +223,15 @@ def tegn(luftfoto):
     st = bygning(cfg["stald_osm_id"])
     ax.text(sum(p[0] for p in st[:-1]) / (len(st) - 1) + 1, max(p[1] for p in st) - 4, "Hestestald", fontsize=6, ha="center", zorder=7)
 
-    # Antaget skel
-    s0, s1 = xy(skel_u, hus_v1 + 45), xy(skel_u, hal_v0 - 30)
-    ax.plot([s0[0], s1[0]], [s0[1], s1[1]], color="red", lw=1.0, ls=(0, (6, 3)), zorder=5)
-    ax.text(*xy(skel_u - 1.5, hal_v0 - 12), f"ANTAGET skel mod matr.nr. {cfg['skel']['nabo_matrikel']}", fontsize=6.5, color="red",
-            rotation=90 + math.degrees(math.atan2(uy, ux)), ha="center", va="center", zorder=7,
-            bbox=dict(fc="white", ec="none", alpha=0.8, pad=1))
+    # Matrikelskel efter matriklen.dk: ydre skel og skel mellem egne matrikler, røde stiplede linjer
+    for s in SKEL.values():
+        ydre = s["type"] == "ydre"
+        ax.plot(*zip(*s["punkter"]), color="red", lw=1.1 if ydre else 0.9, ls=(0, (6, 3)) if ydre else (0, (2, 2)), zorder=6.5)
+    for e in cfg["matrikelskel"].get("etiketter", []):
+        ax.text(*e["xy"], e["tekst"], fontsize=7.5, color="red", style="italic", weight="bold", ha="center", va="center", zorder=20, bbox=dict(fc="white", ec="red", lw=0.5, alpha=0.95, pad=2))
+    ix = lambda y_: INTERNT[0][0] + (INTERNT[1][0] - INTERNT[0][0]) * (y_ - INTERNT[0][1]) / (INTERNT[1][1] - INTERNT[0][1])
+    ax.text(ix(-42) + 1.2, -42, "skel mellem egne matrikler 1cc / 1rp", fontsize=5.5, color="red", rotation=-86, ha="center", va="center", zorder=7,
+            bbox=dict(fc="white", ec="none", alpha=0.75, pad=1))
 
     # Jordvarmeslanger (anslået zone)
     jv = cfg.get("jordvarme")
@@ -237,8 +255,8 @@ def tegn(luftfoto):
     # Hal med opdeling
     ax.add_patch(Polygon(rekt(hal_u0, rum_v0, hal_u1, rum_v1), closed=True, fc="#9fc5e8", ec="#1f4e79", lw=1.2, zorder=4))
     ax.add_patch(Polygon(rekt(hal_u0, aab_v0, hal_u1, aab_v1), closed=True, fc="#b6d7a8", ec="#1f4e79", lw=1.2, zorder=4))
-    ax.text(*xy((hal_u0 + hal_u1) / 2, (rum_v0 + rum_v1) / 2), f"Rum {rum_m2:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
-    ax.text(*xy((hal_u0 + hal_u1) / 2, (aab_v0 + aab_v1) / 2), f"Åben hal\ndrift ca. {drift_m2:.0f} m²\nprivat ca. {h['privat_i_aaben_hal_m2']:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
+    ax.text(*xy((hal_u0 + hal_u1) / 2, (rum_v0 + rum_v1) / 2), f"2 rum à {rum_m2 / 2:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
+    ax.text(*xy((hal_u0 + hal_u1) / 2, (aab_v0 + aab_v1) / 2), f"Hal i alt\ndrift ca. {drift_m2:.0f} m²\nprivat ca. {privat_m2:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
     # Kip
     k0, k1 = xy((hal_u0 + hal_u1) / 2, hal_v0), xy((hal_u0 + hal_u1) / 2, hal_v1)
     ax.plot([k0[0], k1[0]], [k0[1], k1[1]], color="#1f4e79", lw=0.5, ls=":", zorder=5)
@@ -301,11 +319,13 @@ def tegn(luftfoto):
             maal(ax, xy(sk_o, sk_s), xy(hal_u0, hal_v1), f"{afst:.1f} m til skuret", (-6.5, 0.8))
     else:
         mv = (aab_v0 + aab_v1) / 2
-        maal(ax, xy(skel_u, mv), xy(hal_u0, mv), f"{h['afstand_til_skel']:.1f} m", (-2.5, 2))
+        maal(ax, xy(skel_u, mv), xy(hal_u0, mv), f"{afstand_til_linje(xy(hal_u0, mv), VESTSKEL):.1f} m til skel", (-2.5, 2))
         maal(ax, xy(um, hal_v1), xy(um, tb[1]), f"{h['afstand_til_tilbygning']:.1f} m", (3.2, 0))
     maal(ax, xy(hal_u0, hal_v0 - 3.5), xy(hal_u1, hal_v0 - 3.5), f"{h['bredde']:.1f} m", (0, -1.6))
     maal(ax, xy(hal_u1 + 3, hal_v0), xy(hal_u1 + 3, hal_v1), f"{h['laengde']:.1f} m", (3.2, -7))
-    maal(ax, xy(skel_u, hus_v1 + 2), xy(tb[0], hus_v1 + 2), f"{tb[0] - skel_u:.1f} m", (0, 1.6))
+    tb_sv = xy(tb[0], tb[1])                         # tilbygningens sydvestlige hjørne er nærmest vestskellet
+    vs_x = VESTSKEL[0][0] + (VESTSKEL[1][0] - VESTSKEL[0][0]) * (tb_sv[1] - VESTSKEL[0][1]) / (VESTSKEL[1][1] - VESTSKEL[0][1])
+    maal(ax, (vs_x, tb_sv[1]), tb_sv, f"{afstand_til_linje(tb_sv, VESTSKEL):.1f} m til skel", (0, -1.4))
     maal(ax, xy(tb[0], tb[1] - 2), xy(tb[2], tb[1] - 2), f"{tb_b:.1f} m", (0, -1.6))
     maal(ax, xy(tb[2] + 2, tb[1]), xy(tb[2] + 2, hus_v0), f"{hus_v0 - tb[1]:.1f} m", (3.0, 0))
 
@@ -321,8 +341,8 @@ def tegn(luftfoto):
     # Tegningshoved
     fig.text(0.05, 0.085, "Situationsplan, Nældevej 42, 9000 Aalborg", fontsize=11, weight="bold")
     fig.text(0.05, 0.065, f"Målestok 1:{MAALESTOK} (A4)   ·   Tilbygning til hus og ny hal {h['laengde']:.0f} × {h['bredde']:.0f} m", fontsize=8)
-    fig.text(0.05, 0.047, "FORELØBIG SKITSE. Skel er antaget ud fra luftfoto.", fontsize=7, color="red")
-    fig.text(0.05, 0.034, "Jordvarmezonen er anslået. Husets mål følger mæglerens plan (2024).", fontsize=7, color="red")
+    fig.text(0.05, 0.047, "Matrikelskel (rødt) er tegnet efter matriklen.dk, ca. ± 1 m, og er ikke indmålt.", fontsize=7, color="#444444")
+    fig.text(0.05, 0.034, "Jordvarmezonen er anslået. Husets mål følger ejendomsmæglerens plan (2024).", fontsize=7, color="#444444")
     fig.text(0.05, 0.016, "Bygningsomrids og vej: © OpenStreetMap-bidragydere (GeoDanmark)."
              + (" Luftfoto: Apple Kort, kun arbejdskort." if luftfoto else ""), fontsize=5.5, color="#555555")
     tegningshoved(fig, "Situationsplan", f"1 : {MAALESTOK} (A4)", "A0.1", x=0.56, y=0.012, b=0.41, h=0.062)
@@ -337,7 +357,9 @@ for lf in (False, True):
     tegn(lf)
 
 print(f"Hus: {hus_l:.1f} x {hus_b:.1f} m (tagflade i kortdata {tag_l:.1f} x {tag_b:.1f} m)")
-print(f"Tilbygning: {tb_b:.1f} x {tb_l:.1f} m = {tb_b * tb_l:.0f} m², {tb[0] - skel_u:.1f} m til antaget skel")
+print(f"Tilbygning: {tb_b:.1f} x {tb_l:.1f} m = {tb_b * tb_l:.0f} m², {afstand_til_linje(xy(tb[0], tb[1]), VESTSKEL):.1f} m til vestskel (matriklen.dk, +/- 1 m)")
+_hj = {"NV": xy(hal_u0, hal_v1), "NØ": xy(hal_u1, hal_v1), "SØ": xy(hal_u1, hal_v0), "SV": xy(hal_u0, hal_v0)}
+print("Hal, afstand fra hjørner til skel 1cc/1rp:", {k_: round(afstand_til_linje(p_, INTERNT), 1) for k_, p_ in _hj.items()}, "(skellet går gennem hallen, hvis NV/SV og NØ/SØ ligger på hver sin side)")
 if "koerevej" in cfg:
     print(f"Kørevej: mindste radius på midterlinjen {koerevej_linjer(xy((hal_u0 + hal_u1) / 2, hal_v1 if PORT_NORD else hal_v0), (-vx, -vy) if PORT_NORD else (vx, vy))[2]:.1f} m")
 print(f"Hal: {h['laengde']:.0f} x {h['bredde']:.0f} m, rum {rum_m2:.0f} m², privat i alt ca. {privat_m2:.0f} m², drift ca. {drift_m2:.0f} m²")

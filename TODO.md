@@ -1,10 +1,17 @@
 # TODO
 
-- [ ] Vedlæg naboernes skriftlige erklæring om, at de godkender hallen, som bilag til anmeldelsen og landzoneansøgningen på Byg og Miljø (bilag 5 i [docs/hal-begrundelse.md](docs/hal-begrundelse.md)). Læg en scannet kopi i repoet.
-- [ ] Indhent branddokumentation for FALK-panelerne fra leverandøren: PIR-kernens egen brandklasse, om stålpladen er klassificeret som K1 10-beklædning, og BROOF(t2) for tagpanelet. Se [docs/regelrapport.md](docs/regelrapport.md) afsnit 8.6.
-- [ ] Find jordvarmeslangernes præcise placering: kommunens sag om jordvarmeanlægget (weblager.dk), installatørens tegning eller påvisning på stedet. Zonen på situationsplanen er anslået ud fra IMG_2986 med ca. ± 2 m usikkerhed. Afgør, om slangerne under tilbygningens vestlige del skal omlægges.
-- [ ] Tjek landbrugsnotering, kystnærhedszone, kommuneplan og beskyttelseslinjer for ejendommen (se [docs/landzone-gennemgang.md](docs/landzone-gennemgang.md) afsnit 9).
-- [ ] Find naboernes byggesager for deres haller på weblager.dk (adresser og sagsnumre) til lighedsargumentet.
-- [ ] Afklar lejligheden i stalden og skurets BBR-status, før der søges.
-- [ ] Vælg løsning for lastbiladgang til hallen og for udgang i hallens sydende.
-- [ ] Udfyld felterne i kantede parenteser på side 2 i tegninger/hal_plan.pdf (teksten står i tegninger/hal_plan.py under BEGRUNDELSE).
+Før ansøgningen sendes (ejer):
+
+- [ ] Udfyld felterne i kantede parenteser i ansoegning/landzoneansoegning.py: navne, telefon, e-mail, mødedato, antal heste, landbrugsnotering, terrænkote, afstand til nabobeboelse, spildevand, seneste år for tilbygningen. Kør derefter `python3 ansoegning/landzoneansoegning.py`.
+- [ ] Bekræft påstandene i docs/ansoegning-gaps.md ("Påstande i teksten"), især at ladtraileren med kapel og hestetraileren bruges til hesteholdet.
+- [ ] Tjek på matriklen.dk, om 1rp og 1cc har samme BFE-nummer. Hallen ligger hen over skellet mellem dem.
+- [ ] Læs landzonesagen 1992-05SV026 og skursagen S2021-530504 på weblager.dk, og tjek BBR-meddelelsen for skuret.
+- [ ] Scan naboernes skriftlige erklæring og læg den i ansoegning/ som bilag B2.
+- [ ] Erstat Apple-luftfotoet på bilag A0.2 med det officielle ortofoto, hvis kommunen beder om det.
+
+Til byggeansøgningen (efter landzonetilladelsen):
+
+- [ ] Branddokumentation for FALK-panelerne: PIR-kernens brandklasse, K1 10 og BROOF(t2). Se docs/regelrapport.md afsnit 8.6.
+- [ ] Jordvarmeslangernes præcise placering (kommunens sag på weblager.dk eller påvisning på stedet). Afgør, om slangen under tilbygningens vestvæg skal omlægges.
+- [ ] Udgang i hallens sydende, portens højde i forhold til lastbil, og opmåling af hus, stald og maskiner.
+- [ ] Tilslutningstilladelse til toilet og bad, og tilladelse til tagvand til ridebanens dræn og pumpe.

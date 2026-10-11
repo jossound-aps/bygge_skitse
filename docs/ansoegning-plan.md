@@ -1,5 +1,7 @@
 # Plan for landzoneansøgningen, Nældevej 42
 
+> **Bemærk (11.10.2026):** Planen er fra 10.10.2026. Strategien er siden ændret til landzonetilladelse efter § 35 til hele hallen, og udkastet i afsnit 5 er erstattet af ansoegning/landzoneansoegning.py.
+
 Udarbejdet 10. oktober 2026. Bygger på et eksempel fra Aarhus Kommune: en landzonetilladelse af 13. november 2024 med hele ansøgningen vedlagt (Ørnevænget 27, Beder, sag S2024-53067). Kilde: https://aarhus.dk/media/pj0fd5j2/landzonetilladelse-inkl-bilag.pdf
 
 Eksemplet er fra en anden kommune og handler om ændret anvendelse af en eksisterende bygning, som er en lettere sag end nybyggeri. Det viser formen og hvad kommunen tjekker, ikke hvad der kan forventes tilladt.

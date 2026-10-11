@@ -145,7 +145,7 @@ Er hallen omgivet af høje træer, kan topografien være "afskærmet" med C_top 
 
 ### 4.2 Vind
 
-Med v_b,0 = 24 m/s er basishastighedstrykket 0,36 kN/m². Spidshastighedstrykket i kiphøjde 6,9 m har jeg regnet til:
+Med v_b,0 = 24 m/s er basishastighedstrykket 0,36 kN/m². Spidshastighedstrykket i kiphøjde 7,3 m over terræn har jeg regnet til (overslagsberegningen i hal_teknisk.py bruger 0,78 kN/m² for terrænkategori II):
 
 | Terrænkategori | q_p |
 |---|---|

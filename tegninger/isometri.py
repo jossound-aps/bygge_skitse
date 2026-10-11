@@ -370,12 +370,32 @@ def tegn(ax, retning):
         for k in koerevej_linjer(port_xy, ret)[1]:
             q = np.array([(*uv(p_), 0) for p_ in k], float) @ P
             ax.plot(q[:, 0], q[:, 1], color="#555555", lw=0.8, ls=(0, (5, 2)), zorder=0.8)
-    sk = np.array([(skel_u, G[1] + 2, 0), (skel_u, G[3] - 2, 0)], float) @ P
-    ax.plot(sk[:, 0], sk[:, 1], color="red", lw=0.9, ls=(0, (6, 3)), zorder=1)
-    m = np.array([(skel_u - 1.5, hal_v0 + 8, 0)], float) @ P
-    d = sk[1] - sk[0]
-    rot = math.degrees(math.atan2(d[1], d[0]))
-    ax.text(m[0, 0], m[0, 1], "antaget skel", color="red", fontsize=6, rotation=rot if abs(rot) <= 90 else rot - 180, ha="center", va="center", zorder=1)
+    def klip(a_, b_):                                # klipper et linjestykke til terrænudsnittet G (i u, v)
+        t0, t1, du, dv = 0.0, 1.0, b_[0] - a_[0], b_[1] - a_[1]
+        for p_, q_ in ((-du, a_[0] - G[0]), (du, G[2] - a_[0]), (-dv, a_[1] - G[1]), (dv, G[3] - a_[1])):
+            if p_ == 0:
+                if q_ < 0:
+                    return None
+            else:
+                r_ = q_ / p_
+                if p_ < 0:
+                    t0 = max(t0, r_)
+                else:
+                    t1 = min(t1, r_)
+        return None if t0 > t1 else ((a_[0] + t0 * du, a_[1] + t0 * dv), (a_[0] + t1 * du, a_[1] + t1 * dv))
+
+    for s in cfg.get("matrikelskel", {}).get("linjer", []):      # matrikelskel efter matriklen.dk, røde stiplede linjer
+        pts = [uv(p_) for p_ in s["punkter"]]
+        for a_, b_ in zip(pts[:-1], pts[1:]):
+            kl = klip(a_, b_)
+            if kl:
+                sk = np.array([(*kl[0], 0.03), (*kl[1], 0.03)], float) @ P
+                ax.plot(sk[:, 0], sk[:, 1], color="red", lw=0.9, ls=(0, (6, 3)) if s["type"] == "ydre" else (0, (2, 2)), zorder=1)
+    for e in cfg.get("matrikelskel", {}).get("etiketter", []):
+        eu, ev = uv(e["xy"])
+        if G[0] < eu < G[2] and G[1] < ev < G[3]:
+            m = np.array([(eu, ev, 0)], float) @ P
+            ax.text(m[0, 0], m[0, 1], e["tekst"], color="red", fontsize=7, style="italic", weight="bold", ha="center", va="center", zorder=50, bbox=dict(fc="white", ec="red", lw=0.5, alpha=0.95, pad=2))
     np_ = np.array([(G[2] - 4, G[1] + 4, 0), (G[2] - 4, G[1] + 12, 0)], float) @ P
     ax.annotate("N", xy=np_[1], xytext=np_[0], fontsize=8, ha="center", va="center", arrowprops=dict(arrowstyle="-|>", lw=1.0), zorder=1)
 
@@ -409,9 +429,9 @@ def tegn(ax, retning):
     ax.set_ylim(y0 - 1, y1 + 11)
 
 
-FODNOTE1 = ("FORELØBIGE SKITSER i parallelprojektion, ikke målfaste. Hallens mål er de ønskede. Tagfod og taghældning på hus og tilbygning (2,8 m, 25°, anslået fra foto) "
-            "og stald (2,6 m, 38°) samt skurets højde er anslået fra fotos og skal måles op.")
-FODNOTE2 = "Farver og åbninger i hus og stald følger mæglerens vejledende plantegning (2024) og ejers fotos og er ikke opmålt. Ridebane, hegn, grusarealer og læbælter efter luftfoto (træhøjder skønnet). Tilbygningen er fremhævet med gul væg."
+FODNOTE1 = ("Rumlige skitser i parallelprojektion, ikke målfaste. Hallens mål er de ansøgte. Tagfod og taghældning på hus og tilbygning (2,8 m, 25°) "
+            "og stald (2,6 m, 38°) samt skurets højde er anslået fra fotos.")
+FODNOTE2 = "Farver og åbninger i hus og stald følger ejendomsmæglerens plantegning (2024) og fotos. Ridebane, hegn, grusarealer og læbælter er tegnet efter luftfoto. Tilbygningen er fremhævet med gul væg; den udføres hvid som huset."
 
 # Samlet A3-ark med de fire hjørner
 fig = plt.figure(figsize=(420 / 25.4, 297 / 25.4))
@@ -420,8 +440,8 @@ for i, (navn, _, retning) in enumerate(VISNINGER):
     tegn(ax, retning)
     ax.set_title(f"Set fra {navn}", fontsize=11, weight="bold", loc="left")
 fig.text(0.03, 0.060, "Rumlige skitser fra fire hjørner, Nældevej 42, 9000 Aalborg", fontsize=12, weight="bold")
-fig.text(0.03, 0.040, FODNOTE1, fontsize=7.5, color="red")
-fig.text(0.03, 0.024, FODNOTE2, fontsize=7.5, color="red")
+fig.text(0.03, 0.040, FODNOTE1, fontsize=7.5, color="#444444")
+fig.text(0.03, 0.024, FODNOTE2, fontsize=7.5, color="#444444")
 fig.savefig(HER / "isometri.pdf")
 fig.savefig(HER / "isometri.png", dpi=150)
 plt.close(fig)
@@ -432,8 +452,8 @@ for navn, fil, retning in VISNINGER:
     ax = fig.add_axes([0.02, 0.10, 0.96, 0.84])
     tegn(ax, retning)
     fig.text(0.04, 0.070, f"Rumlig skitse set fra {navn}, Nældevej 42, 9000 Aalborg", fontsize=11, weight="bold")
-    fig.text(0.04, 0.045, FODNOTE1, fontsize=6.3, color="red")
-    fig.text(0.04, 0.025, FODNOTE2, fontsize=6.3, color="red")
+    fig.text(0.04, 0.045, FODNOTE1, fontsize=6.3, color="#444444")
+    fig.text(0.04, 0.025, FODNOTE2, fontsize=6.3, color="#444444")
     fig.savefig(HER / f"isometri_{fil}.png", dpi=170)
     plt.close(fig)
 print("isometri.pdf/.png og fire enkeltbilleder skrevet")

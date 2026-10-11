@@ -1,5 +1,7 @@
 # Landzonereglerne krav for krav, Nældevej 42
 
+> **Bemærk (11.10.2026):** Gennemgangen er fra 10.10.2026. Hallens opdeling (nu ca. 150/50 m²), højde (7,3 m over terræn) og skel (efter matriklen.dk) er siden ændret; den gældende argumentation står i ansoegning/landzoneansoegning.py og docs/ansoegning-gaps.md.
+
 Udarbejdet 10. oktober 2026. Gennemgang af planlovens landzoneregler (§§ 35-38) holdt op mod projektet, som det ser ud nu, med de argumenter, der kan bruges, og de svage punkter, kommunen kan gribe fat i.
 
 Kilder: planloven, Erhvervsstyrelsens *Vejledning om landzoneadministration* (2019; sidetal henviser til den), mailen fra Aalborg Kommune og salgsopstillingen fra 2024. Gennemgangen er ikke juridisk rådgivning. Flere afgørende forhold om ejendommen er ikke kontrolleret; de står samlet i afsnit 9.

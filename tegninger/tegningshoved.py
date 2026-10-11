@@ -2,11 +2,11 @@
 from matplotlib.patches import Rectangle
 
 BYGGESAG = "Nældevej 42, 9000 Aalborg"
-DATO = "10.10.2026"
+DATO = "11.10.2026"
 UDFOERT_AF = "JB"
 
 
-def tegningshoved(fig, emne, maal, nr, x=0.62, y=0.012, b=0.36, h=0.075, status="FORELØBIG"):
+def tegningshoved(fig, emne, maal, nr, x=0.62, y=0.012, b=0.36, h=0.075, status="LANDZONEANSØGNING"):
     """Tegner titelfeltet med nederste venstre hjørne i (x, y) i figurens koordinater (0-1)."""
     a = fig.add_axes([x, y, b, h], zorder=30)
     a.set_xlim(0, 1)
@@ -24,4 +24,4 @@ def tegningshoved(fig, emne, maal, nr, x=0.62, y=0.012, b=0.36, h=0.075, status=
     a.text(0.015, 1 / 6, f"UDFØRT AF:  {UDFOERT_AF}", fontsize=fs, va="center")
     a.text(0.485, 1 / 6, f"MÅL:  {maal}", fontsize=fs, va="center")
     a.text(0.87, 0.62, nr, fontsize=11, weight="bold", ha="center", va="center")
-    a.text(0.87, 0.22, status, fontsize=5.5, ha="center", va="center", color="red")
+    a.text(0.87, 0.22, status, fontsize=4.8, ha="center", va="center", color="#444444")

@@ -3,7 +3,7 @@
   "hus_osm_id": 725835481,
   "stald_osm_id": 725835241,
   "skel": {
-    "_note": "ANTAGET. Skellet er ikke hentet fra matriklen; linjen er lagt i levende hegnet vest for huset ud fra luftfotoet.",
+    "_note": "UDGÅET som tegnet skel: de rigtige skel står under \"matrikelskel\". Værdien bruges kun som referencelinje for jordvarmezonens mål (afstande fra den tidligere antagne linje i levende hegnet).",
     "side": "vest",
     "afstand_fra_husets_vestgavl": 14.0,
     "nabo_matrikel": "1cb"
@@ -26,7 +26,7 @@
     "afstand_til_tilbygning": 20.0,
     "_note": "Hallen er vendt, så porten sidder i nordgavlen mod ridebanen. Det lukkede rum og døren ligger i sydenden. Resten er én åben hal med driftszone og privat zone. Kun én port.",
     "rum_laengde": 4.0,
-    "privat_i_aaben_hal_m2": 50,
+    "privat_i_aaben_hal_m2": 29,
     "position": {
       "_note": "Hallens placering i husets akser (u mod øst, v mod nord, fra husets midte): vestvæggens u og nordgavlens v. Hallen står i den første fold øst for haven, parallelt med huset. Når 'position' er sat, bruges afstand_til_skel og afstand_til_tilbygning ikke.",
       "u_vest": 19.0,
@@ -39,7 +39,29 @@
       "rampe_laengde": 4.0,
       "side_udfald": 2.0,
       "flise": 0.5
-    }
+    },
+    "maskiner": {
+      "_note": "Ejers fotos 11.10.2026 (IMG_3005-3010, P_20220430_210511). Mål er anslået fra fotos og skal måles op. Indretningen står i hal_plan.py. Fordelingen er lagt efter Aalborg Kommunes sag S2025-10959: ca. 150 m² til ejendommens drift og hestehold, ca. 50 m² privat. Det private er samlet i sydvest.",
+      "drift": [
+        "Traktor med frontlæsser (i midterbanen inden for porten)",
+        "Ladtrailer med kapel, 3 aksler, ca. 8,0 x 2,55 m (ANTAGET til hø, halm og wrap; ejer bekræfter)",
+        "Hestetrailer, ca. 5,0 x 2,1 m (ANTAGET at den tidligere 'Trailer 3' er en hestetrailer; ejer bekræfter)",
+        "Balleflytter til wrapballer",
+        "Halmballe-elevator, ca. 8 m",
+        "Møgtrailer, ca. 3,3 x 1,6 m",
+        "To plænetraktorer (Cub Cadet og Stiga)",
+        "Slæbeharve til ridebanen og redskaber",
+        "Rum 20 m² til foder, hesteudstyr og værktøj, med toilet"
+      ],
+      "privat": [
+        "Trailer 1, ca. 3,6 x 1,7 m",
+        "Tosøjlet lift til egne biler",
+        "Rum 20 m² til privat opbevaring"
+      ],
+      "udgaaet": "Trailer 2 (3,6 x 1,7 m) er ikke længere på planen; der er ikke plads"
+    },
+    "privat_rum_m2": 20,
+    "_note_rum": "De sidste 4 m i sydenden er delt i to rum på hver 20 m² brutto (ejers beslutning 11.10.2026): mod øst foder, hesteudstyr og værktøj til maskinerne med toilet og håndvask (ejendommens drift), mod vest privat opbevaring. Toilettet beholdes og begrundes med arbejdet i hal, stald og på ridebane."
   },
   "hus_ydermaal": {
     "_note": "Fra mæglerens vejledende plantegning (2024): indvendigt ca. 14,7 x 7,35 m plus ydervægge. Passer med BBR 123 m². Skal måles op.",
@@ -575,7 +597,8 @@
       "Kloak: mekanisk rensning med privat udledning direkte til vandløb",
       "Vand: privat vandforsyning. Vej: privat fællesvej",
       "Opført 1992, ombygget 2024. Jordvarme fra 2018"
-    ]
+    ],
+    "matrikelforhold": "Efter matriklen.dk (skærmbillede 11.10.2026): 1rp er en rektangulær matrikel på ca. 41 x 135 m, omgivet af 1cc mod nord, vest og syd. Ridebanen og det meste af foldene mod øst ligger på 1rp. Den nye hal ligger hen over skellet mellem 1cc og 1rp (ca. 7 m på 1cc og ca. 2-3 m på 1rp). Tilbygningen ligger på 1cc, ca. 4,9 m fra skellet mod nabo 1cb. 57b ligger uden for skærmbilledet. Det er ikke afklaret, om 1rp hører til samme samlede faste ejendom (BFE) som 1cc."
   },
   "hus_rum": {
     "_note": "Rum i det eksisterende hus efter mæglerens vejledende plantegning (ikke målfast). Mål i meter fra husets indvendige sydvestlige hjørne: [navn, x, y, bredde øst-vest, dybde nord-syd]. Stuens loftshøjde 2,31 m.",
@@ -856,5 +879,132 @@
     "hus": 0.4,
     "stald": 0.15,
     "hus_tagfod_over_terraen": 2.8
+  },
+  "matrikelskel": {
+    "_note": "Tegnet af efter skærmbillede fra matriklen.dk (billeder/Screenshot From 2026-10-11 16-10-35.png), rettet ind efter hus og stald. Nøjagtighed ca. +/- 1 m; ikke indmålt. Lokale koordinater (x øst, y nord). 1cc's og 1rp's skel mod syd og hele 57b ligger uden for skærmbilledet; vest- og østskellet er ført til billedets sydkant. 'ydre' = skel mod nabo eller vej, 'internt' = skel mellem ejers egne matrikler.",
+    "linjer": [
+      {
+        "navn": "1cc mod vest (nabo 1cb)",
+        "type": "ydre",
+        "punkter": [
+          [
+            -23.8,
+            41.14
+          ],
+          [
+            -11.67,
+            -169.25
+          ]
+        ]
+      },
+      {
+        "navn": "1cc mod nord (Nældevej)",
+        "type": "ydre",
+        "punkter": [
+          [
+            -23.8,
+            41.14
+          ],
+          [
+            64.35,
+            41.22
+          ]
+        ]
+      },
+      {
+        "navn": "1cc og 1rp mod øst (nabo 1cd m.fl.)",
+        "type": "ydre",
+        "punkter": [
+          [
+            64.35,
+            41.22
+          ],
+          [
+            64.85,
+            32.87
+          ],
+          [
+            72.96,
+            -101.21
+          ],
+          [
+            77.03,
+            -168.34
+          ]
+        ]
+      },
+      {
+        "navn": "1rp mod 1cc, nord",
+        "type": "internt",
+        "punkter": [
+          [
+            23.36,
+            33.19
+          ],
+          [
+            64.85,
+            32.87
+          ]
+        ]
+      },
+      {
+        "navn": "1rp mod 1cc, vest",
+        "type": "internt",
+        "punkter": [
+          [
+            23.36,
+            33.19
+          ],
+          [
+            33.22,
+            -102.37
+          ]
+        ]
+      },
+      {
+        "navn": "1rp mod 1cc, syd",
+        "type": "internt",
+        "punkter": [
+          [
+            33.22,
+            -102.37
+          ],
+          [
+            72.96,
+            -101.21
+          ]
+        ]
+      }
+    ],
+    "etiketter": [
+      {
+        "tekst": "matr.nr. 1cc",
+        "xy": [
+          6.0,
+          -52.0
+        ]
+      },
+      {
+        "tekst": "matr.nr. 1rp",
+        "xy": [
+          46.0,
+          -50.0
+        ]
+      },
+      {
+        "tekst": "← nabo matr.nr. 1cb",
+        "xy": [
+          3.0,
+          -68.0
+        ]
+      },
+      {
+        "tekst": "nabo matr.nr. 1cd →",
+        "xy": [
+          52.0,
+          -72.0
+        ]
+      }
+    ]
   }
 }
