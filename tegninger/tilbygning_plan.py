@@ -14,6 +14,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Arc, Rectangle
 from nordpil import nordpil
+from tegningshoved import tegningshoved
+
+BYGNINGSDREJNING = 1.6   # planen følger bygningerne, som ligger ca. 1,6 grader drejet fra stik nord
 
 HER = Path(__file__).parent
 cfg = json.loads((HER / "situationsplan.json").read_text(encoding="utf-8"))
@@ -183,7 +186,7 @@ maal((B + YV + 0.6, 0), (B + YV + 0.6, L - HUS_BREDDE), f"{L - HUS_BREDDE:.1f} m
 maal((ix0, g_y0 + 3.2), (gx1, g_y0 + 3.2), f"{gx1 - ix0:.2f} m indv.".replace(".", ","), (0, 0.25))
 
 # Nordpil
-nordpil(fig, 0.93, 0.89)
+nordpil(fig, 0.93, 0.89, vinkel=BYGNINGSDREJNING)
 
 brutto = B * HUS_BREDDE + (B + YV) * (L - HUS_BREDDE)
 opv = (B + YV) * (L - HUS_BREDDE) + B * (g_y0 - GV / 2 - (L - HUS_BREDDE))
@@ -192,6 +195,7 @@ fig.text(0.05, 0.100, f"Målestok 1:{MAALESTOK} (A3)   ·   Tilbygning {L:.1f} m
 fig.text(0.05, 0.075, "FORELØBIG SKITSE. Det eksisterende hus er tegnet efter ejendomsmæglerens vejledende plantegning fra 2024 (ikke målfast) og skal måles op. Vægtykkelser i tilbygningen er antaget:", fontsize=7.5, color="red")
 fig.text(0.05, 0.055, "ydervæg 45 cm, væg garage/bolig 15 cm, indervægge 10 cm. Brandadskillelse mellem garage og bolig (herunder døren til bryggerset) er ikke dimensioneret. Bryggersets vindue i vestgavlen forsvinder. Langs huset bruges husets eksisterende vestgavl som fælles væg.", fontsize=7.5, color="red")
 
+tegningshoved(fig, "Hus med tilbygning, plan", "1 : 100 (A3)", "A2.1", x=0.66, y=0.004, b=0.32, h=0.044)
 fig.savefig(HER / "tilbygning_plan.pdf")
 fig.savefig(HER / "tilbygning_plan.png", dpi=200)
 print(f"Tilbygning {L:.1f} m lang, {ix1 - ix0:.2f} m indv. bred, {brutto:.0f} m² brutto; garage {g_areal:.1f} m², sovev. {(ix1 - ix0) * (s_y1 - iy0):.1f} m², bad {BAD_B * MIDT_D:.1f}, walk-in {WALK_B * MIDT_D:.1f}, gang {gang_areal:.1f} ({ix1 - gang_x0:.2f} m bred); opvarmet brutto ca. {opv:.0f} m²")

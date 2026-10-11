@@ -18,6 +18,8 @@ import numpy as np
 from matplotlib.patches import Arc, Polygon, Rectangle
 from nordpil import nordpil
 
+BYGNINGSDREJNING = 1.6   # planen følger bygningerne, som ligger ca. 1,6 grader drejet fra stik nord
+
 HER = Path(__file__).parent
 h = json.loads((HER / "situationsplan.json").read_text(encoding="utf-8"))["hal"]
 
@@ -85,7 +87,7 @@ maal((0, LY + 0.55), (LX, LY + 0.55), f"{dk(LX)} m", (0, 0.22))
 maal((LX + 0.6, 0), (LX + 0.6, LY), f"{dk(LY, 2)} m", (0.25, 0), 90)
 ax.text(LX / 2, LY + 0.25, "sydgavl (ingen åbninger)", fontsize=6.5, ha="center", va="center", color="#555555")
 ax.text(LX / 2, -0.22, "væg mod den åbne hal", fontsize=6.5, ha="center", va="center", color="#555555")
-nordpil(fig, 0.93, 0.89)
+nordpil(fig, 0.93, 0.89, vinkel=BYGNINGSDREJNING)
 ax.text(LX + 1.7, LY / 2, "mod\nhuset", fontsize=7, ha="center", va="center", color="#555555")
 fig.text(0.07, 0.955, "Plan 1:50", fontsize=10, weight="bold")
 

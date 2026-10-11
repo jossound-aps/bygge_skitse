@@ -22,7 +22,7 @@ Kommunens kontakt: Kirstine Reese, Team Land, byggeri@aalborg.dk. Hendes mail me
 | Leverandører | Spær fra Kaas Staalbyg, paneler FALK 1060 WB fra Panelbyg |
 | Åbninger | Kun én port (4,0 × 4,0 m), nu i nordgavlen mod ridebanen. Gangdøren sidder i samme gavl som porten, i siden mod huset (flyttet 10.10.2026). Ingen åbninger i sydgavlen eller langsiderne, så begge udgange ligger i samme ende |
 | Indretning | Lukket rum på 40 m² i sydenden (med toilet), kun med dør til hallen. Resten er én åben hal, hvor lift, værksted og private trailere står i samme rum som landbrugsmaskinerne. Alt køres ind ad porten i nordgavlen. Balletrailer, trailer 1-2 og redskaber står i siden mod huset; traktor, møgvogn og trailer 3 i østsiden |
-| Placering | **Ændret 10.10.2026:** i den første fold øst for haven, parallelt med huset. 13,3 m øst for husets østgavl og 12,2 m fra skuret (rykket 5 m mod nord). Vendt, så porten sidder i nordgavlen mod ridebanen (ca. 5 m til foldens nordhegn, 8,6 m til ridebanens hegn); det lukkede rum og døren ligger i sydenden. Går fri af jordvarmeslangerne. Foldens hegn skal lægges om. Positionen står i situationsplan.json under hal.position |
+| Placering | **Ændret 10.10.2026:** i den første fold øst for haven, parallelt med huset. 11,3 m øst for husets østgavl og 11,4 m fra skuret (rykket 5 m mod nord og 1 m mod vest). Vendt, så porten sidder i nordgavlen mod ridebanen (ca. 5 m til foldens nordhegn, 8,6 m til ridebanens hegn); det lukkede rum og døren ligger i sydenden. Går fri af jordvarmeslangerne. Foldens hegn skal lægges om. Positionen står i situationsplan.json under hal.position |
 | Arealer på tegningen | Privat ca. 90 m² (rum 40 + lift 22 + trailerfelter 28), drift ca. 110 m² |
 
 ### Tilbygningen
@@ -34,7 +34,7 @@ Kommunens kontakt: Kirstine Reese, Team Land, byggeri@aalborg.dk. Hendes mail me
 | Vinduer | Alle små vinduer i huset er ens, og tilbygningen får samme vindue. Tegnet som 1,0 × 1,2 m med brystning 0,9 m (anslået fra foto; skal måles op). Står i situationsplan.json under vindue_standard |
 | Bryggersdøren | Døren i husets nordfacade nærmest tilbygningen laves om til et vindue i standardstørrelse; adgangen til bryggerset sker fremover fra garagen |
 | Væg mod huset | Tilbygningen får ingen egen væg langs huset; husets eksisterende vestgavl bruges som fælles væg. Syd for huset står den nye østvæg uden på gavlens linje, så tilbygningen er 7,55 m bred indvendigt hele vejen (8,45 m udvendigt syd for huset, 123 m² brutto). De rumlige skitser viser ikke dette spring på 45 cm |
-| Indhold | Fra nord: garage til to SUV'er med porte mod nord, ny dør til bryggerset og varmtvandsbeholder med ventilation og varmegenvinding stående frit i hjørnet (45 m²). Derefter bad/toilet (10,8 m²), walk-in (11,7 m²) og en smal gang på 1,1 × 3,6 m (4,0 m²) fra stuen til soveværelset. Soveværelse mod syd (32,1 m²) med terrassedør mod syd og vinduer mod både vest og øst. Ejer vil kun have soveværelse, walk-in, bad og en minimal gang; intet teknikrum |
+| Indhold | Fra nord: garage til to SUV'er med porte mod nord, ny dør til bryggerset og varmtvandsbeholder med ventilation og varmegenvinding stående frit i hjørnet (45 m²). Derefter bad/toilet (10,8 m²), walk-in (11,4 m²) og en smal gang på 1,1 × 3,6 m (4,0 m²) fra stuen til soveværelset. Soveværelse mod syd (32,1 m²) med terrassedør mod syd og vinduer mod både vest og øst. Ejer vil kun have soveværelse, walk-in, bad og en minimal gang; intet teknikrum |
 
 ### Øvrigt
 
@@ -54,7 +54,7 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 | Zone og BFE | Landzone, BFE-nr. 1416157 m.fl. Ingen servitutter ifølge mægler |
 | BBR | Bygning 4 stuehus 123 m². Bygning 2 "bygning til træning og opstaldning af heste" 284 m². Opført 1992, ombygget 2024 |
 | Udhus | "Udhus på 20 kvm er ikke registreret på BBR" (2024). Ejer oplyser nu, at skuret er godkendt i BBR. Bør kontrolleres på BBR-meddelelsen |
-| Stalden | 4 hestebokse, 2 ponybokse, løsdrift (5,83 × 7,72 m, "kan omdannes til dobbeltgarage"), to opvarmede sadelrum, et værksted og en lejlighed på ca. 44 m² |
+| Stalden | 4 hestebokse, 2 ponybokse, løsdrift (5,83 × 7,72 m, "kan omdannes til dobbeltgarage"), to opvarmede sadelrum, et tidligere værksted, der nu er sadelrum (oplyst af ejer 10.10.2026), og en lejlighed på ca. 44 m² |
 | Lejligheden | "Ikke godkendt til beboelse". Har været udlejet, bl.a. via Airbnb |
 | Kloak | Mekanisk rensning med privat udledning direkte til vandløb |
 | Vand, vej, varme | Privat vandforsyning, privat fællesvej, jordvarme fra 2018 (hus, lejlighed og sadelrum) |
@@ -63,10 +63,30 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 **Betydning for ansøgningen:**
 
 - Grundarealet på 3,9 ha er lille som grundlag for at kalde en hal på 108 m² erhvervsmæssigt nødvendig. Det gør spørgsmålet om landbrugspligt og om hesteholdets omfang endnu vigtigere.
-- Stalden rummer allerede et værksted og en løsdrift, som mægler beskriver som mulig dobbeltgarage. Kommunen kan spørge, hvorfor de ikke kan bruges. Argumentet skal være, at løsdriften er i brug til heste (ejers foto viser dybstrøelse), og at værkstedet er for lille til maskiner.
+- Stalden rummede ved købet et værksted (nu sadelrum) og en løsdrift, som mægler beskriver som mulig dobbeltgarage. Kommunen kan spørge, hvorfor de ikke kan bruges. Argumentet skal være, at løsdriften er i brug til heste (ejers foto viser dybstrøelse), og at værkstedet er for lille til maskiner.
 - Lejligheden er ikke godkendt til beboelse. En byggesag kan få kommunen til at se på hele ejendommen, så det bør afklares, inden der søges.
 - Udledning direkte til vandløb er en gammel løsning. Et nyt toilet i hallen og et ekstra bad i tilbygningen kan udløse krav om forbedret spildevandsrensning.
 - En af trailerne er en hestetrailer (ses på fotos). Den kan regnes til driftsdelen i hallen.
+
+## Landzoneansøgningen (10.10.2026)
+
+- **Ansøgningen ligger som PDF:** [../ansoegning/Landzoneansoegning_Naeldevej_42.pdf](../ansoegning/Landzoneansoegning_Naeldevej_42.pdf) (delt i del A, ny hal, og del B, tilbygning til stuehuset, efterfulgt af ni tegningsbilag). Teksten står i ansoegning/landzoneansoegning.py; kør scriptet efter ændringer.
+- **Ny strategi:** der søges landzonetilladelse efter § 35 til hele hallen, ikke anmeldelse af en driftsdel. Grundlaget er Aalborg Kommunes sag S2025-326 (Nørholmsvej 149, 900 m væk): 148 m² udhus på 2,5 ha med privat hestehold, 104 m² maskiner og 44 m² privat værksted, godkendt 16.6.2025.
+- **Slået op i åbne kortdata:** ejendommen ligger i kystnærhedszonen og inden for skovbyggelinjen; kommuneplanen udpeger større sammenhængende landskab, potentielt naturområde, potentiel økologisk forbindelse og oversvømmelsesrisiko. Natura 2000 ligger 1,8 km væk.
+- **Mangler:** se [ansoegning-gaps.md](ansoegning-gaps.md).
+- **Taget sænkes ikke** (ejers beslutning 10.10.2026): 30° og kip 6,9 m fastholdes. Ansøgningen henviser ikke til andre ejendommes haller, kun til kommunens egne afgørelser, hvor begrundelsen fremgår (ejers beslutning).
+- **Arkiv over sammenlignelige tilladelser:** [../landzonetilladelser/README.md](../landzonetilladelser/README.md) er et register over 26 afgørelser fra Aalborg Kommune inden for 5 km (hentet fra Plandata, med kildelink) og fem fra ejer. Den på 468,7 m² er skrevet af Kirstine Reese, og det er afgørelsen for naboen Nældevej 30 også.
+- **Sammenligningen (10.10.2026)** står i ansoegning-gaps.md. Ansøgningen er udvidet med eksisterende udhuse, maskinliste, tagvand, bilag IV-arter, Nørholm Fjordlandskab, skovbyggelinjens ophævelse og sagerne S2023-4703, S2025-10959, S2022-171976, S2024-19470, S2024-1080 og S2025-6024.
+- **Bilag A3.1** ([../tegninger/stald_plan.pdf](../tegninger/stald_plan.pdf), script stald_plan.py): staldens indretning og brug rum for rum efter mæglerplanen. Værkstedet er nu sadelrum. Brugen af rummet i vestenden og af skuret mangler.
+- **Tagvand** (ejers beslutning 10.10.2026): kobles på ridebanens eksisterende afløb og pumpe, ikke faskiner. **Sokkel:** overkant 0,4 m over terræn som stuehuset.
+- **Kommunens arkiv (weblager) er slået op:** byggesag S2021-530504 (2020-1967) "Opførelse af skur" findes. Sagslisten står i ansoegning-gaps.md. Skuret bruges til åbnede wrapballer.
+- **Stalden har kun ét sadelrum** (det tidligere værksted, ca. 6 m²). De to rum, mæglerplanen kalder sadelrum, er ét gæsteværelse på ca. 21 m² uden skillevæg (ejers oplysning 10.10.2026).
+- **Det gamle stuehus** (staldens vestende, ca. 41 m²) står som gæsteværelse til private gæster på bilag A3.1 (ejers beslutning 10.10.2026). Ejer står inde for brugen. Landzonesagen fra 1992 bør læses.
+- **Tagvand:** pumpe 200 l/min i ridebanens nordøstlige hjørne, dræn under og rundt om banen. Anbefalet forsinkelsesbrønd ca. 3 m³ før tilslutning (hal-beskrivelse.md afsnit 8). Tegnet på situationsplanen.
+- **Hallens højder (ejers beslutning 10.10.2026):** soklens overkant og gulvet ligger 0,4 m over terræn som stuehusets sokkel, og sidehøjden på 4,0 m måles fra soklen. Over terræn er tagfoden 4,4 m og kippen 7,3 m (før 6,9 m). Foran port og dør lægges en fliserampe (50 × 50) fra gulvhøjde skråt ned til kørevejen, uden vandret kant og med fald ud til siderne: 4 m lang, 2 m sidefald (forslag, står i situationsplan.json under hal.forplads).
+- **Sokler på hus og stald (fotos IMG_2991-2994, 10.10.2026):** grå sokkel på stuehus og tilbygning ca. 0,4 m, på stalden ca. 0,15 m. Står i situationsplan.json under "sokler". Husets gulv regnes i soklens overkant, og tagfoden er hævet fra 2,5 til 2,8 m over terræn efter fotoet (kip ca. 4,7 m). Vist på isometrier, A2.2 og A2.3.
+- **Garagen i tilbygningen** (ejers beslutning 10.10.2026): gulv i sokkelhøjde som resten af huset; gruset føres langsomt op til portene (6 m, forslag; situationsplan.json under tilbygning.garage_opkoersel).
+- **Største risiko:** kommunen har ikke godkendt private udhuse over 151 m² i området og kaldte i maj 2026 200 m² for meget på en ejendom på 1,65 ha. Plan B er 150 m² hal plus 50 m² fritliggende garage (ikke skrevet ind i ansøgningen).
 
 ## Det vigtigste, der er uafklaret
 
@@ -92,6 +112,7 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 
 ## Kørevej for lastbil til hallen
 
+- **Kørevejen findes allerede** fra Nældevej øst om stalden (ejers oplysning 10.10.2026); der skal ikke laves ny overkørsel. Kun stykket ind til hallens port er nyt.
 - Tegnet som to stiplede streger (3,5 m bred) fra Nældevej over gårdspladsen, gennem sandfolden og i en S-kurve ind til porten i hallens nordgavl. Ligger i situationsplan.json under "koerevej".
 - Med hallens nuværende placering er mindste radius på midterlinjen ca. 8 m, og kørevejen strejfer ridebanens sydvestlige hjørne. Det er snævert for en lastbil. Rykkes hallen ca. 6 m mod syd igen, bliver radius ca. 13 m.
 - Kørevejen krydser sandfoldens to bræddehegn og foldens nordhegn; der skal låger eller omlægning til.
@@ -127,6 +148,7 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 |---|---|
 | [regelrapport.md](regelrapport.md) | Gennemgang af planloven, vejledningen om landzoneadministration og BR18, plus konkret vurdering af projektet i afsnit 8 |
 | [landzone-gennemgang.md](landzone-gennemgang.md) | **Nyeste gennemgang af landzonereglerne** krav for krav mod det nuværende projekt, med argumenter, svage punkter og tjekliste. Erstatter argumentationen i hal-begrundelse.md |
+| [ansoegning-plan.md](ansoegning-plan.md) | Plan for selve ansøgningen: hvad Aarhus-eksemplet viser, hvad vi mangler (facader, snit, tegningshoved), bilagsliste og udkast til teksten til den vejledende forespørgsel |
 | [hal-beskrivelse.md](hal-beskrivelse.md) | Teknisk beskrivelse af hallen med regler og vejledende værdier for sne- og vindlast (DK NA 2024), konstruktive forhold og spørgsmål til Kaas Staalbyg og Panelbyg |
 | [hal-begrundelse.md](hal-begrundelse.md) | Ældre udkast til bilag til kommunen. **Forældet:** beskriver 80/120 med fast skillevæg, 5 m til skel og to porte. Erstattet af side 2 i tegninger/hal_plan.pdf og af landzone-gennemgang.md |
 | [../TODO.md](../TODO.md) | Opgaveliste |
@@ -138,6 +160,9 @@ Kilde: [../Salgsopstilling_villa_2_641.pdf](../Salgsopstilling_villa_2_641.pdf).
 | ../tegninger/isometri.py | Rumlige skitser fra fire hjørner: isometri.png/pdf (samlet A3) og isometri_sydoest/sydvest/nordvest/nordoest.png |
 | ../tegninger/hal_indvendig.py | Hallen indefra i perspektiv (hal_indvendig.png/pdf, A3): stålrammer pr. ca. 5 m som på referencebilledet fra Grædstrup Stål, åse, vægge, loft og alle maskiner, trailere og lift |
 | ../tegninger/hal_rum.py | Det lukkede private rum i hallens sydende (hal_rum.png/pdf, A3): plan 1:50 og perspektiv. Indretningen er et forslag |
+| ../tegninger/hal_teknisk.py | Hallens tekniske tegninger og overslagsberegning: hal_facader (A1.2), hal_snit (A1.3), hal_konstruktion (A1.4) og docs/hal-statik-overslag.md. Giver IPE 300-rammer pr. 5 m, åse C24 45 × 245, gennemgående armeret sokkel 0,40 × 1,2 m hele vejen rundt (ingen punktfundamenter, ejers oplysning) |
+| ../tegninger/tilbygning_teknisk.py | Hus med tilbygning: hus_facader (A2.2), tilbygning_snit (A2.3) og docs/tilbygning-statik-overslag.md. W-gitterspær som i det eksisterende hus (billeder/IMG_2987-2989) |
+| ../tegninger/statik.py, tegningshoved.py | Rammeberegner til overslagene (kontrolleret mod to lærebogstilfælde) og fælles tegningshoved. Tegningsnumre: A0.1 situationsplan, A1.1-A1.4 hal, A2.1-A2.3 hus med tilbygning |
 | ../tegninger/data/ | Grundkort fra OpenStreetMap, renset Apple-luftfoto (markør fjernet digitalt, kun arbejdskort) og ældre Esri-foto |
 | ../billeder/IMG_2986.JPEG | Ejers foto af ældre luftfoto med jordvarmefelterne |
 | ../billeder/IMG_0985.JPEG | Ejers foto af husets sydfacade (hvid væg, sort bølgepladetag, glasparti med 4 fag, to vinduer) |
@@ -155,9 +180,11 @@ python3 tegninger/hal_plan.py
 python3 tegninger/isometri.py
 python3 tegninger/hal_indvendig.py
 python3 tegninger/hal_rum.py
+python3 tegninger/hal_teknisk.py
+python3 tegninger/tilbygning_teknisk.py
 ```
 
-Alle plantegninger har nord opad og samme nordpil øverst til højre (tegninger/nordpil.py). Bygningsplanerne følger husets akse, som er drejet ca. 2° fra stik nord.
+**Orientering (ændret 10.10.2026):** Situationsplanen og de rumlige skitser er drejet 1,27°, så Nældevej ligger vandret på arket; grundkortet og alle indtegnede koordinater i situationsplan.json er drejet med (se data/grundkort.json, feltet drejning_grader). Hus, tilbygning, hal, skur og hegnet om hallen tegnes parallelt med stalden (bygningsaksen tages fra staldens længste side og ligger ca. 0,5° fra vandret). Ridebane, folde og læbælter følger luftfotoet. Alle planer har samme nordpil øverst til højre (tegninger/nordpil.py); den viser den rigtige nordretning og hælder derfor 1-2° mod venstre.
 
 ## Kendte fejl og mangler i det nuværende materiale
 
@@ -174,7 +201,7 @@ Alle plantegninger har nord opad og samme nordpil øverst til højre (tegninger/
 - Ridebane, sandfold, tre folde og hegn er tegnet af efter luftfoto og ejers fotos (± 1 m).
 - Belægninger: gårdspladsen omkring stalden og parkeringen ved vejen er grus, og Nældevej er en grusvej (tegnet 4 m bred). Tegnet af efter luftfotoet; afgrænsningen er et skøn. Bræddehegn om ridebane og sandfold, elhegn om foldene.
 - Tilbygningens plan (tilbygning_plan.png, nu A3) viser også det eksisterende hus' rum. Tilbygningen er koblet til huset med en ny dør fra garagen til bryggerset og en ny dør fra gangen til stuen; bryggersets vindue i vestgavlen forsvinder.
-- Der findes endnu ingen egentlige facadetegninger eller snit af hus med tilbygning eller af hallen. Kommunen forventer dem i ansøgningen.
+- Facader og snit findes nu for hal og hus med tilbygning, men husets højder og åbninger er anslået. Overslagsberegningerne er ikke statisk dokumentation: kipning, samlinger, gavlrammer, stabilitet og jordbund er ikke eftervist. hal_rum, hal_indvendig og isometri har ikke tegningshoved.
 - Hallens kip (6,9 m) ligger ca. 2,5 m over husets anslåede kip (4,4 m). Kan have betydning for kommunens landskabelige vurdering.
 - Git: branch develop, remote origin via SSH-aliaset github-new. Seneste commit "flyttet hal" (10.10.2026) er lavet lokalt og ikke pushet. Tjek `git status` ved opstart.
 

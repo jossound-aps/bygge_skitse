@@ -15,6 +15,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Arc, Rectangle
 from nordpil import nordpil
+from tegningshoved import tegningshoved
+
+BYGNINGSDREJNING = 1.6   # planen følger bygningerne, som ligger ca. 1,6 grader drejet fra stik nord
 
 HER = Path(__file__).parent
 h = json.loads((HER / "situationsplan.json").read_text(encoding="utf-8"))["hal"]
@@ -152,15 +155,16 @@ maal((0, -1.1), (B, -1.1), f"{dk(B)} m", (0, -0.3))
 maal((B + 2.3, 0), (B + 2.3, skil), f"{dk(L - RUM_L)} m", (0.35, 0), 90)
 maal((B + 2.3, skil), (B + 2.3, L), f"{dk(RUM_L)} m", (0.35, 0), 90)
 maal((B + 3.2, 0), (B + 3.2, L), f"{dk(L)} m", (0.35, 0), 90)
-nordpil(fig, 0.905, 0.925)
+nordpil(fig, 0.905, 0.925, vinkel=BYGNINGSDREJNING)
 if not VENDT:
     ax.text(tx, 0.6, f"skel mod\nmatr.nr. 1cb\n←  {dk(h['afstand_til_skel'])} m", fontsize=6, ha="center", va="center", color="red")
 
 fig.text(0.07, 0.125, "Hal, plan og indretning, Nældevej 42, 9000 Aalborg", fontsize=11, weight="bold")
-fig.text(0.07, 0.105, f"Målestok 1:{MAALESTOK} (A4)   ·   Udvendigt {dk(B)} × {dk(L)} m = {B * L:.0f} m²   ·   Sidehøjde 4,0 m, taghældning 30°, kip nord-syd", fontsize=8)
+fig.text(0.07, 0.105, f"Målestok 1:{MAALESTOK} (A4)   ·   Udvendigt {dk(B)} × {dk(L)} m = {B * L:.0f} m²   ·   Sidehøjde 4,0 m over sokkel (sokkel 0,4 m), taghældning 30°, kip nord-syd", fontsize=8)
 fig.text(0.07, 0.085, "FORELØBIG SKITSE. Stiplede felter viser maskinernes og trailernes egne mål, som er antaget og skal erstattes", fontsize=7, color="red")
 fig.text(0.07, 0.070, "med de faktiske. Vægtykkelse 15 cm er antaget. Rammernes søjler er ikke vist.", fontsize=7, color="red")
 
+tegningshoved(fig, "Ny hal, plan og indretning", "1 : 100 (A4)", "A1.1", x=0.56, y=0.010, b=0.41, h=0.052)
 fig.savefig(HER / "hal_plan.png", dpi=200)
 
 # ---------------- Side 2: begrundelse for hallen ----------------
@@ -171,8 +175,8 @@ drift = B * L - privat
 BEGRUNDELSE = [
     ("Hvad der søges om", [
         f"Én hal på {B * L:.0f} m² (20 × 10 m) med to anvendelser, som fremgår af plantegningen på side 1.",
-        f"Driftsdel, ca. {drift:.0f} m²: maskinhus til ejendommens hestehold. Anmeldes efter planlovens § 38, stk. 2, jf. § 36, stk. 1, nr. 3.",
-        f"Privat del, ca. {privat:.0f} m²: lukket rum på {B * RUM_L:.0f} m² med toilet, liftplads og plads til trailere. Der søges landzonetilladelse efter § 35, stk. 1.",
+        f"Ca. {drift:.0f} m² til maskiner til ejendommens hestehold og arealer.",
+        f"Ca. {privat:.0f} m² privat: lukket rum på {B * RUM_L:.0f} m² med toilet, liftplads og plads til trailere. Der søges landzonetilladelse til hele hallen efter planlovens § 35, stk. 1.",
     ]),
     ("Driftsdelen er nødvendig for ejendommens drift", [
         "Ejendommen er et boliglandbrug på ca. 3,9 ha [noteret som landbrugsejendom, bekræftes] med hestestald på 284 m² "
@@ -194,10 +198,10 @@ BEGRUNDELSE = [
         "Trailerne står i dag udendørs og kommer ind.",
     ]),
     ("Placering og udformning", [
-        "Hallen ligger samlet med ejendommens øvrige bygninger: 13,3 m fra huset og 12,2 m fra skuret ved stalden, op til sandfold og ridebane. "
+        "Hallen ligger samlet med ejendommens øvrige bygninger: 11,3 m fra huset og 11,4 m fra skuret ved stalden, op til sandfold og ridebane. "
         "Den nås fra den eksisterende gårdsplads, og afstandene opfylder brandkravene mellem bygninger på samme grund.",
         "Den er skærmet af det eksisterende læbælte mod vest og af skovbrynet mod øst, og fra Nældevej ligger den bag stald og ridebane.",
-        "Kiphøjden er ca. 6,9 m, under bygningsreglementets 8,5 m. Facader og tag udføres i sorte, matte, ikke-reflekterende plader, "
+        "Kiphøjden er ca. 7,3 m over terræn, under bygningsreglementets 8,5 m. Facader og tag udføres i sorte, matte, ikke-reflekterende plader, "
         "svarende til de sorte tage på hus og stald.",
         "Port og dør vender mod ejendommens egne arealer. Der er ingen åbninger mod naboer.",
         "Naboerne har skriftligt erklæret, at de godkender byggeriet (vedlagt).",
@@ -210,7 +214,7 @@ BEGRUNDELSE = [
 
 fig2 = plt.figure(figsize=(210 / 25.4, 297 / 25.4))
 fig2.text(0.08, 0.945, "Begrundelse for ny hal, Nældevej 42, 9000 Aalborg", fontsize=13, weight="bold")
-fig2.text(0.08, 0.925, "Bilag til anmeldelse efter planlovens § 38, stk. 2, og ansøgning om landzonetilladelse. Hører til plantegningen på side 1.", fontsize=8)
+fig2.text(0.08, 0.925, "Kort begrundelse til plantegningen på side 1. Den fulde ansøgning ligger i ansoegning/Landzoneansoegning_Naeldevej_42.pdf.", fontsize=8)
 y = 0.895
 for overskrift, punkter in BEGRUNDELSE:
     fig2.text(0.08, y, overskrift, fontsize=10, weight="bold")

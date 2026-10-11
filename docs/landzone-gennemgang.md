@@ -10,7 +10,7 @@ Projektet, som det er tegnet nu:
 |---|---|
 | Tilbygning | 123 m² mod vest på huset (123 m²): garage til to biler, bad, walk-in, gang og soveværelse |
 | Hal | 20 × 10 m, sort stål, kip 6,9 m. Ca. 110 m² til driften og ca. 90 m² privat (lukket rum 40 m², lift og tre trailere) |
-| Placering | Hallen står i den første fold øst for haven, 13,3 m fra huset og 12,2 m fra skuret, med port og dør mod nord |
+| Placering | Hallen står i den første fold øst for haven, 11,3 m fra huset og 11,4 m fra skuret, med port og dør mod nord |
 | Ejendommen | Ca. 3,9 ha på tre matrikler, "boliglandbrug", hestestald på 284 m² med 6 bokse, ridebane og folde |
 
 ---
@@ -153,7 +153,7 @@ Kommunen vurderer ud fra "ejendommens størrelse, omfanget af eksisterende udhus
 
 | Krav | Hvad vejledningen siger | Status og argument |
 |---|---|---|
-| Tilknytning | "Det område, hvor ejendommens bebyggelse ligger samlet". Der er ingen fast afstand; det afgøres af, om byggeriet "naturligt opleves som havende tilknytning" (s. 36-37) | Hallen ligger 13,3 m fra huset og 12,2 m fra skuret, op til sandfold og ridebane. Stærkt |
+| Tilknytning | "Det område, hvor ejendommens bebyggelse ligger samlet". Der er ingen fast afstand; det afgøres af, om byggeriet "naturligt opleves som havende tilknytning" (s. 36-37) | Hallen ligger 11,3 m fra huset og 11,4 m fra skuret, op til sandfold og ridebane. Stærkt |
 | Hensigtsmæssig helhed | Bebyggelses- og færdselsarealer skal udgøre en hensigtsmæssig helhed (s. 37) | Hallen nås fra den eksisterende gårdsplads; gangsti fra huset; port mod ridebanen og vejen til møddingen |
 | Ikke spredt bebyggelse | "Den enkelte ejendoms bygninger skal ikke spredes mere end højst nødvendigt" (s. 38) | Den nye placering er væsentligt tættere på end den første (27 m fra huset) |
 | Landskab | Udsyn fra veje og stier, landskabelige helheder (s. 59-60) | Læbælte mod vest og skovbryn mod øst skærmer. Fra Nældevej ligger hallen bag stald og ridebane. Mod syd står den frit |

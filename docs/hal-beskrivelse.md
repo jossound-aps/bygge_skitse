@@ -14,7 +14,7 @@ Beskrivelsen er et grundlag for dialogen med stålleverandør, panelleverandør 
 | Orientering | Kip nord-syd. Gavle mod nord og syd, tagflader mod øst og vest |
 | Sidehøjde | 4,0 m |
 | Taghældning | 30° sadeltag |
-| Kiphøjde | ca. 6,9 m |
+| Kiphøjde | ca. 6,9 m over soklens overkant (gulv), ca. 7,3 m over terræn. Soklen går 0,4 m over terræn |
 | Bærende system | Stålrammer (søjle og spær i ét) på tværs af hallen, som på Grædstrup Ståls referencehal. Antaget rammeafstand ca. 5 m, dvs. fem rammer |
 | Tag | Åse i træ på tværs af rammerne, derpå sandwichpaneler, sort |
 | Vægge | Vandrette sandwichpaneler, 1 m høje og fire i højden, skruet direkte på rammernes søjler uden rigler. Sort |
@@ -22,7 +22,7 @@ Beskrivelsen er et grundlag for dialogen med stålleverandør, panelleverandør 
 | Åbninger | Én port 4,0 × 4,0 m i nordgavlen mod ridebanen. Gangdør i samme gavl, i siden mod huset. Ingen åbninger i sydgavlen eller langsiderne |
 | Indretning | Lukket rum på 40 m² i sydenden. Resten er én åben hal på 160 m² |
 | Opvarmning | Ikke afklaret. Forudsat uopvarmet |
-| Placering | I den første fold øst for haven, 13,3 m øst for husets østgavl og 12,2 m fra skuret |
+| Placering | I den første fold øst for haven, 11,3 m øst for husets østgavl og 11,4 m fra skuret |
 
 Tegninger: [hal_plan.png](../tegninger/hal_plan.png), [hal_indvendig.png](../tegninger/hal_indvendig.png), [isometri.png](../tegninger/isometri.png) og [situationsplan.png](../tegninger/situationsplan.png).
 
@@ -78,7 +78,7 @@ Snelasten på taget er s = μ · C_e · C_t · s_k, regnet på tagets vandrette 
 - tagfladen i vindsiden vender mod retninger fra NNØ til SØ (betydende snefygning forekommer kun ved vind fra østlige retninger),
 - facadehøjden i vindsiden er højst 10 m,
 - to gange kiphøjden er mindre end bygningens udstrækning på tværs af vinden (2 × 6,9 = 13,8 m < 20 m),
-- bygningens dybde er større end kiphøjden (10 m > 6,9 m),
+- bygningens dybde er større end kiphøjden (10 m > 7,3 m),
 - terrænet i vindsiden er åbent i en afstand af 400 m (højst terrænkategori II).
 
 For taghældninger fra 15° til og med 30° er μ_w = 1,2. Over 30° falder den: μ_w = 2,4 − 0,04·α.
@@ -173,7 +173,7 @@ Med kategori II på den sikre side giver det i størrelsesorden:
 3. **Panelernes mål.** FALK 1060 WB har 1,06 m dækbredde. Fire paneler giver 4,24 m, ikke 4,0 m.
 4. **Gavlene.** Gavlrammerne skal have gavlstolper til at bære panelerne og portåbningen. Porten på 4 × 4 m skal have en overligger og sidestolper, der kan optage vindlasten fra portbladet.
 5. **Åse og tagpaneler.** Åsenes afstand bestemmes af tagpanelets spændvidde og af sne- og suglasten. Fastgørelsen af åse til spær og af paneler til åse skal dimensioneres for sug, især i randzonerne.
-6. **Fundamenter.** Punktfundamenter under søjlerne skal optage tryk fra sne, løft fra vind og den vandrette kraft fra rammens fod. Frostsikker dybde er normalt 0,9 m; for uopvarmede bygninger bruges ofte 1,2 m (min hukommelse, tjek med den projekterende). Den nye placering øst for haven ligger fri af jordvarmeslangerne.
+6. **Fundamenter.** Hallen funderes på en gennemgående sokkel hele vejen rundt, ikke punktfundamenter. Soklen skal under søjlerne optage tryk fra sne, løft fra vind og den vandrette kraft fra rammens fod. Frostsikker dybde er normalt 0,9 m; for uopvarmede bygninger bruges ofte 1,2 m (min hukommelse, tjek med den projekterende). Den nye placering øst for haven ligger fri af jordvarmeslangerne.
 7. **Åben eller lukket port.** Se afsnit 3.2. Det skal fremgå af konstruktionsgrundlaget.
 8. **Ét samlet ansvar.** Rammer, paneler og fundament kommer fra forskellige leverandører. Den statiske dokumentation skal dække hele bygningen, også samlingerne mellem leverancerne og den samlede stabilitet. Aftal, hvem der står for den.
 9. **Brand.** Om stålrammerne skal have brandmodstand (R15), afhænger af, om hallen behandles som driftsbygning eller som garage/udhus. Se [regelrapport.md](regelrapport.md) afsnit 8.6.
@@ -208,3 +208,53 @@ Stålleverandøren oplyser, at dokumentation efter gældende normer følger med 
 - Hvilken tykkelse af FALK 1060 WB kræves for at spænde fra ramme til ramme ved danske vindlaster?
 - Hvilket tagpanel anbefales, og hvilken åseafstand kræver det?
 - Kan panelerne dokumenteres som K1 10/B-s1,d0 (vægge) og B_ROOF(t2) (tag)?
+
+## 8. Tagvand: tilslutning til ridebanens afløb og pumpe (vurdering 10.10.2026)
+
+Ejer har besluttet, at tagvandet kobles på de afløb, der allerede ligger ved ridebanen og fører til en pumpe, som pumper vandet væk. Det er en bedre løsning end faskiner her, fordi den ikke afhænger af grundvandsstanden. Vurderingen er et overslag; pumpen og ledningerne er ikke set.
+
+### Mængder
+
+| Størrelse | Værdi |
+|---|---|
+| Tagflade i plan, med udhæng | ca. 210 m², 105 m² til hver side |
+| Største tilløb fra taget ved kraftig byge (5-10-års regn, 10 minutter) | ca. 4-5 l/s |
+| Vand fra et døgn med 40 mm regn | ca. 8,5 m³ |
+| Ridebanen til sammenligning | ca. 780 m², men vandet siver langsomt gennem sand og bundlag |
+
+Taget øger det areal, pumpen betjener, med godt en fjerdedel. Tagvandet kommer til gengæld på få minutter, hvor ridebanens vand kommer over timer. Det er spidsen på 4-5 l/s, pumpen eller brønden skal kunne tage.
+
+### Pumpen og drænet (ejers oplysninger 10.10.2026)
+
+- Pumpen yder ca. 200 l/min, dvs. 3,3 l/s.
+- Der ligger afløb under hele ridebanen og hele vejen rundt om den.
+- Pumpen står i ridebanens hjørne mod vejen og øst.
+
+Pumpen kan altså ikke alene tage spidsen fra taget (4-5 l/s), og den skal samtidig tage ridebanens eget vand. Over et døgn er der rigelig kapacitet: pumpen flytter 288 m³ i døgnet, og tag og ridebane giver tilsammen ca. 40 m³ ved 40 mm regn. Problemet er kun de første 10-30 minutter af en kraftig byge.
+
+| Byge (ca. 5-års regn) | Fra taget | Pumpen kan nå, hvis halvdelen af ydelsen er fri | Skal gemmes |
+|---|---|---|---|
+| 10 minutter, ca. 13 mm | 2,7 m³ | 1,0 m³ | ca. 1,7 m³ |
+| 30 minutter, ca. 19 mm | 4,0 m³ | 3,0 m³ | ca. 1,0 m³ |
+| 60 minutter, ca. 23 mm | 4,8 m³ | 6,0 m³ | 0 |
+
+Regntallene er runde værdier, ikke kommunens dimensioneringsregn.
+
+### Anbefalet løsning
+
+1. **Forsinkelsesbrønd eller tank på ca. 3 m³** mellem hallen og ridebanen, med et droslet udløb på ca. 1 l/s. Så mærker pumpen næsten ikke taget, og ridebanen bliver ikke vådere end i dag.
+2. **Tilslut til omfangsdrænet ved ridebanens sydkant**, som ligger få meter fra hallens nordgavl. Tilslut i en brønd på samleledningen, ikke direkte i de slidsede rør under banen, så tagvandet ikke siver ud i bundlaget.
+3. **Sandfang og bladfang** på nedløbene.
+4. **Overløb fra forsinkelsesbrønden** ud på terræn væk fra hallen, til pumpestop og strømsvigt. En niveaualarm på pumpen er billig.
+5. **Ledning** Ø110 mm med mindst 10 ‰ fald. Den krydser kørevejen foran porten og skal tåle trafik dér.
+
+Uden forsinkelse vil en kraftig byge stuve op i omfangsdrænet og bundlaget, til pumpen har indhentet det. Det skader ikke hallen, men ridebanen bliver våd i nogle timer.
+
+### Tilladelse
+
+Det afhænger af, hvor pumpen sender vandet hen. Pumper den til grøft, vandløb eller sø, er det en udledning efter miljøbeskyttelseslovens § 28, og mere vand end i dag kan kræve, at kommunen godkender ændringen. Det er uvist, om den nuværende udledning fra ridebanen har en tilladelse. Kommunen krævede særskilt tilladelse til tagvand i sag S2025-10959, så vi skal regne med at blive spurgt.
+
+### Mangler
+
+- Hvor pumpen leder vandet hen (afgør, om der skal søges udledningstilladelse).
+- Om omfangsdrænet har en brønd ved sydkanten, der kan tilsluttes i.

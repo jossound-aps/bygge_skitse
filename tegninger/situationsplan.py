@@ -14,6 +14,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Polygon
 from nordpil import nordpil
+from tegningshoved import tegningshoved
 
 HER = Path(__file__).parent
 MAALESTOK = 500
@@ -34,7 +35,8 @@ def bygning(osm_id):
 hus = bygning(cfg["hus_osm_id"])[:-1]
 cx = sum(p[0] for p in hus) / len(hus)
 cy = sum(p[1] for p in hus) / len(hus)
-kanter = [(hus[i], hus[(i + 1) % len(hus)]) for i in range(len(hus))]
+_st = bygning(cfg["stald_osm_id"])[:-1]            # aksen følger staldens længste side, så alt ligger parallelt med stalden
+kanter = [(_st[i], _st[(i + 1) % len(_st)]) for i in range(len(_st))]
 a, b = max(kanter, key=lambda k: math.dist(*k))
 ux, uy = b[0] - a[0], b[1] - a[1]
 n = math.hypot(ux, uy)
@@ -138,7 +140,7 @@ def tegn(luftfoto):
         bel = cfg.get("belaegning", {})
         for vej in grund["veje"]:          # grusvej i anslået bredde
             ax.plot(*zip(*vej["punkter"]), color=GRUS, lw=bel.get("vej_bredde", 4.0) * 1000 / MAALESTOK / 25.4 * 72, solid_capstyle="butt", zorder=0.9)
-            ax.text(40, 39.3, vej["navn"] + " (grusvej)", fontsize=6.5, color="#444444", ha="center", va="center", rotation=-1.5, zorder=7)
+            ax.text(40, vej["punkter"][-1][1] + 0.1, vej["navn"] + " (grusvej)", fontsize=6.5, color="#444444", ha="center", va="center", zorder=7)
         for fl in bel.get("grus", []):
             ax.add_patch(Polygon(fl["punkter"], closed=True, fc=GRUS, ec="none", zorder=0.9))
             ax.text(*fl["label"], fl["navn"], fontsize=6, color="#555555", ha="center", va="center", zorder=7)
@@ -263,8 +265,31 @@ def tegn(luftfoto):
         _, kanter, rmin = koerevej_linjer(xy(um, pv), ret)
         for k in kanter:
             ax.plot(*zip(*k), color="#ffe24a" if luftfoto else "#444444", lw=0.9, ls=(0, (5, 2)), zorder=5)
-        ax.text(kanter[0][1][0] + 2.3, kanter[0][1][1] - 3, f"Kørevej\nlastbil\n{cfg['koerevej']['bredde']:.1f} m".replace(".", ","), fontsize=5.5, ha="left", va="center",
+        ax.text(kanter[0][1][0] + 2.3, kanter[0][1][1] - 3, "Eksisterende\nkørevej", fontsize=5.5, ha="left", va="center",
                 color="#ffe24a" if luftfoto else "#444444", zorder=7)
+
+    # Fliseplads foran hallens port i gulvhøjde, med rampe ned til terræn
+    fp = h.get("forplads")
+    if fp and PORT_NORD:
+        vb, su = hal_v1 + fp["rampe_laengde"], fp["side_udfald"]
+        ax.add_patch(Polygon([xy(hal_u0 - su, hal_v1), xy(hal_u0 + h["bredde"] + su, hal_v1), xy(hal_u0 + h["bredde"], vb), xy(hal_u0, vb)], closed=True,
+                             fc="none" if luftfoto else "#e3dfd2", ec="#fff3a0" if luftfoto else "#7a7466", lw=0.6, hatch="++", zorder=2.2))
+        tx_, ty_ = xy(hal_u0 - su - 0.4, (hal_v1 + vb) / 2)
+        ax.text(tx_, ty_ + 1.2, "Fliserampe\n50 × 50", fontsize=5.2, ha="right", va="center", color="#fff3a0" if luftfoto else "#5a5446", zorder=7)
+
+    # Tagvand fra hallen til ridebanens eksisterende omfangsdræn og pumpebrønd
+    if "tagvand" in cfg and "ridebane" in cfg:
+        bl = "#7fd0ff" if luftfoto else "#1f6fb5"
+        rb = cfg["ridebane"]["punkter"]
+        (sx0, sy0), (sx1, sy1) = rb[-1], rb[-2]                      # ridebanens sydkant, fra vest mod øst
+        for u_ in (hal_u0, hal_u0 + h["bredde"]):
+            px, py = xy(u_, hal_v1)
+            ax.plot([px, px], [py, sy0 + (sy1 - sy0) * (px - sx0) / (sx1 - sx0)], color=bl, lw=1.0, ls=(0, (2, 1.5)), zorder=6)
+        mx_, my_ = xy(hal_u0 + h["bredde"], hal_v1)
+        ax.text(mx_ + 0.8, my_ + 1.6, "Tagvand til\nridebanens dræn", fontsize=5.5, color=bl, ha="left", va="center", zorder=7)
+        ppx, ppy = cfg["tagvand"]["pumpe"]
+        ax.plot([ppx], [ppy], marker="s", ms=4, color=bl, mec="black", mew=0.4, zorder=8)
+        ax.text(ppx + 1.2, ppy + 0.3, "Pumpebrønd\n(eksist.)", fontsize=5.5, color=bl, ha="left", va="center", zorder=7)
 
     # Mål
     if "position" in h:      # afstande til nærmeste bygninger (brandafstand) og til ridebanens hegn
@@ -285,7 +310,7 @@ def tegn(luftfoto):
     maal(ax, xy(tb[2] + 2, tb[1]), xy(tb[2] + 2, hus_v0), f"{hus_v0 - tb[1]:.1f} m", (3.0, 0))
 
     # Nordpil og målestok
-    nordpil(fig, 0.905, 0.925)
+    nordpil(fig, 0.905, 0.925, vinkel=grund.get("drejning_grader", 0.0))
     x_s, y_s = ax.get_xlim()[0] + 5, ax.get_ylim()[0] + 4
     for i in range(4):
         ax.add_patch(Polygon([(x_s + 5 * i, y_s), (x_s + 5 * i + 5, y_s), (x_s + 5 * i + 5, y_s + 1), (x_s + 5 * i, y_s + 1)],
@@ -296,10 +321,11 @@ def tegn(luftfoto):
     # Tegningshoved
     fig.text(0.05, 0.085, "Situationsplan, Nældevej 42, 9000 Aalborg", fontsize=11, weight="bold")
     fig.text(0.05, 0.065, f"Målestok 1:{MAALESTOK} (A4)   ·   Tilbygning til hus og ny hal {h['laengde']:.0f} × {h['bredde']:.0f} m", fontsize=8)
-    fig.text(0.05, 0.045, "FORELØBIG SKITSE. Skel er antaget ud fra luftfoto. "
-                          "Jordvarmezonen er anslået. Husets mål følger mæglerens plan (2024).", fontsize=7.5, color="red")
-    fig.text(0.05, 0.028, "Bygningsomrids og vej: © OpenStreetMap-bidragydere (GeoDanmark)."
-             + (" Luftfoto: Apple Kort, markør fjernet digitalt, kun arbejdskort." if luftfoto else ""), fontsize=6, color="#555555")
+    fig.text(0.05, 0.047, "FORELØBIG SKITSE. Skel er antaget ud fra luftfoto.", fontsize=7, color="red")
+    fig.text(0.05, 0.034, "Jordvarmezonen er anslået. Husets mål følger mæglerens plan (2024).", fontsize=7, color="red")
+    fig.text(0.05, 0.016, "Bygningsomrids og vej: © OpenStreetMap-bidragydere (GeoDanmark)."
+             + (" Luftfoto: Apple Kort, kun arbejdskort." if luftfoto else ""), fontsize=5.5, color="#555555")
+    tegningshoved(fig, "Situationsplan", f"1 : {MAALESTOK} (A4)", "A0.1", x=0.56, y=0.012, b=0.41, h=0.062)
 
     navn = "situationsplan_luftfoto" if luftfoto else "situationsplan"
     fig.savefig(HER / f"{navn}.pdf")

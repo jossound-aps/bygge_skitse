@@ -21,11 +21,16 @@ from matplotlib.patches import Circle, Polygon
 HER = Path(__file__).parent
 grund = json.loads((HER / "data/grundkort.json").read_text(encoding="utf-8"))
 cfg = json.loads((HER / "situationsplan.json").read_text(encoding="utf-8"))
+SOK_HUS, SOK_STALD = cfg.get("sokler", {}).get("hus", 0.0), cfg.get("sokler", {}).get("stald", 0.0)
+for _k in ("hus_sydfacade", "hus_nordfacade"):      # åbningernes højder står over gulv; gulvet ligger i soklens overkant
+    for _ab in cfg.get(_k, {}).get("aabninger", []):
+        _ab["z0"], _ab["z1"] = _ab["z0"] + SOK_HUS, _ab["z1"] + SOK_HUS
+cfg["vindue_standard"]["brystning"] += SOK_HUS
 
 HOEJDER = {
-    "hus_tagfod": 2.5, "hus_haeldning": 25.0,       # anslået fra foto IMG_0985; tilbygningen følger huset
+    "hus_tagfod": cfg.get("sokler", {}).get("hus_tagfod_over_terraen", 2.5), "hus_haeldning": 25.0,       # anslået fra fotos IMG_0985 og IMG_2993; tilbygningen følger huset
     "stald_tagfod": cfg.get("stald", {}).get("tagfod", 2.6), "stald_haeldning": cfg.get("stald", {}).get("haeldning", 25.0),   # anslået fra foto IMG_9768
-    "hal_side": 4.0, "hal_haeldning": 30.0, "hal_sokkel": 0.3,
+    "hal_side": 4.4, "hal_haeldning": 30.0, "hal_sokkel": 0.4,      # tagfod over terræn = 0,4 m sokkel + 4,0 m
 }
 ELEV = math.radians(24)
 # kameraets kompasretning set fra grunden (grader fra nord, med uret); drejet lidt mod syd/nord, så gavlene ses
@@ -44,7 +49,8 @@ def bygning(osm_id):
 
 hus = bygning(cfg["hus_osm_id"])[:-1]
 cx, cy = sum(p[0] for p in hus) / len(hus), sum(p[1] for p in hus) / len(hus)
-a, b = max(((hus[i], hus[(i + 1) % len(hus)]) for i in range(len(hus))), key=lambda k: math.dist(*k))
+_st = bygning(cfg["stald_osm_id"])[:-1]            # aksen følger staldens længste side
+a, b = max(((_st[i], _st[(i + 1) % len(_st)]) for i in range(len(_st))), key=lambda k: math.dist(*k))
 ux, uy = b[0] - a[0], b[1] - a[1]
 n = math.hypot(ux, uy)
 ux, uy = (ux / n, uy / n) if ux > 0 else (-ux / n, -uy / n)
@@ -112,6 +118,12 @@ def scene():
         fl.append({"pts": pts, "n": normal, "fyld": fyld, "kant": kant, "lw": lw, "paa": [], "linjer": []})
         return fl[-1]
 
+    def sokkelbaand(f, hoejde):
+        """Grå sokkel nederst på en vægflade; lægges først, så døre og porte tegnes oven på."""
+        if hoejde and f is not None:
+            a_, b_ = f["pts"][0], f["pts"][1]
+            f["paa"].insert(0, ([(a_[0], a_[1], 0), (b_[0], b_[1], 0), (b_[0], b_[1], hoejde), (a_[0], a_[1], hoejde)], SOKKEL, "#777777"))
+
     def sadeltag(u0, v0, u1, v1, tagfod, haeld, kip_langs, vaeg, tag, sokkel=0.0, kant="#555555", lw=0.5, udelad=""):
         """Bygning med sadeltag; kip_langs 'u' = kip øst-vest, 'v' = kip nord-syd. Returnerer (kiphøjde, vægge)."""
         t, s, c = math.tan(math.radians(haeld)), math.sin(math.radians(haeld)), math.cos(math.radians(haeld))
@@ -149,16 +161,24 @@ def scene():
     skil_v = min(p[1] for p in hoved)
     _, sv_h = sadeltag(min(p[0] for p in hoved), skil_v, max(p[0] for p in hoved), max(p[1] for p in hoved),
                        HOEJDER["stald_tagfod"], HOEJDER["stald_haeldning"], "u", STALD, STALDTAG)
+    tag_syd = fl[-2]                                   # hovedlængens sydlige tagflade; skæres ud, hvor fløjens tag går ind
     _, sv_f = sadeltag(min(p[0] for p in floej), min(p[1] for p in floej), max(p[0] for p in floej), skil_v,
                        HOEJDER["stald_tagfod"], HOEJDER["stald_haeldning"], "v", STALD, STALDTAG, udelad="N")
+    for f_ in list(sv_h.values()) + list(sv_f.values()):
+        sokkelbaand(f_, SOK_STALD)
+    tag_floej_oest, tag_floej_vest = fl[-2], fl[-1]     # fløjens tagflader; forlænges ind i hovedlængens tag uden mellemstreg
     # fløjens tag føres ind i hovedlængens sydlige tagflade (skotrender), så L-formens tage hænger sammen
     st_e = HOEJDER["stald_tagfod"]
     st_t, st_s, st_c = (f(math.radians(HOEJDER["stald_haeldning"])) for f in (math.tan, math.sin, math.cos))
     fw0, fw1 = min(p[0] for p in floej), max(p[0] for p in floej)
     fum, fkip = (fw0 + fw1) / 2, st_e + (fw1 - fw0) / 2 * st_t
     moede = (fum, skil_v + (fw1 - fw0) / 2, fkip)          # her møder fløjens kip hovedlængens tagflade
-    flade([(fw0, skil_v, st_e), (fum, skil_v, fkip), moede], (-st_s, 0, st_c), STALDTAG)
-    flade([(fw1, skil_v, st_e), (fum, skil_v, fkip), moede], (st_s, 0, st_c), STALDTAG)
+    hw0, hw1, hvm = min(p[0] for p in hoved), max(p[0] for p in hoved), (skil_v + max(p[1] for p in hoved)) / 2
+    hkip_st = st_e + (hvm - skil_v) * st_t
+    tag_syd["pts"] = [(hw0, skil_v, st_e), (fw0, skil_v, st_e), moede, (fw1, skil_v, st_e), (hw1, skil_v, st_e), (hw1, hvm, hkip_st), (hw0, hvm, hkip_st)]
+    fv_syd = min(p[1] for p in floej)
+    tag_floej_vest["pts"] = [(fw0, fv_syd, st_e), (fw0, skil_v, st_e), moede, (fum, fv_syd, fkip)]
+    tag_floej_oest["pts"] = [(fw1, fv_syd, st_e), (fw1, skil_v, st_e), moede, (fum, fv_syd, fkip)]
 
     # staldens åbninger: brøkdele af facadelængden (se situationsplan.json)
     hu_w, hu_e, hv_n = min(p[0] for p in hoved), max(p[0] for p in hoved), max(p[1] for p in hoved)
@@ -243,13 +263,15 @@ def scene():
     hus_nord = flade([(hu0, hv1, 0), (hu1, hv1, 0), (hu1, hv1, e), (hu0, hv1, e)], N, HUSVAEG)
     for ab in cfg.get("hus_nordfacade", {}).get("aabninger", []):
         hus_nord["paa"].append(([(ab["u0"], hv1, ab["z0"]), (ab["u1"], hv1, ab["z0"]), (ab["u1"], hv1, ab["z1"]), (ab["u0"], hv1, ab["z1"])], DOER if ab.get("doer") else GLAS, "#111111"))
-    flade([(hu1, hv0, 0), (hu1, hv1, 0), (hu1, hv1, e), (hu1, 0, kip), (hu1, hv0, e)], E, HUSVAEG)
+    hus_oest = flade([(hu1, hv0, 0), (hu1, hv1, 0), (hu1, hv1, e), (hu1, 0, kip), (hu1, hv0, e)], E, HUSVAEG)
     flade([(hu0, hv0, e), (hu1, hv0, e), (hu1, 0, kip), (tum, 0, kip)], (0, -s, c), HUSTAG)     # løber ind i fløjens tag i en skotrende
     flade([(hu0, hv1, e), (hu1, hv1, e), (hu1, 0, kip), (tum, 0, kip)], (0, s, c), HUSTAG)
     syd = flade([(tu0, tb_v0, 0), (tu1, tb_v0, 0), (tu1, tb_v0, e), (tum, tb_v0, kip), (tu0, tb_v0, e)], S, NYVAEG, NYKANT, 0.8)
     nord = flade([(tu0, hv1, 0), (tu1, hv1, 0), (tu1, hv1, e), (tum, hv1, kip), (tu0, hv1, e)], N, NYVAEG, NYKANT, 0.8)
     vest = flade([(tu0, tb_v0, 0), (tu0, hv1, 0), (tu0, hv1, e), (tu0, tb_v0, e)], W, NYVAEG, NYKANT, 0.8)
     oest = flade([(tu1, tb_v0, 0), (tu1, hv0, 0), (tu1, hv0, e), (tu1, tb_v0, e)], E, NYVAEG, NYKANT, 0.8)
+    for f_ in (hus_syd, hus_nord, hus_oest, syd, nord, vest, oest):
+        sokkelbaand(f_, SOK_HUS)
     vs = cfg["vindue_standard"]
     vz0, vz1, vb = vs["brystning"], vs["brystning"] + vs["hoejde"], vs["bredde"]
     oest["paa"].append(([(tu1, tb_v0 + 1.6, vz0), (tu1, tb_v0 + 1.6 + vb, vz0), (tu1, tb_v0 + 1.6 + vb, vz1), (tu1, tb_v0 + 1.6, vz1)], GLAS, "#111111"))   # soveværelsesvindue mod øst
@@ -257,9 +279,15 @@ def scene():
     flade([(tu1, tb_v0, e), (tu1, hv0, e), (tum, 0, kip), (tum, tb_v0, kip)], (s, 0, c), HUSTAG, NYKANT, 0.8)
     flade([(tu1, hv1, e), (tum, hv1, kip), (tum, 0, kip)], (s, 0, c), HUSTAG, NYKANT, 0.8)
     # åbninger som på tilbygning_plan: terrassedør mod syd, to garageporte mod nord, to vinduer mod vest
-    syd["paa"].append(([(tu0 + 2.5, tb_v0, 0.05), (tu0 + 5.5, tb_v0, 0.05), (tu0 + 5.5, tb_v0, 2.15), (tu0 + 2.5, tb_v0, 2.15)], GLAS, "#111111"))
-    for x in (1.05, 4.25):
-        nord["paa"].append(([(tu0 + x, hv1, 0.05), (tu0 + x + 2.7, hv1, 0.05), (tu0 + x + 2.7, hv1, 2.25), (tu0 + x, hv1, 2.25)], "#d9d4c8", "#666666"))
+    syd["paa"].append(([(tu0 + 2.5, tb_v0, SOK_HUS), (tu0 + 5.5, tb_v0, SOK_HUS), (tu0 + 5.5, tb_v0, SOK_HUS + 2.1), (tu0 + 2.5, tb_v0, SOK_HUS + 2.1)], GLAS, "#111111"))
+    for x in (1.05, 4.25):                           # garageporte i sokkelhøjde
+        nord["paa"].append(([(tu0 + x, hv1, SOK_HUS), (tu0 + x + 2.7, hv1, SOK_HUS), (tu0 + x + 2.7, hv1, SOK_HUS + 2.2), (tu0 + x, hv1, SOK_HUS + 2.2)], "#d9d4c8", "#666666"))
+    opk = cfg["tilbygning"].get("garage_opkoersel")  # gruset føres langsomt op til portene
+    if opk and SOK_HUS:
+        vb_ = hv1 + opk["laengde"]
+        flade([(tu0, hv1, SOK_HUS), (tu1, hv1, SOK_HUS), (tu1, vb_, 0.02), (tu0, vb_, 0.02)], (0, 0, 1), "#d6d1c6", "#a8a296")
+        flade([(tu0, hv1, SOK_HUS), (tu0 - opk["side_udfald"], hv1, 0.02), (tu0, vb_, 0.02)], (0, 0, 1), "#cdc8bc", "#a8a296")
+        flade([(tu1, hv1, SOK_HUS), (tu1, hv1 + 0.01, 0.02), (tu1, vb_, 0.02)], (1, 0, 0), "#c4bfb3", "#a8a296")
     for y0 in (1.0, 5.7):          # soveværelse og bad mod vest
         vest["paa"].append(([(tu0, tb_v0 + y0, vz0), (tu0, tb_v0 + y0 + vb, vz0), (tu0, tb_v0 + y0 + vb, vz1), (tu0, tb_v0 + y0, vz1)], GLAS, "#111111"))
 
@@ -270,9 +298,16 @@ def scene():
     pg, pv, dg, dv = ("N", hal_v1, "S", hal_v0) if PORT_NORD else ("S", hal_v0, "N", hal_v1)       # portgavl og dørgavl
     du = hal_u0 + 0.6                                  # gangdør i portgavlen, i siden mod huset
     dg, dv = pg, pv
-    hv_[pg]["paa"].append(([(hum - PORT / 2, pv, 0.05), (hum + PORT / 2, pv, 0.05), (hum + PORT / 2, pv, 4.0), (hum - PORT / 2, pv, 4.0)], PORTFARVE, "#b5b5b5"))
-    hv_[dg]["paa"].append(([(du, dv, 0.05), (du + 0.9, dv, 0.05), (du + 0.9, dv, 2.15), (du, dv, 2.15)], PORTFARVE, "#b5b5b5"))
-    z = 1.0                                          # vandrette panelsamlinger: paneler à 1 m, fire i højden på siderne
+    hv_[pg]["paa"].append(([(hum - PORT / 2, pv, sok), (hum + PORT / 2, pv, sok), (hum + PORT / 2, pv, sok + 4.0), (hum - PORT / 2, pv, sok + 4.0)], PORTFARVE, "#b5b5b5"))
+    hv_[dg]["paa"].append(([(du, dv, sok), (du + 0.9, dv, sok), (du + 0.9, dv, sok + 2.15), (du, dv, sok + 2.15)], PORTFARVE, "#b5b5b5"))
+    fp = h.get("forplads")                           # fliseplads i gulvhøjde foran portgavlen, med rampe ned til terræn
+    if fp:
+        r_ = 1 if pg == "N" else -1
+        vb, su = pv + r_ * fp["rampe_laengde"], fp["side_udfald"]
+        flade([(hal_u0, pv, sok), (hal_u1, pv, sok), (hal_u1, vb, 0.02), (hal_u0, vb, 0.02)], (0, 0, 1), "#d8d4c8", "#8a8a8a")
+        for u_, s_ in ((hal_u0, -1), (hal_u1, 1)):      # rampen falder ud til siderne
+            flade([(u_, pv, sok), (u_ + s_ * su, pv, 0.02), (u_, vb, 0.02)], (0, 0, 1), "#cdc8ba", "#8a8a8a")
+    z = sok + 1.0                                    # vandrette panelsamlinger: paneler à 1 m, fire i højden på siderne
     while z < hkip:
         if z < hs:
             hv_["W"]["linjer"].append([(hal_u0, hal_v0, z), (hal_u0, hal_v1, z)])
@@ -374,7 +409,7 @@ def tegn(ax, retning):
     ax.set_ylim(y0 - 1, y1 + 11)
 
 
-FODNOTE1 = ("FORELØBIGE SKITSER i parallelprojektion, ikke målfaste. Hallens mål er de ønskede. Tagfod og taghældning på hus og tilbygning (2,5 m, 25°, anslået fra foto) "
+FODNOTE1 = ("FORELØBIGE SKITSER i parallelprojektion, ikke målfaste. Hallens mål er de ønskede. Tagfod og taghældning på hus og tilbygning (2,8 m, 25°, anslået fra foto) "
             "og stald (2,6 m, 38°) samt skurets højde er anslået fra fotos og skal måles op.")
 FODNOTE2 = "Farver og åbninger i hus og stald følger mæglerens vejledende plantegning (2024) og ejers fotos og er ikke opmålt. Ridebane, hegn, grusarealer og læbælter efter luftfoto (træhøjder skønnet). Tilbygningen er fremhævet med gul væg."
 
