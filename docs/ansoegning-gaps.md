@@ -41,7 +41,7 @@ Opdateret 11. oktober 2026. Ansøgningen ligger i [ansoegning/Landzoneansoegning
 | 17 | Tagvand: hvor pumpen leder vandet hen (ydelse 200 l/min og placering er oplyst) | Ejer | Besluttet 10.10.2026: tagvandet kobles på ridebanens eksisterende afløb med pumpe. Se hal-beskrivelse.md afsnit 8. Udløbsstedet afgør, om der skal søges udledningstilladelse |
 | 20 | Det gamle stuehus (staldens vestende, ca. 41 m²) står som gæsteværelse | Ejer | Ejer står inde for, at brugen er privat. Læs landzonesagen fra 1992. Skuret bruges til åbnede wrapballer (lukket) |
 | 21 | Skuret og BBR | Ejer | Kommunens arkiv har byggesag S2021-530504 (2020-1967) "Opførelse af skur". Salgsopstillingen (9.9.2024) skriver, at udhuset ikke er registreret i BBR. Åbn sagens dokument og BBR-meddelelsen og se, om der blev givet tilladelse, og om BBR er rettet |
-| 18 | **To antagelser bag fordelingen 150/50:** at ladtraileren med kapel bruges til hø, halm og wrap, og at den store trailer (5,0 × 2,1 m) er en hestetrailer. Desuden maskinernes faktiske mål | Ejer | Er begge trailere private, bliver den private del ca. 85 m² i stedet for 49 m². Det østlige rum skal reelt bruges til foder, hesteudstyr og værktøj |
+| 18 | **To antagelser bag fordelingen 130/70:** at ladtraileren med kapel bruges til hø, halm og wrap, og at den store trailer (5,0 × 2,1 m) er en hestetrailer. Desuden maskinernes faktiske mål | Ejer | Er begge trailere private, bliver den private del ca. 105 m² og over de 100 m² |
 | 19 | Bekræft, at nr. 42 ligger i Nørholm Fjordlandskab | Ejer / kommunens kort | Fremgår af afgørelsen for Nældevej 30. Laget findes ikke i Plandata |
 
 ## Kommunens byggesagsarkiv for Nældevej 42 (weblager, slået op 10.10.2026)
@@ -112,14 +112,15 @@ Samme løsning som i S2025-10959: hal på 150 m² (15 × 10 m) med landzonetilla
 - at ingen eksisterende bygning har en port, en traktor kan køre ind ad,
 - at skuret er ejendommens eneste øvrige udhus, og at der ikke er garage eller carport (værkstedet i stalden fra salgsopstillingen er nu sadelrum). Det vejer tungt: kommunen tæller eksisterende udhuse med i alle sagerne,
 - at der ikke drives erhverv fra hallen,
-- at ladtraileren med kapel og hestetraileren bruges til ejendommens hestehold, og at det østlige rum bruges til foder, hesteudstyr og værktøj,
+- at ladtraileren med kapel og hestetraileren bruges til ejendommens hestehold, og at foder og hesteudstyr står i staldens to tidligere ponybokse,
 - at toilettet er til brug under arbejdet og ikke til overnatning,
-- at det gamle stuehus i staldens vestende kun bruges som gæsteværelse til private gæster.
+- at det gamle stuehus i staldens vestende kun bruges som gæsteværelse til private gæster,
+- at ridebanen lå der i 2012 som én stor jordbane, og at den tidligere ejer gjorde den mindre for at lave jordfolde til heste med sukkersyge (oplysningen stammer fra den tidligere ejer; luftfotoet fra 2012 viser banen, men ikke grunden til ændringen).
 
 ## Svage punkter, som ikke kan løses med papir
 
 0. **Størrelsen.** Se "Det vigtigste, vi lærte" punkt 1 ovenfor. Det er sagens største risiko.
 1. **Kystnærhedszonen.** Tilladelse kræver, at hallen har "helt underordnet betydning" for kystinteresserne. Kommunen har givet tilladelser til udhuse på 55, 62, 64 og 148 m² i samme zone (Nældevej 30, 9 og 55, Nørholmsvej 149); de tre første var lovliggørelser eller små bygninger.
 2. **Højden.** Ejer har besluttet at beholde 30°. Med soklen 0,4 m over terræn er kiphøjden 7,3 m over terræn. Hallen i S2025-10959 er 6,7 m til kip og bruges som reference. Udhuset i sag S2025-326 blev bl.a. godkendt, fordi det var "af meget begrænset højde", så højden er et punkt, kommunen kan tage op.
-3. **Den private del** er nu ca. 49 m², som i sag S2025-10959. Det holder kun, hvis ladtraileren og hestetraileren reelt bruges til hesteholdet (nr. 18).
+3. **Den private del** er ca. 69 m² (lukket rum 40 m² med toilet, lift og trailer), inden for de 50-100 m². Det holder kun, hvis ladtraileren og hestetraileren reelt bruges til hesteholdet (nr. 18).
 4. **Oversvømmelsesudpegningen** kan give vilkår om sokkelhøjde eller afværge.

@@ -43,7 +43,7 @@ DRIFT = [
     ("Halmballe-elevator (transportbånd) 8,0 × 0,9 m", "elevator", 0.25, 0.50, 0.9, 8.0),
     ("Plæne-\ntraktor\n2,0 × 1,3", "klipper", 1.45, 0.60, 1.3, 2.0),
     ("Møgtrailer\n3,3 × 1,6 m", "trailer_rust", 1.30, 3.00, 1.6, 3.3),
-    ("Plæne-\ntraktor\n2,3 × 1,2", "klipper", 1.50, 6.55, 1.2, 2.3),
+    ("Havetraktor\nmed rive\n2,3 × 1,2", "klipper", 1.50, 6.55, 1.2, 2.3),
     ("Hestetrailer\n5,0 × 2,1 m", "trailer", 0.40, 10.60, 2.1, 5.0),
     ("Ladtrailer med kapel,\n3 aksler (hø, halm, wrap)\n8,0 × 2,55 m", "kapeltrailer", 7.25, 1.40, 2.55, 8.0),
     ("Redskaber og\nridebaneharve\n2,3 × 1,7 m", "redskab", 8.00, 9.70, 1.7, 2.3),
@@ -52,7 +52,6 @@ PRIVAT = [
     ("Trailer 1\n3,6 × 1,7 m", "trailer", 8.00, 12.25, 1.7, 3.6),
 ]
 LIFT = (4.10, 9.90, 3.6, 6.0)        # lift/værksted for enden af midterbanen
-RUMDEL = 5.0                         # skillevæg i det lukkede rum: øst = foder, udstyr, værktøj og toilet (drift), vest = privat
 TOILET = (ix0, iy1 - 1.8, 1.5, 1.8)
 # Private zoner i den åbne hal (til arealopgørelsen), inkl. friplads
 PRIVATZONER = [
@@ -162,8 +161,7 @@ def dk(tal, dec=1):
 ax.add_patch(Rectangle((ix0, iy0), ix1 - ix0, h_y1 - iy0, fc="#f3f9ef", ec="none", zorder=0))
 for z in PRIVATZONER:
     ax.add_patch(Rectangle(z[:2], z[2], z[3], fc="#edf4fc", ec="#1f4e79", lw=0.6, ls=":", zorder=1))
-ax.add_patch(Rectangle((ix0, r_y0), RUMDEL - ix0, iy1 - r_y0, fc="#f3f9ef", ec="none", zorder=0))          # østligt rum: drift
-ax.add_patch(Rectangle((RUMDEL, r_y0), ix1 - RUMDEL, iy1 - r_y0, fc="#edf4fc", ec="none", zorder=0))       # vestligt rum: privat
+ax.add_patch(Rectangle((ix0, r_y0), ix1 - ix0, iy1 - r_y0, fc="#edf4fc", ec="none", zorder=0))             # lukket rum: privat
 
 # Vægge
 vaeg(0, 0, B, YV)
@@ -171,7 +169,6 @@ vaeg(0, L - YV, B, YV)
 vaeg(0, 0, YV, L)
 vaeg(B - YV, 0, YV, L)
 vaeg(ix0, h_y1, ix1 - ix0, SV)
-vaeg(RUMDEL - IV / 2, r_y0, IV, iy1 - r_y0)
 
 # Åben hal
 for t in DRIFT:
@@ -193,23 +190,28 @@ vaeg(TOILET[0] + TOILET[2], TOILET[1], IV, TOILET[3])
 vaeg(TOILET[0], TOILET[1] - IV, TOILET[2] + IV, IV)
 aabning(TOILET[0] + TOILET[2], TOILET[1] + 0.4, IV, 0.8)
 ax.text(TOILET[0] + TOILET[2] / 2, TOILET[1] + TOILET[3] / 2, "Toilet og\nhåndvask\n1,5 × 1,8", fontsize=5.2, ha="center", va="center", zorder=6)
-aabning(2.95, h_y1, 0.9, SV)                        # dør mellem hal og det østlige rum
-ax.add_patch(Arc((2.95, r_y0), 1.8, 1.8, theta1=0, theta2=90, color="#666666", lw=0.5, zorder=5))
+
 aabning(8.5, 0, 0.9, YV)                            # gangdør i portgavlen, i siden mod huset
 ax.add_patch(Arc((9.4, YV), 1.8, 1.8, theta1=90, theta2=180, color="#666666", lw=0.5, zorder=5))
 ax.text(8.95, -0.4, "dør", fontsize=6, ha="center", color="#cc0000")
 aabning(6.85, h_y1, 0.9, SV)                        # dør mellem rum og hal
 ax.add_patch(Arc((6.85, r_y0), 1.8, 1.8, theta1=0, theta2=90, color="#666666", lw=0.5, zorder=5))
 rum_net = (ix1 - ix0) * (iy1 - r_y0)
-RUM_DRIFT, RUM_PRIVAT = RUMDEL * RUM_L, (B - RUMDEL) * RUM_L          # bruttoarealer
-ax.text((RUMDEL + ix1) / 2 + 0.3, (r_y0 + iy1) / 2 - 0.3, f"Privat rum\n(opbevaring)\n{RUM_PRIVAT:.0f} m² brutto", fontsize=6.5, ha="center", va="center", zorder=6)
-ax.text(3.4, (r_y0 + iy1) / 2 + 0.5, f"Foder, hesteudstyr\nog værktøj til maskinerne\n{RUM_DRIFT:.0f} m² brutto med toilet", fontsize=6.0, ha="center", va="center", zorder=6)
+RUM_PRIVAT = B * RUM_L                                                # bruttoareal
+# Indretning af det lukkede rum (samme som på tegning A1.6): (navn, X fra østvæg, Y fra væggen mod hallen, bredde, dybde)
+RUM_INVENTAR = [("Arbejdsbord", 0.15, 0.0, 2.4, 0.7), ("Lejepresse", 2.7, 0.0, 0.6, 0.6), ("Værksteds-\nvogn", 3.45, 0.0, 0.9, 0.5),
+                ("Reoler: hynder, parasol og havegrej", 1.75, 3.17, 7.85, 0.6), ("Hjulstativ,\nsæsonhjul", 7.65, 0.0, 2.0, 0.5),
+                ("Cykler, have-\nredskaber", 4.5, 0.0, 1.6, 0.6), ("Havebord og\nhavestole", 5.0, 1.45, 2.0, 1.0), ("Grill", 7.25, 1.5, 0.6, 0.6)]
+for navn, X_, Y_, w_, d_ in RUM_INVENTAR:
+    ax.add_patch(Rectangle((ix0 + X_, r_y0 + Y_), w_, d_, fc="#dfe6ee", ec="#666666", lw=0.5, ls="--", zorder=2))
+    ax.text(ix0 + X_ + w_ / 2, r_y0 + Y_ + d_ / 2, navn, fontsize=4.3, ha="center", va="center", color="#222222", zorder=6)
+ax.text(ix0 + 3.3, r_y0 + 2.0, f"Privat rum med toilet\n{dk(ix1 - ix0)} × {dk(iy1 - r_y0, 2)} m, {RUM_PRIVAT:.0f} m² brutto\n({dk(rum_net)} m² netto), se bilag A1.6", fontsize=5.0, ha="center", va="center", zorder=6)
 
 # Arealopgørelse
 privat_hal = sum(z[2] * z[3] for z in PRIVATZONER) + LIFT[2] * LIFT[3]
 privat = RUM_PRIVAT + privat_hal
 tx = -1.75
-ax.text(tx, 17.9, f"LUKKEDE RUM\n{RUM_DRIFT:.0f} m² drift\n{RUM_PRIVAT:.0f} m² privat", fontsize=7, ha="center", va="center", color="#1f4e79", weight="bold")
+ax.text(tx, 17.9, f"LUKKET RUM\n{RUM_PRIVAT:.0f} m² brutto\n(privat, med toilet)", fontsize=7, ha="center", va="center", color="#1f4e79", weight="bold")
 ax.text(tx, 11.2, f"ÅBEN HAL\n{B * (L - RUM_L):.0f} m² brutto", fontsize=7, ha="center", va="center", weight="bold")
 ax.text(tx, 9.4, f"blå felter:\nprivat ca. {privat_hal:.0f} m²", fontsize=6.5, ha="center", va="center", color="#1f4e79")
 ax.text(tx, 8.1, f"grønne felter:\ndrift ca. {B * L - privat:.0f} m²", fontsize=6.5, ha="center", va="center", color="#38761d")
@@ -227,7 +229,7 @@ if not VENDT:
 fig.text(0.07, 0.125, "Hal, plan og indretning, Nældevej 42, 9000 Aalborg", fontsize=11, weight="bold")
 fig.text(0.07, 0.105, f"Målestok 1:{MAALESTOK} (A4)   ·   Udvendigt {dk(B)} × {dk(L)} m = {B * L:.0f} m²   ·   Sidehøjde 4,0 m over sokkel, taghældning 30°, kip nord-syd", fontsize=7.5)
 fig.text(0.07, 0.085, "Maskiner og trailere er tegnet efter fotos af de faktiske maskiner; målene i de stiplede felter er anslået og kan afvige lidt.", fontsize=7, color="#444444")
-fig.text(0.07, 0.070, "Grønne felter: ejendommens drift og hestehold. Blå felter: privat (lift, trailer 1 og det vestlige rum). Rammernes søjler er ikke vist.", fontsize=7, color="#444444")
+fig.text(0.07, 0.070, "Grønne felter: ejendommens drift og hestehold. Blå felter: privat (lift, trailer 1 og det lukkede rum med toilet). Rammernes søjler er ikke vist.", fontsize=7, color="#444444")
 
 tegningshoved(fig, "Ny hal, plan og indretning", "1 : 100 (A4)", "A1.1", x=0.56, y=0.010, b=0.41, h=0.052)
 fig.savefig(HER / "hal_plan.png", dpi=200)
@@ -240,15 +242,15 @@ drift = B * L - privat
 BEGRUNDELSE = [
     ("Hvad der søges om", [
         f"Én hal på {B * L:.0f} m² (20 × 10 m) med to anvendelser, som fremgår af plantegningen på side 1. Der søges landzonetilladelse til hele hallen efter planlovens § 35, stk. 1.",
-        f"Ca. {drift:.0f} m² til ejendommens drift og hestehold: maskiner, trailere og et rum på {RUM_DRIFT:.0f} m² til foder, hesteudstyr og værktøj med toilet og håndvask (grønne felter).",
-        f"Ca. {privat:.0f} m² privat: et rum på {RUM_PRIVAT:.0f} m², en liftplads og plads til en trailer, samlet i hallens sydvestlige hjørne (blå felter).",
+        f"Ca. {drift:.0f} m² til ejendommens drift og hestehold: maskiner og trailere (grønne felter). Foder og hesteudstyr opbevares i stalden.",
+        f"Ca. {privat:.0f} m² privat: et lukket rum på {RUM_PRIVAT:.0f} m² med toilet til lejepresse, værkstedsvogn, sæsonhjul, cykler, havemøbler, grill og andet udeudstyr om vinteren, en liftplads og plads til en trailer, samlet i hallens sydende (blå felter).",
     ]),
     ("Maskinerne har hver sin opgave i driften", [
         "Ejendommen er på ca. 3,9 ha med stald på 284 m² (fire hestebokse, to ponybokse og løsdrift), ridebane og folde. Hesteholdet er privat.",
         "Traktor med frontlæsser til baller og udmugning, ladtrailer med kapel til hjemtransport af hø, halm og wrap, hestetrailer, balleflytter til at køre wrapballer ud til hestene, "
-        "halmballe-elevator til at lægge halm og hø på lager, møgtrailer til kørsel af gødning til møddingen, to plænetraktorer til folde, ridebanens kanter og ejendommens arealer, og slæbeharve til ridebanen.",
-        f"Rummet på {RUM_DRIFT:.0f} m² rummer foder (ca. 25 rundballer om året), hesteudstyr og værktøj til maskinerne. Toilettet med håndvask er til dem, der arbejder i hallen, i stalden og på ridebanen, "
-        "så man kan vaske hænder og gå på toilettet i arbejdstøj uden at gå gennem boligen. Der er hverken bad, køkken eller opholdsrum.",
+        "halmballe-elevator til at lægge halm og hø på lager, møgtrailer til udmugning, en plænetraktor til folde og ejendommens arealer, en havetraktor med rive til at holde gårdsplads og ridebane jævne, og slæbeharve til ridebanen.",
+        "Toilettet med håndvask i det lukkede rum er til dem, der rider og arbejder med hestene og maskinerne. Man er beskidt af gødning, foder, jord og olie, og med toilettet lige ved stald og ridebane "
+        "kan man gå på toilettet og vaske hænder i ridetøj og støvler uden at skulle ind i stuehuset. Rummet holdes frostfrit; den åbne hal er uopvarmet.",
         "Stalden kan ikke bruges til maskinerne: boksene, løsdriften og sadelrummet er i brug til hestene (bilag A3.1), ingen bygning har en port, en traktor kan køre ind ad, "
         "og maskiner og brændstof bør ikke stå sammen med dyr, hø og halm. Maskiner og trailere står i dag udendørs.",
     ]),
@@ -257,17 +259,17 @@ BEGRUNDELSE = [
         "og samtidig en garage på 50 m² ved siden af, med afgørende vægt på, at der ikke var andre udhuse, og at behovet var dokumenteret.",
         "I sag S2025-326 (Nørholmsvej 149, 16. juni 2025) godkendte kommunen et udhus på 148 m² til maskiner og værksted på en ejendom på 2,5 ha med privat hobbyhestehold, og i sag S2022-171976 (Nibevej 384, 13. februar 2023) "
         "en lade på 98 m² til traktor, hø og halm på 1,87 ha med tre heste. Begge steder lagde kommunen vægt på, at heste er hjemmehørende i landzonen.",
-        f"Den private del på ca. {privat:.0f} m² svarer til den garage eller det udhus på op til 50 m², der kan opføres ved et enfamiliehus i landzone uden tilladelse (§ 36, stk. 1, nr. 8).",
-        "Ejendommens eneste udhus er et skur på ca. 23 m². Ved at samle alt under ét tag undgås to fritliggende bygninger, som kommunen lagde afgørende vægt på i sag S2023-4703 (Nørholmsvej 222, 20. april 2023).",
+        f"Den private del på ca. {privat:.0f} m² ligger inden for de 50-100 m², kommunen normalt giver landzonetilladelse til, og maskindelen på ca. {drift:.0f} m² ligger mellem de 104 m² og 150,7 m², kommunen godkendte i de to sager.",
+        "Ejendommens eneste udhus er et skur på ca. 16 m². Ved at samle alt under ét tag undgås to fritliggende bygninger, som kommunen lagde afgørende vægt på i sag S2023-4703 (Nørholmsvej 222, 20. april 2023).",
     ]),
     ("Placering og udformning", [
-        "Hallen ligger samlet med ejendommens øvrige bygninger, 11,3 m fra stuehuset og 11,4 m fra skuret ved stalden, og nås ad den eksisterende kørevej.",
+        "Hallen ligger samlet med ejendommens øvrige bygninger, 11,3 m fra stuehuset og 12,3 m fra skuret ved stalden, og nås ad den eksisterende kørevej.",
         "Den er skærmet af læbæltet mod vest og skovbrynet mod øst, og fra Nældevej og fjorden ligger den bag stald, ridebane og læbælte.",
         "Kiphøjden er 7,3 m over terræn, under bygningsreglementets 8,5 m. Facader og tag udføres i sorte, matte, ikke-reflekterende paneler som de sorte tage på stuehus og stald.",
-        "Port og dør vender mod ejendommens egne arealer. Der er ingen åbninger mod naboer, og naboerne har skriftligt erklæret, at de ikke har indvendinger (bilag B2).",
+        "Port og dør vender mod ejendommens egne arealer. Der er ingen åbninger mod naboer.",
     ]),
     ("Vilkår, vi kan acceptere", [
-        "At hallen ikke bruges til erhverv, beboelse eller overnatning. Intet udendørs oplag af maskiner, trailere og redskaber. Mørke, ikke-reflekterende farver. Afskærmende beplantning af hjemmehørende arter syd for hallen i mindst 3 m højde.",
+        "Mørke, ikke-reflekterende farver på facader og tag. Intet udendørs oplag af maskiner, trailere og redskaber.",
     ]),
 ]
 

@@ -105,7 +105,7 @@ for s in (0.5, 1.7, 2.9, 4.1, 5.3):                      # åse på tværs af ra
         linjer.append(([(x, 0, SIDE + dz - 0.06), (x, YN, SIDE + dz - 0.06)], AAS, 2.2))
 # ingen vægrigler: vægpanelerne skrues direkte på rammernes søjler
 # dør fra hallen ind til rummet
-for dx0 in (6.85, 2.95):                                 # privat rum (vest) og rum til foder, udstyr og værktøj med toilet (øst)
+for dx0 in (6.85,):                                      # dør til det lukkede private rum med toilet
     baggrund.append(([(dx0, YN - 0.01, 0), (dx0 + 0.9, YN - 0.01, 0), (dx0 + 0.9, YN - 0.01, 2.1), (dx0, YN - 0.01, 2.1)], "#8c9399", "#333333", 0.6))
 
 # ---------------- Stålrammer ----------------
@@ -178,7 +178,7 @@ for y in (1.2, 4.5, 7.8):
 etiket("Halmballe-elevator", 0.7, 3.0, 0.62, False, dx=-0.03, dy=0.06)
 
 # To plænetraktorer (drift)
-for y0, l_, navn in ((0.6, 2.0, "Plænetraktor"), (6.55, 2.3, "Plænetraktor")):
+for y0, l_, navn in ((0.6, 2.0, "Plænetraktor"), (6.55, 2.3, "Havetraktor med rive")):
     hjulpar(1.45, 2.75, y0 + 0.2, y0 + 0.65, 0.45, 0.25)
     hjulpar(1.45, 2.75, y0 + l_ - 0.7, y0 + l_ - 0.2, 0.5, 0.25)
     kasse(1.62, y0 + 0.1, 0.3, 2.58, y0 + l_ - 0.1, 0.75, GUL)
@@ -257,8 +257,8 @@ for tekst, p, privat, dx, dy in etiketter:
     ax.annotate(tekst, xy=q, xytext=(q[0] + dx, q[1] + dy), fontsize=7.5, ha="center", va="center", zorder=5,
                 arrowprops=dict(arrowstyle="-", lw=0.5, color="#333333"),
                 bbox=dict(boxstyle="round,pad=0.25", fc="white", ec=PRIVAT_KANT if privat else DRIFT_KANT, lw=1.0))
-q = proj((5.4, YN, 2.1))
-ax.annotate("Døre til de to lukkede rum:\nfoder, udstyr og værktøj med toilet (venstre), privat rum (højre)", xy=q, xytext=(q[0] + 0.02, q[1] + 0.045), fontsize=7, ha="center", va="center", zorder=5,
+q = proj((7.3, YN, 2.1))
+ax.annotate(f"Dør til det lukkede private rum ({B * RUM:.0f} m²) med toilet", xy=q, xytext=(q[0] + 0.02, q[1] + 0.045), fontsize=7, ha="center", va="center", zorder=5,
             arrowprops=dict(arrowstyle="-", lw=0.5), bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="#666666", lw=0.6))
 q = proj((6.85, 6.0, 1.8))
 ax.text(q[0] + 0.02, q[1] - 0.03, "person\n1,8 m", fontsize=6, ha="left", va="center", color="#444444", zorder=5)

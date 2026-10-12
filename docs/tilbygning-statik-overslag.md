@@ -1,8 +1,10 @@
-# Overslagsberegning for tilbygningens tagkonstruktion
+# Foreløbig overslagsberegning for tilbygningens tagkonstruktion
 
-Dannet automatisk af `tegninger/tilbygning_teknisk.py` den 10. oktober 2026. Hører til tegningerne A2.2 og A2.3.
+Nældevej 42, 9000 Aalborg. 11. oktober 2026. Hører til tegningerne A2.2 og A2.3.
 
-**Dette er et overslag og ikke en statisk dokumentation.** Gitterspær leveres normalt fra en spærfabrik, som selv dimensionerer dem og leverer beregning og monteringsvejledning. Tallene her er til at forstå størrelsesordener og til at stille de rigtige spørgsmål.
+**Beregningen er foreløbig.** Den er udført af bygherren som grundlag for landzoneansøgningen og viser, at tilbygningen kan udføres med gitterspær som i det eksisterende hus. Gitterspærene dimensioneres og leveres af en spærfabrik, som udarbejder den endelige beregning og monteringsvejledning til byggeansøgningen.
+
+Beregningen følger DS/EN 1990, DS/EN 1991-1-3 og DS/EN 1991-1-4 med de danske nationale annekser (DK NA 2024 for sne og vind) og DS/EN 1995-1-1. Spæret er regnet som plan gitterkonstruktion (elementmetode), og lastkombinationerne er dannet efter DS/EN 1990 DK NA, ligning 6.10b.
 
 ## 1. Det eksisterende hus
 
@@ -16,10 +18,10 @@ Billederne fra loftet (billeder/IMG_2987-2989) viser W-gitterspær i træ: genne
 | Spændvidde | 8,0 m mellem vægmidter (den sydlige del, hvor tilbygningen har egne vægge i begge sider) |
 | Taghældning og spærafstand | 25° og 1,0 m, som anslået for det eksisterende hus |
 | Egenlast | Tag 0,35 kN/m² (bølgeplader, lægter, spær), loft 0,35 kN/m² (isolering og loftbeklædning) |
-| Nyttelast på loft | 0,5 kN/m² til let opbevaring (antaget; ψ0 = 0,5) |
-| Sne | s_k = 1,0 kN/m²; jævn μ = 0,8; ophobning på vestlig tagflade μ_w = 1,2, fordi tilbygningens kip ligger nord-syd |
-| Vind | q_p = 0,67 kN/m² i 4,7 m højde; sug med formfaktor -1,0 (udvendig -0,8 og indvendig +0,2, efter hukommelsen) |
-| Træ | C24: f_m = 24, f_c = 21, f_t = 14,5 MPa; k_mod = 0,9; γ_M = 1,35 |
+| Nyttelast på loft | 0,5 kN/m² til let opbevaring (antaget; ψ0 = 0,5 som for kategori A i DS/EN 1990 DK NA) |
+| Sne | s_k = 1,0 kN/m² (DK NA); jævn μ_1 = 0,8 (tabel 5.2); ophobning på vestlig tagflade μ_w = 1,2 efter DK NA 5.3.3(4), fordi tilbygningens kip ligger nord-syd og den østlige tagflade vender mod øst. Medtaget på den sikre side |
+| Vind | q_p = 0,67 kN/m² i 4,7 m højde (v_b,0 = 24 m/s, terrænkategori II); sug på hele taget med c_pe = −0,8 (DS/EN 1991-1-4 tabel 7.4a, zone F/G ved 25°, på den sikre side) og c_pi = +0,2, i alt −1,0 |
+| Træ | C24 (DS/EN 338): f_m = 24, f_c,0 = 21, f_t,0 = 14,5 MPa, E_0,05 = 7.400 MPa; k_mod = 0,9 (korttidslast, anvendelsesklasse 2); γ_M = 1,35 (DS/EN 1995-1-1 DK NA). Søjlereduktion k_c efter DS/EN 1995-1-1, 6.3.2 |
 
 ## 3. Dimensioner
 

@@ -41,7 +41,7 @@
       "flise": 0.5
     },
     "maskiner": {
-      "_note": "Ejers fotos 11.10.2026 (IMG_3005-3010, P_20220430_210511). Mål er anslået fra fotos og skal måles op. Indretningen står i hal_plan.py. Fordelingen er lagt efter Aalborg Kommunes sag S2025-10959: ca. 150 m² til ejendommens drift og hestehold, ca. 50 m² privat. Det private er samlet i sydvest.",
+      "_note": "Ejers fotos 11.10.2026 (IMG_3005-3010, P_20220430_210511). Mål er anslået fra fotos og skal måles op. Indretningen står i hal_plan.py. Fordelingen er lagt efter Aalborg Kommunes sag S2025-10959: ca. 130 m² til ejendommens drift og hestehold, ca. 70 m² privat (lukket rum 40 m² med toilet, lift og trailer 1), samlet i sydenden.",
       "drift": [
         "Traktor med frontlæsser (i midterbanen inden for porten)",
         "Ladtrailer med kapel, 3 aksler, ca. 8,0 x 2,55 m (ANTAGET til hø, halm og wrap; ejer bekræfter)",
@@ -49,19 +49,18 @@
         "Balleflytter til wrapballer",
         "Halmballe-elevator, ca. 8 m",
         "Møgtrailer, ca. 3,3 x 1,6 m",
-        "To plænetraktorer (Cub Cadet og Stiga)",
-        "Slæbeharve til ridebanen og redskaber",
-        "Rum 20 m² til foder, hesteudstyr og værktøj, med toilet"
+        "Plænetraktor (Cub Cadet) og havetraktor med rive (Stiga) til at holde gårdsplads og ridebane jævne",
+        "Slæbeharve til ridebanen og redskaber"
       ],
       "privat": [
         "Trailer 1, ca. 3,6 x 1,7 m",
         "Tosøjlet lift til egne biler",
-        "Rum 20 m² til privat opbevaring"
+        "Lukket rum 40 m² til privat opbevaring, med toilet"
       ],
       "udgaaet": "Trailer 2 (3,6 x 1,7 m) er ikke længere på planen; der er ikke plads"
     },
-    "privat_rum_m2": 20,
-    "_note_rum": "De sidste 4 m i sydenden er delt i to rum på hver 20 m² brutto (ejers beslutning 11.10.2026): mod øst foder, hesteudstyr og værktøj til maskinerne med toilet og håndvask (ejendommens drift), mod vest privat opbevaring. Toilettet beholdes og begrundes med arbejdet i hal, stald og på ridebane."
+    "privat_rum_m2": 40,
+    "_note_rum": "Det lukkede rum på 40 m² i sydenden er privat opbevaring med toilet og håndvask (ejers beslutning 11.10.2026). Foder og hesteudstyr opbevares i stalden (de to tidligere ponybokse). Toilettet begrundes med, at man kan gå på toilettet i ridetøj og arbejdstøj uden at gøre boligen beskidt."
   },
   "hus_ydermaal": {
     "_note": "Fra mæglerens vejledende plantegning (2024): indvendigt ca. 14,7 x 7,35 m plus ydervægge. Passer med BBR 123 m². Skal måles op.",
@@ -135,19 +134,19 @@
     ]
   },
   "skur": {
-    "_note": "Eksisterende skur bygget helt op ad østsiden af staldens sydfløj, godkendt i BBR. Ejer oplyser, at det mod nord kun er godt halvt så dybt som først tegnet, så dybden er sat til 2,8 m fra sydkanten. Ca. 8,3 x 2,8 m. Østkant og sydkant målt på Apple-luftfotoet (+/- 0,5 m). Højde antaget. Lokale koordinater (x øst, y nord). IMG_9768 viser hvide vægge og fladt, mørkt tag. Drejet, så det ligger parallelt med hus, stald og hal.",
+    "_note": "Eksisterende skur bygget helt op ad østsiden af staldens sydfløj, godkendt i BBR. Ejer oplyser, at det mod nord kun er godt halvt så dybt som først tegnet, så dybden er sat til 2,8 m fra sydkanten. Ca. 8,3 x 2,8 m. Østkant og sydkant målt på Apple-luftfotoet (+/- 0,5 m). Højde antaget. Lokale koordinater (x øst, y nord). IMG_9768 viser hvide vægge og fladt, mørkt tag. Drejet, så det ligger parallelt med hus, stald og hal. Rettet 11.10.2026 efter luftfoto: skuret er ca. 5,8 m langt mod øst (ikke 8,3), ca. 16 m².",
     "punkter": [
       [
         7.39,
         10.97
       ],
       [
-        15.76,
-        10.89
+        13.2,
+        10.91
       ],
       [
-        15.78,
-        13.69
+        13.22,
+        13.71
       ],
       [
         7.41,
@@ -388,7 +387,7 @@
     "_note": "Efter mæglerens vejledende plan (2024) og fotos: hvide vægge, sort tag, ca. 38 grader. Åbninger angivet som brøkdel af facadens længde: hovedlængens nord/syd regnes fra vest, østgavlen fra nord, fløjens vest/øst fra hovedlængens sydvæg mod syd. Nordfacaden mod vejen har seks ens vinduer (tegnet 0,9 x 0,8 m) og ét langt, lavt vindue (ca. 1,8 x 0,5 m) i vestenden mod indkørslen til huset (ejers oplysning; mål er skøn).",
     "tagfod": 2.6,
     "haeldning": 38,
-    "indhold": "Vestenden er ejendommens gamle stuehus, ca. 41-44 m², som bruges som gæsteværelse til private gæster (ikke godkendt til selvstændig beboelse). De to tidligere sadelrum ved siden af er ét gæsteværelse (kun en støttevæg på 1 m ved ydervæggen). Ét sadelrum (det tidligere værksted), bad, 4 hestebokse og 2 ponybokse, løsdrift/garage 5,83 x 7,72 m i sydfløjen",
+    "indhold": "Vestenden er ejendommens gamle stuehus, ca. 41-44 m², som bruges som gæsteværelse til private gæster (ikke godkendt til selvstændig beboelse). De to tidligere sadelrum ved siden af er ét gæsteværelse (kun en støttevæg på 1 m ved ydervæggen). Ét sadelrum (det tidligere værksted), toilet (tidligere bad), 4 hestebokse og 2 tidligere ponybokse, som bruges til foder og hesteudstyr, løsdrift/garage 5,83 x 7,72 m i sydfløjen",
     "nord": [
       {
         "f0": 0.064,
@@ -598,7 +597,12 @@
       "Vand: privat vandforsyning. Vej: privat fællesvej",
       "Opført 1992, ombygget 2024. Jordvarme fra 2018"
     ],
-    "matrikelforhold": "Efter matriklen.dk (skærmbillede 11.10.2026): 1rp er en rektangulær matrikel på ca. 41 x 135 m, omgivet af 1cc mod nord, vest og syd. Ridebanen og det meste af foldene mod øst ligger på 1rp. Den nye hal ligger hen over skellet mellem 1cc og 1rp (ca. 7 m på 1cc og ca. 2-3 m på 1rp). Tilbygningen ligger på 1cc, ca. 4,9 m fra skellet mod nabo 1cb. 57b ligger uden for skærmbilledet. Det er ikke afklaret, om 1rp hører til samme samlede faste ejendom (BFE) som 1cc."
+    "matrikelforhold": "Efter matriklen.dk (skærmbillede 11.10.2026): 1rp er en rektangulær matrikel på ca. 41 x 135 m, omgivet af 1cc mod nord, vest og syd. Ridebanen og det meste af foldene mod øst ligger på 1rp. Den nye hal ligger hen over skellet mellem 1cc og 1rp (ca. 7 m på 1cc og ca. 2-3 m på 1rp). Tilbygningen ligger på 1cc, ca. 4,9 m fra skellet mod nabo 1cb. 57b ligger uden for skærmbilledet. Det er ikke afklaret, om 1rp hører til samme samlede faste ejendom (BFE) som 1cc.",
+    "ansoegere": {
+      "navne": "Julie Vitenson og Jonas Vitenson",
+      "telefon": "+45 40 15 82 36",
+      "email": "jb@jossound.dk"
+    }
   },
   "hus_rum": {
     "_note": "Rum i det eksisterende hus efter mæglerens vejledende plantegning (ikke målfast). Mål i meter fra husets indvendige sydvestlige hjørne: [navn, x, y, bredde øst-vest, dybde nord-syd]. Stuens loftshøjde 2,31 m.",
@@ -690,7 +694,7 @@
     ]
   },
   "moedding": {
-    "_note": "Møddingsplads op ad ridebanens sydside ved det sydøstlige hjørne, mellem ridebanen og den tredje fold (ejers oplysning). Afskærmning mod nord, øst og syd, åben mod vest. Størrelse er et skøn (+/- 2 m).",
+    "_note": "Lav L-formet mur op ad ridebanens sydside ved det sydøstlige hjørne. Må ikke benævnes i materialet til kommunen (ejers beslutning 11.10.2026); tegnes uden etiket.",
     "punkter": [
       [
         54.3,
@@ -1006,5 +1010,12 @@
         ]
       }
     ]
+  },
+  "koerevej_fold": {
+    "_note": "Kørevej fra porten i en bue mod øst og syd ind i fold 1 (ejers ønske 11.10.2026), så traktor med vogn kan vende uden at køre ind på ridebanen. Centerlinje: fra portens midte 'lige' m lige ud, derefter halvcirkel med 'radius' m (centerlinje) mod øst, derefter lige ind i folden. Kræver låge i foldens hegn øst for hallen og i drivgangens hegn.",
+    "radius": 6.0,
+    "lige": 0.8,
+    "bredde": 3.5,
+    "ind_i_fold": 8.0
   }
 }

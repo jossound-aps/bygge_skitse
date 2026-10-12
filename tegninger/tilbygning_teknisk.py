@@ -5,6 +5,7 @@ Kør:  python3 tegninger/tilbygning_teknisk.py
 Giver: tegninger/hus_facader.pdf/.png         (A2.2, 1:100: hus med tilbygning, fire facader)
        tegninger/tilbygning_snit.pdf/.png     (A2.3, 1:50: snit med gitterspær og hovedresultater)
        docs/tilbygning-statik-overslag.md
+       tegninger/tilbygning_beregning.pdf  (samme rapport som PDF, bilag A2.4 i ansøgningen)
 
 Spærtypen følger det eksisterende hus (W-gitterspær i træ, se billeder/IMG_2987-2989).
 Beregningen er et OVERSLAG og ikke en statisk dokumentation.
@@ -19,6 +20,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Polygon, Rectangle
 
+from rapport_pdf import md_til_pdf
 from statik import Ramme, kombiner
 from tegningshoved import tegningshoved
 
@@ -114,11 +116,13 @@ linjelast = ned / CC + 1.0 * G_VAEG
 FUND_B = 0.6
 k1 = list(valgt["komb"].values())[0]
 
-rap = f"""# Overslagsberegning for tilbygningens tagkonstruktion
+rap = f"""# Foreløbig overslagsberegning for tilbygningens tagkonstruktion
 
-Dannet automatisk af `tegninger/tilbygning_teknisk.py` den 10. oktober 2026. Hører til tegningerne A2.2 og A2.3.
+Nældevej 42, 9000 Aalborg. 11. oktober 2026. Hører til tegningerne A2.2 og A2.3.
 
-**Dette er et overslag og ikke en statisk dokumentation.** Gitterspær leveres normalt fra en spærfabrik, som selv dimensionerer dem og leverer beregning og monteringsvejledning. Tallene her er til at forstå størrelsesordener og til at stille de rigtige spørgsmål.
+**Beregningen er foreløbig.** Den er udført af bygherren som grundlag for landzoneansøgningen og viser, at tilbygningen kan udføres med gitterspær som i det eksisterende hus. Gitterspærene dimensioneres og leveres af en spærfabrik, som udarbejder den endelige beregning og monteringsvejledning til byggeansøgningen.
+
+Beregningen følger DS/EN 1990, DS/EN 1991-1-3 og DS/EN 1991-1-4 med de danske nationale annekser (DK NA 2024 for sne og vind) og DS/EN 1995-1-1. Spæret er regnet som plan gitterkonstruktion (elementmetode), og lastkombinationerne er dannet efter DS/EN 1990 DK NA, ligning 6.10b.
 
 ## 1. Det eksisterende hus
 
@@ -132,10 +136,10 @@ Billederne fra loftet (billeder/IMG_2987-2989) viser W-gitterspær i træ: genne
 | Spændvidde | {dk(SPAN)} m mellem vægmidter (den sydlige del, hvor tilbygningen har egne vægge i begge sider) |
 | Taghældning og spærafstand | {dk(HAELD, 0)}° og {dk(CC)} m, som anslået for det eksisterende hus |
 | Egenlast | Tag {dk(G_TOP, 2)} kN/m² (bølgeplader, lægter, spær), loft {dk(G_BUND, 2)} kN/m² (isolering og loftbeklædning) |
-| Nyttelast på loft | {dk(Q_LOFT)} kN/m² til let opbevaring (antaget; ψ0 = 0,5) |
-| Sne | s_k = {dk(SK)} kN/m²; jævn μ = {dk(MU1)}; ophobning på vestlig tagflade μ_w = {dk(MU_W)}, fordi tilbygningens kip ligger nord-syd |
-| Vind | q_p = {dk(QP, 2)} kN/m² i {dk(KIP)} m højde; sug med formfaktor -1,0 (udvendig -0,8 og indvendig +0,2, efter hukommelsen) |
-| Træ | C24: f_m = 24, f_c = 21, f_t = 14,5 MPa; k_mod = {dk(KMOD)}; γ_M = {dk(GM, 2)} |
+| Nyttelast på loft | {dk(Q_LOFT)} kN/m² til let opbevaring (antaget; ψ0 = 0,5 som for kategori A i DS/EN 1990 DK NA) |
+| Sne | s_k = {dk(SK)} kN/m² (DK NA); jævn μ_1 = {dk(MU1)} (tabel 5.2); ophobning på vestlig tagflade μ_w = {dk(MU_W)} efter DK NA 5.3.3(4), fordi tilbygningens kip ligger nord-syd og den østlige tagflade vender mod øst. Medtaget på den sikre side |
+| Vind | q_p = {dk(QP, 2)} kN/m² i {dk(KIP)} m højde (v_b,0 = 24 m/s, terrænkategori II); sug på hele taget med c_pe = −0,8 (DS/EN 1991-1-4 tabel 7.4a, zone F/G ved 25°, på den sikre side) og c_pi = +0,2, i alt −1,0 |
+| Træ | C24 (DS/EN 338): f_m = 24, f_c,0 = 21, f_t,0 = 14,5 MPa, E_0,05 = 7.400 MPa; k_mod = {dk(KMOD)} (korttidslast, anvendelsesklasse 2); γ_M = {dk(GM, 2)} (DS/EN 1995-1-1 DK NA). Søjlereduktion k_c efter DS/EN 1995-1-1, 6.3.2 |
 
 ## 3. Dimensioner
 
@@ -176,6 +180,7 @@ Træk er positivt. Negativ lodret reaktion er løft.
 7. **Brandadskillelse** mellem garage og bolig, også på loftet.
 """
 (HER.parent / "docs" / "tilbygning-statik-overslag.md").write_text(rap, encoding="utf-8")
+md_til_pdf(rap, HER / "tilbygning_beregning.pdf", "Bilag A2.4: Foreløbig overslagsberegning, tilbygning, Nældevej 42, 9000 Aalborg")
 
 # ================= TEGNINGER =================
 HVID, NY, TAG, GLAS, DOER = "#f6f6f3", "#fff3d6", "#232528", "#5f7f99", "#5b4636"
@@ -299,8 +304,8 @@ for x in (0, BT - YV):                           # ydervægge og stribefundament
     ax.add_patch(Rectangle(P(x, 0), YV, SOK_HUS, fc="#b9b9b4", ec="black", lw=0.7, zorder=3.2))
     ax.add_patch(Rectangle(P(x + YV / 2 - FUND_B / 2, -0.9), FUND_B, 0.9, fc="#d9d9d9", ec="black", lw=0.6, hatch="...", zorder=2))
 ax.add_patch(Rectangle(P(YV, SOK_HUS - 0.12), BT - 2 * YV, 0.12, fc="#cfcfcf", ec="black", lw=0.5))
-ax.add_patch(Rectangle(P(YV, SOK_HUS - 0.42), BT - 2 * YV, 0.30, fc="#f6e7a8", ec="#888888", lw=0.3, hatch="xx"))
-ax.add_patch(Rectangle(P(YV, SOK_HUS - 0.62), BT - 2 * YV, 0.20, fc="#efe7d3", ec="#888888", lw=0.3, hatch="oo"))
+ax.add_patch(Rectangle(P(YV, SOK_HUS - 0.56), BT - 2 * YV, 0.44, fc="#f6e7a8", ec="#888888", lw=0.3, hatch="xx"))      # 2 x 220 mm isolering (ejers valg)
+ax.add_patch(Rectangle(P(YV, SOK_HUS - 0.76), BT - 2 * YV, 0.20, fc="#efe7d3", ec="#888888", lw=0.3, hatch="oo"))
 sx0 = YV / 2                                     # spærets understøtning i vægmidte
 S_ = lambda k: P(sx0 + KN[k][0], TAGFOD + KN[k][1])
 ax.add_patch(Rectangle(P(YV, TAGFOD), BT - 2 * YV, 0.40, fc="#f6e7a8", ec="#888888", lw=0.3, hatch="xx", zorder=1))     # loftisolering
@@ -335,7 +340,7 @@ note(f"W-gitterspær C24 pr. {dk(CC)} m:\nhoved {DT[0]}×{DT[1]}, fod {DB[0]}×{
 note("Sorte bølgeplader på lægter,\nsom eksisterende", (sx0 + SPAN - 1.4, TAGFOD + 0.75), (BT - 1.2, TAGFOD + 2.3))
 note("Loftisolering på spærfoden", (BT - 2.2, TAGFOD + 0.2), (BT + 0.4, TAGFOD + 0.9))
 note("Ydervæg 45 cm,\nsom eksisterende facade", (0.25, 0.7), (-2.4, 0.45))
-note("Terrændæk: beton, isolering,\nkapillarbrydende lag. Gulv i soklens\noverkant, ca. 0,4 m over terræn", (2.5, SOK_HUS - 0.3), (1.2, -1.05))
+note("Terrændæk: beton 120 mm,\nisolering 2 × 220 mm,\nkapillarbrydende lag. Gulv i soklens\noverkant, ca. 0,4 m over terræn", (2.5, SOK_HUS - 0.35), (1.2, -1.15))
 note(f"Stribefundament {dk(FUND_B)} × 0,9 m", (BT - 0.2, -0.6), (BT + 0.3, -0.9))
 ax.text(OX, OY + TAGFOD + HR + 1.8, "Snit B-B gennem soveværelset (set mod nord)", fontsize=10, weight="bold")
 ax.text(OX, OY + TAGFOD + HR + 1.35, "Tal på stængerne: normalkraft i kN for sne på hele taget (K1). Rød = tryk, blå = træk.", fontsize=7)
@@ -349,7 +354,7 @@ linjer = [("OVERSLAGSBEREGNING, hovedresultater", True),
           (f"Lodret last pr. spær: {dk(ned)} kN ({dk(ned / CC)} kN/m væg)", False), (f"Løft fra vind pr. spær: {dk(loeft)} kN", False),
           (f"Linjelast på fundament: ca. {dk(linjelast)} kN/m", False), ("", False),
           ("Ikke eftervist: tandpladesamlinger, bæring på husets", False), ("gavl, skotrender, stabilitet, jordens bæreevne.", False),
-          ("Se docs/tilbygning-statik-overslag.md.", False)]
+          ("Se bilag A2.4.", False)]
 ax.add_patch(Rectangle((bx - 0.2, by - 0.33 * len(linjer) - 0.1), 6.5, 0.33 * len(linjer) + 0.45, fc="#fbfbf7", ec="#888888", lw=0.6))
 for i, (tx, fed) in enumerate(linjer):
     ax.text(bx, by - 0.33 * i, tx, fontsize=6.8, weight="bold" if fed else "normal", va="center")

@@ -12,6 +12,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.patches import Circle, Polygon
 from nordpil import nordpil
 from tegningshoved import tegningshoved
@@ -74,6 +75,25 @@ else:
 hal_u1 = hal_u0 + h["bredde"]
 hal_v0 = hal_v1 - h["laengde"]
 PORT_NORD = h.get("port_mod") == "nord"
+
+
+def bue_til_fold(um, pv, retning, kf):
+    """Kørevej fra porten i en bue ind i fold 1: (midterlinje, [venstre kant, højre kant]) i u,v-koordinater. retning = +1, når porten vender mod nord."""
+    R, s0, b = kf["radius"], kf["lige"], kf["bredde"] / 2
+    pts = [(um, pv + retning * t) for t in np.linspace(0, s0, 3)]
+    cu, cv = um + R, pv + retning * s0
+    pts += [(cu - R * math.cos(a), cv + retning * R * math.sin(a)) for a in np.linspace(0, math.pi, 40)[1:]]
+    pts += [(um + 2 * R, pv - retning * t) for t in np.linspace(0, kf["ind_i_fold"], 4)[1:]]
+    kanter = ([], [])
+    for i, (x, y) in enumerate(pts):
+        x0, y0 = pts[max(i - 1, 0)]
+        x1, y1 = pts[min(i + 1, len(pts) - 1)]
+        dx, dy = x1 - x0, y1 - y0
+        n = math.hypot(dx, dy) or 1.0
+        nx, ny = -dy / n, dx / n
+        kanter[0].append((x + nx * b, y + ny * b))
+        kanter[1].append((x - nx * b, y - ny * b))
+    return pts, kanter
 
 
 def afstand_til_linje(p, linje):
@@ -188,11 +208,12 @@ def tegn(luftfoto):
         sf = cfg["sandfold"]["punkter"]
         ax.add_patch(Polygon(sf, closed=True, fc="none" if luftfoto else "#f3ecdc", ec="none", zorder=1))
         ax.text(sum(p[0] for p in sf) / len(sf), sum(p[1] for p in sf) / len(sf), "Sand-\nfold", fontsize=5.5, ha="center", va="center", color=streg if luftfoto else "#5c5035", zorder=7)
-    for noegle, navn in (("moedding", "Mødding"), ("mur", "Lav mur")):
+    for noegle, navn in (("moedding", None), ("mur", "Lav mur")):
         if noegle in cfg:
             md = cfg[noegle]["punkter"]
             ax.plot(*zip(*md), color=streg if luftfoto else "black", lw=1.2, zorder=3)
-            ax.text(sum(p[0] for p in md) / len(md), sum(p[1] for p in md) / len(md), navn, fontsize=5.5, ha="center", va="center", color=streg, zorder=7)
+            if navn:
+                ax.text(sum(p[0] for p in md) / len(md), sum(p[1] for p in md) / len(md), navn, fontsize=5.5, ha="center", va="center", color=streg, zorder=7)
     for linje in cfg.get("hegn", {}).get("linjer", []):
         el = linje["type"] == "el"
         ax.plot(*zip(*linje["punkter"]), color="#ffffff" if luftfoto else "#3a2a1a", lw=0.6 if el else 1.0, ls=(0, (4, 2)) if el else "-", marker="o", ms=1.4, zorder=2)
@@ -255,7 +276,7 @@ def tegn(luftfoto):
     # Hal med opdeling
     ax.add_patch(Polygon(rekt(hal_u0, rum_v0, hal_u1, rum_v1), closed=True, fc="#9fc5e8", ec="#1f4e79", lw=1.2, zorder=4))
     ax.add_patch(Polygon(rekt(hal_u0, aab_v0, hal_u1, aab_v1), closed=True, fc="#b6d7a8", ec="#1f4e79", lw=1.2, zorder=4))
-    ax.text(*xy((hal_u0 + hal_u1) / 2, (rum_v0 + rum_v1) / 2), f"2 rum à {rum_m2 / 2:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
+    ax.text(*xy((hal_u0 + hal_u1) / 2, (rum_v0 + rum_v1) / 2), f"Rum {rum_m2:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
     ax.text(*xy((hal_u0 + hal_u1) / 2, (aab_v0 + aab_v1) / 2), f"Hal i alt\ndrift ca. {drift_m2:.0f} m²\nprivat ca. {privat_m2:.0f} m²", fontsize=6, ha="center", va="center", zorder=7)
     # Kip
     k0, k1 = xy((hal_u0 + hal_u1) / 2, hal_v0), xy((hal_u0 + hal_u1) / 2, hal_v1)
@@ -283,6 +304,15 @@ def tegn(luftfoto):
         _, kanter, rmin = koerevej_linjer(xy(um, pv), ret)
         for k in kanter:
             ax.plot(*zip(*k), color="#ffe24a" if luftfoto else "#444444", lw=0.9, ls=(0, (5, 2)), zorder=5)
+        if "koerevej_fold" in cfg:                    # bue fra porten ind i fold 1 (traktor med vogn kan vende uden at komme på ridebanen)
+            kf = cfg["koerevej_fold"]
+            midt, kb = bue_til_fold(um, pv, 1 if PORT_NORD else -1, kf)
+            for k in kb:
+                ax.plot(*zip(*[xy(*p) for p in k]), color="#ffe24a" if luftfoto else "#444444", lw=0.9, ls=(0, (5, 2)), zorder=5)
+            tx_, ty_ = xy(um + 2 * kf["radius"] + 2.2, pv - 3.5)
+            ax.text(tx_, ty_, "Kørevej til\nfold 1 (bue)", fontsize=5.5, ha="left", va="center", color="#ffe24a" if luftfoto else "#444444", zorder=7)
+            rb_syd = max(p[1] for p in cfg["ridebane"]["punkter"][-2:])
+            print(f"Kørevej til fold: yderkant af buen når v = {max(p[1] for p in kb[0] + kb[1]):.1f} m; ridebanens sydkant ligger ved y ≈ {rb_syd:.1f} m")
         ax.text(kanter[0][1][0] + 2.3, kanter[0][1][1] - 3, "Eksisterende\nkørevej", fontsize=5.5, ha="left", va="center",
                 color="#ffe24a" if luftfoto else "#444444", zorder=7)
 

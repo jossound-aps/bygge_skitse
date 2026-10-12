@@ -6,6 +6,7 @@ Giver: tegninger/hal_facader.pdf/.png        (A1.2, 1:100)
        tegninger/hal_snit.pdf/.png           (A1.3, 1:50, med hovedresultater)
        tegninger/hal_konstruktion.pdf/.png   (A1.4, 1:100: ramme- og åseplan samt fundamentsplan)
        docs/hal-statik-overslag.md           (laster, snitkræfter, udnyttelser, åse, fundamenter, afstivning)
+       tegninger/hal_beregning.pdf           (samme rapport som PDF, bilag A1.5 i ansøgningen)
 
 Beregningen er et OVERSLAG til dialog med leverandør og rådgiver. Den er ikke en statisk dokumentation.
 """
@@ -20,6 +21,7 @@ import numpy as np
 from matplotlib.patches import Polygon, Rectangle
 
 from nordpil import nordpil
+from rapport_pdf import md_til_pdf
 from statik import Ramme, kombiner
 from tegningshoved import tegningshoved
 
@@ -38,7 +40,7 @@ A_RAMME = 5.0                                         # belastningsbredde for en
 G_TAG, G_VAEG = 0.25, 0.15                            # kN/m²: paneler, åse og beslag (uden rammens egenvægt)
 SK, MU1, MU_W = 1.0, 0.8, 1.2                         # sne: terrænværdi og formfaktorer (DK NA 2024)
 QP = 0.78                                             # kN/m², terrænkategori II, z = 7,3 m over terræn, vb = 24 m/s
-FY, E_STAAL, GM0, GM1 = 235e3, 210e6, 1.1, 1.2        # S235; partialkoefficienter efter DK NA (efter hukommelsen)
+FY, E_STAAL, GM0, GM1 = 235e3, 210e6, 1.1, 1.2        # S235; γ_M0 = 1,10 og γ_M1 = 1,20 efter DS/EN 1993-1-1 DK NA (γ_3 = 1,0)
 # IPE: A cm², Iy cm4, Wpl cm³, h mm, b mm, kg/m
 IPE = {"IPE 200": (28.5, 1943, 221, 200, 100, 22.4), "IPE 220": (33.4, 2772, 285, 220, 110, 26.2), "IPE 240": (39.1, 3892, 367, 240, 120, 30.7),
        "IPE 270": (45.9, 5790, 484, 270, 135, 36.1), "IPE 300": (53.8, 8356, 628, 300, 150, 42.2), "IPE 330": (62.6, 11770, 804, 330, 160, 49.1),
@@ -47,7 +49,7 @@ STAENGER = ["sv", "tv", "to", "so"]                   # søjle vest, tag vest, t
 NORMAL = {"sv": (-1, 0), "tv": (-math.sin(ALFA), math.cos(ALFA)), "to": (math.sin(ALFA), math.cos(ALFA)), "so": (1, 0)}
 # vind: (cpe - cpi) pr. stang. W1 = vind fra vest med tryk på taget, W1e = samme fra øst, W2 = fra vest med sug, W3 = vind langs kippen
 VIND = {"W1": {"sv": 1.1, "tv": 0.7, "to": 0.3, "so": -0.2}, "W1e": {"sv": -0.2, "tv": 0.3, "to": 0.7, "so": 1.1},
-        "W2": {"sv": 0.6, "tv": -0.4, "to": -0.7, "so": -0.7}, "W3": {"sv": -1.0, "tv": -1.0, "to": -1.0, "so": -1.0}}
+        "W2": {"sv": 0.6, "tv": -0.5, "to": -0.7, "so": -0.7}, "W3": {"sv": -1.0, "tv": -1.0, "to": -1.0, "so": -1.0}}
 KOMB = {"K1  1,0 G + 1,5 S(jævn) + 0,45 W(tryk)": {"G": 1.0, "S1": 1.5, "W1": 0.45},
         "K2  1,0 G + 1,5 S(ophobning vest) + 0,45 W(fra øst)": {"G": 1.0, "S2": 1.5, "W1e": 0.45},
         "K3  1,0 G + 1,5 S(omfordelt) + 0,45 W(tryk)": {"G": 1.0, "S3": 1.5, "W1": 0.45},
@@ -123,7 +125,7 @@ PROFIL, PH = valgt["profil"], valgt["h"] / 1000
 # ---------------- Åse (konstruktionstræ C24) ----------------
 AASE_S = [0.5, 1.7, 2.9, 4.1, 5.3]                    # placering målt langs spæret fra tagfod
 C24 = {"fm": 24.0, "E": 11000.0}
-KMOD, GM_TRAE = 0.9, 1.35                             # korttidslast (sne), DK NA (efter hukommelsen)
+KMOD, GM_TRAE = 0.9, 1.35                             # sne er korttidslast i Danmark (k_mod = 0,9, anvendelsesklasse 2); γ_M = 1,35 for konstruktionstræ efter DS/EN 1995-1-1 DK NA
 
 
 def aas(b_mm, h_mm, spaend, afstand=1.2):
@@ -161,11 +163,13 @@ tryk_jord = (tryk + sok_vaegt_m * L_TRYK) / (L_TRYK * SOK_B)
 FUND = (SOK_B, SOK_B, SOK_DYBDE)                      # bruges af tegningerne
 
 # ---------------- Rapport ----------------
-rap = [f"""# Overslagsberegning for hallens bærende konstruktion
+rap = [f"""# Foreløbig overslagsberegning for hallens bærende konstruktion
 
-Dannet automatisk af `tegninger/hal_teknisk.py` den 10. oktober 2026. Hører til tegningerne A1.2-A1.4.
+Nældevej 42, 9000 Aalborg. 11. oktober 2026. Hører til tegningerne A1.2-A1.4.
 
-**Dette er et overslag og ikke en statisk dokumentation.** Det viser størrelsesordener, så I kan tale med stålleverandør og rådgiver på et oplyst grundlag. Den endelige dimensionering skal laves af den, der påtager sig ansvaret for konstruktionen, og kan give andre dimensioner.
+**Beregningen er foreløbig.** Den er udført af bygherren som grundlag for landzoneansøgningen og for dialogen med producenten, og den viser, at den ansøgte bygning kan udføres med sædvanlige dimensioner. Den endelige statiske dokumentation udarbejdes af producenten af stålrammerne (Kaas Staalbyg) og vedlægges byggeansøgningen; den kan give andre profiler og dimensioner.
+
+Beregningen følger DS/EN 1990, DS/EN 1991-1-3 og DS/EN 1991-1-4 med de danske nationale annekser (DK NA 2024 for sne og vind), DS/EN 1993-1-1 og DS/EN 1995-1-1. Rammen er regnet som plan, elastisk rammekonstruktion med stive hjørner (elementmetode, 16 elementer pr. stang), og lastkombinationerne er dannet efter DS/EN 1990 DK NA, ligning 6.10a/b.
 
 ## 1. Forudsætninger
 
@@ -179,15 +183,17 @@ Dannet automatisk af `tegninger/hal_teknisk.py` den 10. oktober 2026. Hører til
 | Egenlast | Tag {dk(G_TAG, 2)} kN/m² (paneler, åse, beslag), vægge {dk(G_VAEG, 2)} kN/m², plus rammens egenvægt |
 | Sne | s_k = {dk(SK)} kN/m², C_e = C_t = 1,0. Jævn μ = {dk(MU1)}; omfordelt {dk(MU1)}/{dk(MU1 / 2)}; ophobning på vestlig tagflade μ_w = {dk(MU_W)} (DK NA 5.3.3(4)) |
 | Vind | q_p = {dk(QP, 2)} kN/m² (v_b = 24 m/s, terrænkategori II, z = {dk(KIP + SOKKEL)} m) |
-| Lastkombinationer | DS/EN 1990 DK NA: ψ0 = 0,3 for vind sammen med dominerende sne; ψ0 = 0 for sne sammen med dominerende vind |
+| Lastkombinationer | DS/EN 1990 DK NA, tabel A1.2(B): γ_G = 1,0 (1,2 når egenlast er dominerende), γ_Q = 1,5, K_FI = 1,0 (CC2). ψ0 = 0,3 for vind sammen med dominerende sne; ψ0 = 0 for sne sammen med dominerende vind (DK NA tabel A1.1) |
 
-Formfaktorer for vind (udvendig minus indvendig), efter hukommelsen fra DS/EN 1991-1-4 afsnit 7.2:
+Sneophobningen efter DK NA 5.3.3(4) gælder, når tagfladen i vindsiden vender mod NNØ til SØ (vores østlige tagflade), facadehøjden i vindsiden er højst 10 m, 2h < l (2 × 7,3 = 14,6 m < 20 m), b > h (10 m > 7,3 m) og terrænet i vindsiden er åbent (terrænkategori II) i 400 m. Den sidste betingelse er næppe opfyldt, fordi skovbrynet ligger ca. 35 m øst for hallen; lastarrangementet er alligevel medtaget på den sikre side. Formfaktoren 2,0 i DK NA gælder kun ophobning ved højere bygværker (5.3.6) og på altaner (anneks H), ikke et fritliggende sadeltag.
+
+Formfaktorer for vind (c_pe − c_pi), aflæst af DS/EN 1991-1-4 tabel 7.1 (vægge, h/d = 0,73) og tabel 7.4a (sadeltag 30°) og forenklet til én værdi pr. stang; randzonerne F, G og A er ikke medtaget for rammen. Indvendigt tryk c_pi = +0,2 eller −0,3:
 
 | Tilfælde | Søjle vest | Tag vest | Tag øst | Søjle øst |
 |---|---|---|---|---|
 """ + "\n".join(f"| {n} | {dk(c['sv'])} | {dk(c['tv'])} | {dk(c['to'])} | {dk(c['so'])} |" for n, c in VIND.items()) + f"""
 
-W1: vind fra vest med tryk på vindsidens tag og indvendigt sug. W1e: samme fra øst. W2: vind fra vest med sug på taget og indvendigt overtryk. W3: vind langs kippen med sug på hele rammen og indvendigt overtryk. Positiv værdi er tryk ind mod bygningen. Åben port i storm er ikke regnet med.
+W1: vind fra vest med tryk på vindsidens tag og indvendigt sug. W1e: samme fra øst. W2: vind fra vest med sug på taget og indvendigt overtryk. W3: vind langs kippen med sug på hele rammen og indvendigt overtryk. Positiv værdi er tryk ind mod bygningen. Åben port i storm er ikke regnet med. v_b,0 = 24 m/s, fordi hallen ligger ca. 28 km fra Vesterhavet (DK NA 4.2(1)P: 27 m/s kun inden for 25 km); terrænkategori II, c_r(7,3 m) = 0,95, I_v = 0,20, q_p = 0,78 kN/m².
 
 ## 2. Valg af rammeprofil
 
@@ -199,7 +205,7 @@ Krav: udnyttelse højst 1,0, nedbøjning i kip for karakteristisk sne højst L/2
 
 **Mindste profil, der opfylder kravene i dette overslag: {PROFIL}.** Stålvægt for fem rammer: ca. {dk(5 * valgt['kg'] * (2 * SIDE + 2 * math.hypot(B / 2, KIP - SIDE)), 0)} kg.
 
-Udnyttelserne er regnet som N/N_Rd + M/M_Rd med plastisk bøjningsmodstand. Søjlens knæklængde i rammens plan er sat til {dk(valgt['beta'], 2)} × søjlehøjden.
+Udnyttelserne er regnet som N/N_Rd + M/M_Rd med plastisk bøjningsmodstand (tværsnitsklasse 1). Søjlens knæklængde i rammens plan er sat til {dk(valgt['beta'], 2)} × søjlehøjden efter en tilnærmet formel for to-charniers rammer med stive hjørner, og spærets til 2 × spærlængden; søjlereduktionen χ er regnet efter DS/EN 1993-1-1, 6.3.1 med knækkurve a (α = 0,21). Producenten efterviser knæklængderne i sit eget beregningsprogram.
 
 **Ikke eftervist:** kipning af spær og søjler, samlinger (rammehjørne, kip, fodplade), knæk ud af rammens plan, lokale forhold ved porten og gavlrammerne. Kipning kræver, at den trykkede inderflange ved rammehjørnet fastholdes, f.eks. med skråstivere fra åsene. Disse forhold kan øge profilet eller kræve udfligning af rammehjørnet, som på referencehallen.
 
@@ -254,13 +260,14 @@ Der er tegnet krydsafstivning i ét fag i hver langside og i tagfladen i samme f
 
 1. Rammeafstand: 5 m giver kraftige åse og kræver ca. 120 mm vægpanel; 4 m letter begge dele.
 2. Kipning og samlinger, som ikke er eftervist her.
-3. Om det danske tillæg for sneophobning gælder (åbent terræn 400 m mod øst).
+3. Om det danske lastarrangement for sneophobning gælder (terrænet 400 m mod øst er ikke åbent på grund af skovbrynet); her er det medtaget på den sikre side.
 4. Åben eller lukket port i storm.
 5. Gavlrammerne: stolper og overligger ved porten (4,0 × 4,0 m) og fastgørelse af gavlpanelerne.
 6. Jordbundsforhold og funderingsdybde.
 7. Konsekvensklasse (CC2 er forudsat).
 """]
 (HER.parent / "docs" / "hal-statik-overslag.md").write_text(rap[0], encoding="utf-8")
+md_til_pdf(rap[0], HER / "hal_beregning.pdf", "Bilag A1.5: Foreløbig overslagsberegning, ny hal, Nældevej 42, 9000 Aalborg")
 
 # ================= TEGNINGER =================
 VAEG, TAG, SOKKELF, PORTF = "#2a2c2f", "#1f2023", "#b9b9b4", "#565a60"
@@ -398,7 +405,7 @@ ax.text(OX, OY + KIP + 1.0, "Snit A-A gennem en mellemramme (set mod nord)", fon
 bx, by = 14.2, 12.6
 k1 = valgt["komb"]
 linjer = [
-    ("OVERSLAGSBEREGNING, hovedresultater", True),
+    ("FORELØBIG OVERSLAGSBEREGNING, hovedresultater", True),
     (f"Ramme: {PROFIL} S235, rammeafstand {dk(A_RAMME)} m", False),
     (f"Sne: s_k = {dk(SK)} kN/m², μ = {dk(MU1)} (jævn) og {dk(MU_W)} (ophobning vest)", False),
     (f"Vind: q_p = {dk(QP, 2)} kN/m²", False),
@@ -416,7 +423,7 @@ linjer = [
     (f"Vægkryds: træk {dk(N_DIAG)} kN i diagonal", False),
     ("", False),
     ("Ikke eftervist: kipning, samlinger, gavlrammer, port,", False),
-    ("jordens bæreevne. Se docs/hal-statik-overslag.md.", False),
+    ("jordens bæreevne. Se bilag A1.5.", False),
 ]
 ax.add_patch(Rectangle((bx - 0.2, by - 0.33 * len(linjer) - 0.1), 6.6, 0.33 * len(linjer) + 0.45, fc="#fbfbf7", ec="#888888", lw=0.6))
 for i, (tx, fed) in enumerate(linjer):

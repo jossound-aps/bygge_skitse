@@ -196,7 +196,7 @@ def scene():
                 continue
             vaeg["paa"].append(([punkt(ab["f0"], ab["z0"]), punkt(ab["f1"], ab["z0"]), punkt(ab["f1"], ab["z1"]), punkt(ab["f0"], ab["z1"])],
                                 DOER if ab.get("doer") else GLAS, "#111111"))
-    # møddingsplads: lave hvide mure
+    # lave mure (ingen etiket)
     for noegle, farve in (("moedding", "#b9b4a8"), ("mur", STALD)):
         if noegle in cfg:
             mp = [uv(p) for p in cfg[noegle]["punkter"]]
@@ -324,7 +324,6 @@ def scene():
         (f"Eksisterende hus {HL:.0f} × {HB:.0f} m", (3, 0, kip), 6),
         ("Hestestald", (-2, (skil_v + max(p[1] for p in hoved)) / 2, 4.5), 6),
         ("Skur", ((su0 + su1) / 2, (sv0 + sv1) / 2, sh), 4),
-        ("Mødding", (*uv((57.7, 6.1)), 1.5), 4),
     ]
     return fl, etiketter
 
@@ -370,6 +369,22 @@ def tegn(ax, retning):
         for k in koerevej_linjer(port_xy, ret)[1]:
             q = np.array([(*uv(p_), 0) for p_ in k], float) @ P
             ax.plot(q[:, 0], q[:, 1], color="#555555", lw=0.8, ls=(0, (5, 2)), zorder=0.8)
+        if "koerevej_fold" in cfg:                       # bue fra porten ind i fold 1
+            kf = cfg["koerevej_fold"]
+            R, s0, b = kf["radius"], kf["lige"], kf["bredde"] / 2
+            r_ = 1 if PORT_NORD else -1
+            midt = [(pu, pvv + r_ * t) for t in np.linspace(0, s0, 3)]
+            midt += [(pu + R - R * math.cos(a), pvv + r_ * s0 + r_ * R * math.sin(a)) for a in np.linspace(0, math.pi, 40)[1:]]
+            midt += [(pu + 2 * R, pvv - r_ * t) for t in np.linspace(0, kf["ind_i_fold"], 4)[1:]]
+            for s_ in (b, -b):
+                kant = []
+                for i_, (x_, y_) in enumerate(midt):
+                    x0_, y0_ = midt[max(i_ - 1, 0)]
+                    x1_, y1_ = midt[min(i_ + 1, len(midt) - 1)]
+                    n_ = math.hypot(x1_ - x0_, y1_ - y0_) or 1.0
+                    kant.append((x_ - (y1_ - y0_) / n_ * s_, y_ + (x1_ - x0_) / n_ * s_, 0))
+                q = np.array(kant, float) @ P
+                ax.plot(q[:, 0], q[:, 1], color="#555555", lw=0.8, ls=(0, (5, 2)), zorder=0.8)
     def klip(a_, b_):                                # klipper et linjestykke til terrænudsnittet G (i u, v)
         t0, t1, du, dv = 0.0, 1.0, b_[0] - a_[0], b_[1] - a_[1]
         for p_, q_ in ((-du, a_[0] - G[0]), (du, G[2] - a_[0]), (-dv, a_[1] - G[1]), (dv, G[3] - a_[1])):

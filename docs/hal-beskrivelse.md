@@ -63,14 +63,14 @@ Snelasten på taget er s = μ · C_e · C_t · s_k, regnet på tagets vandrette 
 | Terrænværdi s_k | 1,0 kN/m² i hele Danmark | DK NA 4.1(1) |
 | Eksponeringsfaktor C_e = C_top · C_s | C_top: 0,8 vindblæst, 1,0 normal, 1,25 afskærmet. C_s = 1,0 for en bygning af denne størrelse | DK NA 5.2(7) |
 | Termisk faktor C_t | 1,0 (uopvarmet eller velisoleret tag) | Eurocoden, efter hukommelsen |
-| Formfaktor μ1 ved 30° | 0,8 | Eurocodens tabel 5.2, efter hukommelsen |
+| Formfaktor μ1 ved 30° | 0,8 | DS/EN 1991-1-3 tabel 5.2 |
 
 **Lastarrangementer for et sadeltag:**
 
 | Arrangement | Østlig tagflade | Vestlig tagflade | Kilde |
 |---|---|---|---|
 | Jævnt fordelt sne | μ = 0,8 | μ = 0,8 | Eurocoden 5.3.3 |
-| Omfordelt sne, begge veje | 0,4 / 0,8 | 0,8 / 0,4 | Eurocoden 5.3.3, efter hukommelsen |
+| Omfordelt sne, begge veje | 0,4 / 0,8 | 0,8 / 0,4 | DS/EN 1991-1-3 5.3.3, figur 5.3 |
 | Dansk tillæg: sneophobning på læsiden ved østenvind | 0 | μ_w = 1,2 | DK NA 5.3.3(4) |
 
 **Det danske tillæg er netop relevant for denne hal, fordi kippen ligger nord-syd.** DK NA 5.3.3(4) kræver et ekstra lastarrangement med formfaktor nul på vindsiden og μ_w på læsiden, når alle disse betingelser er opfyldt:
@@ -85,7 +85,7 @@ For taghældninger fra 15° til og med 30° er μ_w = 1,2. Over 30° falder den:
 
 De fire første betingelser er opfyldt. Den sidste er tvivlsom: mod øst ligger folde, ridebane og et skovbryn ca. 75 m væk, så terrænet er næppe åbent i 400 m. Det afgør den projekterende; det er på den sikre side at regne tillægget med.
 
-**Om formfaktor 2 og 0,8:** Jeg kan ikke genfinde en formfaktor på 2 for et fritliggende sadeltag i det danske anneks. Den største værdi for denne hal er 1,2 på den vestlige (læ) tagflade, og 0,8 er værdien for jævnt fordelt sne. Formfaktorer op til 2 og derover hører til afsnittet om lægivere (DK NA 5.3.6), dvs. sne, der ophobes op mod en højere bygning, en brystning eller lignende. Det bliver først relevant, hvis der bygges noget højere tæt op ad hallen, eller hvis taget får opbygninger. Spørg den, der har nævnt tallet 2, hvilket punkt i annekset det kommer fra.
+**Om formfaktor 2 og 0,8 (kontrolleret i DK NA 2024, 11.10.2026):** For et fritliggende sadeltag på 30° er den største formfaktor 1,2 på læsiden (DK NA 5.3.3(4), figur 5.2.b NA), og 0,8 er værdien for jævnt fordelt sne. Formfaktoren 2,0 findes i DK NA kun for ophobning ved højere bygværker (5.3.6, største værdi 2) og på altaner (anneks H). Læsiden er den vestlige tagflade, fordi DK NA figur 5.2.c NA kun regner med ophobning ved vind fra østlige retninger (NNØ til SØ). Betingelsen om åbent terræn 400 m i vindsiden er næppe opfyldt på grund af skovbrynet 35 m mod øst, så arrangementet er medtaget på den sikre side.
 
 Annekset siger desuden, at dimensionering ikke bør forudsætte snerydning, og at der ikke regnes med udhængende sne på tagkanten.
 

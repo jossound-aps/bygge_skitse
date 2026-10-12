@@ -36,18 +36,18 @@ RUM = [
     ("2", "Hesteboks", kasse(13.78, 0, 17.0, GANG_Y), HEST, "Opstaldning af ejendommens heste"),
     ("3", "Hesteboks", kasse(17.0, 0, 20.1, GANG_Y), HEST, "Opstaldning af ejendommens heste"),
     ("4", "Hesteboks", kasse(20.1, 0, L, GANG_Y), HEST, "Opstaldning af ejendommens heste"),
-    ("5", "Ponyboks", kasse(8.92, 4.84, 12.1, D), HEST, "Opstaldning af ejendommens ponyer"),
-    ("6", "Ponyboks", kasse(20.1, 5.1, L, D), HEST, "Opstaldning af ejendommens ponyer"),
+    ("5", "Foder og hesteudstyr", kasse(8.92, 4.84, 12.1, D), SADEL, "Tidligere ponyboks. Foder, dækkener og hesteudstyr"),
+    ("6", "Foder og hesteudstyr", kasse(20.1, 5.1, L, D), SADEL, "Tidligere ponyboks. Foder, dækkener og hesteudstyr"),
     ("7", "Staldgang", [(8.92, GANG_Y), (L, GANG_Y), (L, 5.1), (20.1, 5.1), (20.1, D), (12.1, D), (12.1, 4.84), (8.92, 4.84)], "#eef5e8",
      "Adgang til boksene, strigleplads, foder og udmugning [bekræftes]"),
     ("8", "Løsdrift", kasse(FX0, D, L, FY1), HEST, "Løsdrift med dybstrøelse, hestene går frit ud og ind til foldene"),
-    ("9", "Gæsteværelse", [(4.17, 0), (8.92, 0), (8.92, 4.84), (6.76, 4.84), (6.76, GANG_Y), (4.17, GANG_Y)], BOLIG,
+    ("9", "Gæsteværelse (gammelt stuehus)", [(4.17, 0), (8.92, 0), (8.92, 4.84), (6.76, 4.84), (6.76, GANG_Y), (4.17, GANG_Y)], BOLIG,
      "Gæsteværelse til husstandens private gæster. Ét rum; kun en støttevæg på 1 m ved ydervæggen"),
     ("10", "Sadelrum", kasse(8.92, 0, 10.57, GANG_Y), SADEL, "Sadler, trenser, seletøj og rideudstyr. Tidligere værksted"),
-    ("11", "Bad", kasse(6.76, 4.84, 8.92, D), VAAD, "Bad og toilet til stalden"),
-    ("12", "Gæsteværelse", [(0, 0), (4.17, 0), (4.17, GANG_Y), (6.76, GANG_Y), (6.76, D), (0, D)], BOLIG,
-     "Ejendommens gamle stuehus. Bruges som gæsteværelse til husstandens private gæster"),
-    ("13", "Skur", kasse(L, 0, L + 2.8, 8.3), SKUR, "Åbnede wrapballer opbevares her i tørvejr. Ejendommens eneste udhus (byggesag 2020-1967)"),
+    ("11", "Toilet (gammelt stuehus)", kasse(6.76, 4.84, 8.92, D), VAAD, "Toilet til gæsterne og stalden. Tidligere bad"),
+    ("12", "Gæsteværelse (gammelt stuehus)", [(0, 0), (4.17, 0), (4.17, GANG_Y), (6.76, GANG_Y), (6.76, D), (0, D)], BOLIG,
+     "Bruges som gæsteværelse til husstandens private gæster"),
+    ("13", "Skur", kasse(L, 0, L + 2.8, 5.8), SKUR, "Åbnede wrapballer opbevares her i tørvejr. Ejendommens eneste udhus (byggesag 2020-1967)"),
 ]
 
 
@@ -75,8 +75,8 @@ MIDT = {"7": (16.0, 4.45), "9": (6.6, 2.1), "12": (2.6, 4.6)}   # tekstplacering
 for nr, navn, p, farve, _ in RUM:
     ax.add_patch(Polygon(p, closed=True, fc=farve, ec="black", lw=1.1 if nr != "13" else 0.8, zorder=2))
     mx, my = MIDT.get(nr, midte(p))
-    lille = nr in ("10", "11", "13")
-    ax.text(mx, my, f"{nr}\n{navn}\nca. {dk(areal(p))} m²", fontsize=6.2 if lille else 7.5, ha="center", va="center", zorder=4,
+    lille = nr in ("5", "6", "10", "11", "13")
+    ax.text(mx, my, f"{nr}\n{navn.replace(chr(32) + chr(40), chr(10) + chr(40)).replace(chr(32) + chr(111) + chr(103) + chr(32), chr(32) + chr(111) + chr(103) + chr(10))}\nca. {dk(areal(p))} m²", fontsize=5.4 if lille else 7.5, ha="center", va="center", zorder=4,
             rotation=90 if nr in ("10", "13") else 0)
 # ydervægge
 omrids = [(0, 0), (L, 0), (L, FY1), (FX0, FY1), (FX0, D), (0, D)]
@@ -98,7 +98,7 @@ ax.text(8.0, 11.5, "Gårdsplads\n(stuehuset ligger mod syd)", fontsize=7, ha="ce
 ax.text(L + 3.1, 11.5, "Folde og\nridebane\nmod øst", fontsize=7, va="center", color="#666666")
 
 fig.text(0.03, 0.955, "Stald, BBR-bygning 2: eksisterende indretning og brug", fontsize=15, weight="bold")
-fig.text(0.03, 0.93, "Alle rum er i brug: stald, sadelrum og bad til hesteholdet og vestenden med det gamle stuehus til gæsteværelser. Der er ingen ledige rum til maskiner, trailere eller opbevaring.", fontsize=9)
+fig.text(0.03, 0.93, "Alle rum er i brug: bokse, løsdrift, sadelrum og foderrum til hesteholdet, og det gamle stuehus i vestenden til gæsteværelser med toilet. Der er ingen ledige rum til maskiner, trailere eller opbevaring.", fontsize=9)
 
 # rumliste
 tx, ty, dy = 0.725, 0.90, 0.036
@@ -113,15 +113,14 @@ for nr, navn, p, farve, brug in RUM:
     fig.text(tx + 0.038, y - 0.016, "\n".join(linjer), fontsize=6.8, va="top", linespacing=1.3)
     y -= dy + 0.013 * (len(linjer) - 1)
 
-grupper = {"Hestehold (bokse, staldgang, løsdrift)": [r for r in RUM if r[0] in "1 2 3 4 5 6 7 8".split()],
-           "Sadelrum og bad": [r for r in RUM if r[0] in ("10", "11")],
-           "Gæsteværelser": [r for r in RUM if r[0] in ("9", "12")]}
+grupper = {"Hestehold (bokse, staldgang, løsdrift, foder, sadelrum)": [r for r in RUM if r[0] in "1 2 3 4 5 6 7 8 10".split()],
+           "Gammelt stuehus (gæsteværelser og toilet)": [r for r in RUM if r[0] in ("9", "11", "12")]}
 yy = 0.215
 fig.text(0.03, yy, "Sammentælling (rumarealer, ca.)", fontsize=8.5, weight="bold")
 for i, (g, rr) in enumerate(grupper.items()):
     fig.text(0.03, yy - 0.024 * (i + 1), f"{g}:", fontsize=8)
     fig.text(0.25, yy - 0.024 * (i + 1), f"{dk(sum(areal(r[2]) for r in rr))} m²", fontsize=8, ha="right")
-fig.text(0.03, yy - 0.024 * 4.3, "Stalden er registreret med 284 m² i BBR. Forskellen skyldes vægge, og at planen ikke er målfast. Skuret (nr. 13) er ikke en del af stalden.", fontsize=7.5)
+fig.text(0.03, yy - 0.024 * 3.3, "Stalden er registreret med 284 m² i BBR. Forskellen skyldes vægge, og at planen ikke er målfast. Skuret (nr. 13) er ikke en del af stalden.", fontsize=7.5)
 fig.text(0.03, 0.075, "Tegnet efter ejendomsmæglerens vejledende plan (ikke målfast). Rumarealer er regnet til vægmidte og er omtrentlige.\n"
                       "Døre, vinduer og porte er ikke vist. Skurets placering og mål er efter situationsplanen.", fontsize=7, color="#444444", linespacing=1.4)
 

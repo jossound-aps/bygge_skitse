@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Arc, Polygon, Rectangle
 from nordpil import nordpil
+from tegningshoved import tegningshoved
 
 BYGNINGSDREJNING = 1.6   # planen følger bygningerne, som ligger ca. 1,6 grader drejet fra stik nord
 
@@ -28,18 +29,18 @@ YV, SV = 0.15, 0.15
 LX, LY = B - 2 * YV, RUM - YV - SV / 2          # indvendige mål
 SIDE, HAELD = 4.0, 30.0
 KIP = SIDE + B / 2 * math.tan(math.radians(HAELD))
-DOER = (6.70, 0.9)                               # dør fra hallen til det private rum (vest): start-X og bredde
-DOER2 = (2.80, 0.9)                              # dør fra hallen til rummet til foder, udstyr og værktøj (øst)
-DEL = 4.80                                       # skillevæggens østside; væggen er 0,1 m tyk
+DOER = (6.70, 0.9)                               # dør fra hallen: start-X og bredde
 TOILET = (0.0, LY - 1.8, 1.5, 1.8)               # x, y, bredde, dybde
-# (navn, x, y, bredde, dybde, højde, farve). Øst for skillevæggen: ejendommens drift. Vest: privat.
+# (navn, x, y, bredde, dybde, højde, farve). Indretningen er et forslag.
 INVENTAR = [
-    ("Arbejdsbord og værktøj\ntil maskinerne", 0.15, 0.0, 2.4, 0.7, 0.9, "#b08d57"),
-    ("Foder (tønder og sække)", 1.75, LY - 0.6, 2.9, 0.6, 1.1, "#c8b48a"),
-    ("Reoler: dækkener\nog hesteudstyr", 4.15, 1.0, 0.6, 2.0, 2.2, "#c9a66b"),
-    ("Reoler 0,6 m dybe", 5.05, LY - 0.6, LX - 5.15, 0.6, 2.2, "#c9a66b"),
+    ("Arbejdsbord", 0.15, 0.0, 2.4, 0.7, 0.9, "#b08d57"),
+    ("Lejepresse", 2.7, 0.0, 0.6, 0.6, 1.6, "#6b6e73"),
+    ("Værkstedsvogn", 3.45, 0.0, 0.9, 0.5, 0.9, "#b03a2e"),
+    ("Reoler: hynder, parasol\nog havegrej", 1.75, LY - 0.6, LX - 1.85, 0.6, 2.2, "#c9a66b"),
     ("Hjulstativ til\nsæsonhjul", 7.65, 0.0, 2.0, 0.5, 1.9, "#8a8f94"),
-    ("Cykler og\nhaveredskaber", 5.0, 0.0, 1.6, 0.6, 1.1, "#9fb4a0"),
+    ("Cykler og\nhaveredskaber", 4.5, 0.0, 1.6, 0.6, 1.1, "#9fb4a0"),
+    ("Havebord og\nhavestole", 5.0, 1.45, 2.0, 1.0, 1.2, "#8c6d4a"),
+    ("Grill", 7.25, 1.5, 0.6, 0.6, 1.0, "#333333"),
 ]
 
 fig = plt.figure(figsize=(420 / 25.4, 297 / 25.4))
@@ -62,17 +63,12 @@ def dk(tal, dec=1):
 
 
 VAEG = "#333333"
-ax.add_patch(Rectangle((0, 0), DEL, LY, fc="#f0f7ea", ec="none", zorder=0))
-ax.add_patch(Rectangle((DEL, 0), LX - DEL, LY, fc="#edf3fb", ec="none", zorder=0))
-ax.add_patch(Rectangle((DEL, 0), 0.1, LY, fc=VAEG, ec="none", zorder=3))
+ax.add_patch(Rectangle((0, 0), LX, LY, fc="#edf3fb", ec="none", zorder=0))
 for x, y, w, hh in ((-YV, -SV, LX + 2 * YV, SV), (-YV, LY, LX + 2 * YV, YV), (-YV, -SV, YV, LY + SV + YV), (LX, -SV, YV, LY + SV + YV)):
     ax.add_patch(Rectangle((x, y), w, hh, fc=VAEG, ec="none", zorder=3))
 ax.add_patch(Rectangle((DOER[0], -SV), DOER[1], SV, fc="white", ec="none", zorder=4))
 ax.add_patch(Arc((DOER[0], 0), 2 * DOER[1], 2 * DOER[1], theta1=0, theta2=90, color="#666666", lw=0.5, zorder=5))
 ax.text(DOER[0] + DOER[1] / 2, -0.45, "dør fra hallen", fontsize=7, ha="center", color="#cc0000")
-ax.add_patch(Rectangle((DOER2[0], -SV), DOER2[1], SV, fc="white", ec="none", zorder=4))
-ax.add_patch(Arc((DOER2[0], 0), 2 * DOER2[1], 2 * DOER2[1], theta1=0, theta2=90, color="#666666", lw=0.5, zorder=5))
-ax.text(DOER2[0] + DOER2[1] / 2, -0.45, "dør fra hallen", fontsize=7, ha="center", color="#cc0000")
 # toilet
 tx, ty, tw, td = TOILET
 ax.add_patch(Rectangle((tx + tw, ty), 0.1, td, fc=VAEG, ec="none", zorder=3))
@@ -84,8 +80,7 @@ ax.text(tx + tw / 2, ty + 0.85, f"Toilet og\nhåndvask\n{dk(tw)} × {dk(td)} m",
 for navn, x, y, w, d, _, farve in INVENTAR:
     ax.add_patch(Rectangle((x, y), w, d, fc=farve, ec="#555555", lw=0.6, ls="--", alpha=0.75, zorder=2))
     ax.text(x + w / 2, y + d / 2, navn.replace("\n", " "), fontsize=6.5, ha="center", va="center", zorder=6)
-ax.text((DEL + 0.1 + LX) / 2, LY / 2 - 0.1, f"Privat rum (opbevaring)\n{dk(LX - DEL - 0.1)} × {dk(LY, 2)} m, {(B - 5.0) * RUM:.0f} m² brutto", fontsize=8.5, ha="center", va="center", zorder=6)
-ax.text(2.6, LY / 2 - 0.1, f"Foder, hesteudstyr og værktøj\n{dk(DEL)} × {dk(LY, 2)} m, {5.0 * RUM:.0f} m² brutto med toilet", fontsize=8.5, ha="center", va="center", zorder=6)
+ax.text(3.0, 1.45, f"Privat rum til opbevaring, med toilet\n{dk(LX)} × {dk(LY, 2)} m = {dk(LX * LY)} m² netto ({B * RUM:.0f} m² brutto)", fontsize=8, ha="center", va="center", zorder=6)
 
 
 def maal(p, q, tekst, off=(0, 0), rot=0):
@@ -189,11 +184,9 @@ for navn, x, y, w, d, hh, farve in INVENTAR:
             kasse(xx, y + 0.05, 0, xx + 0.06, y + d - 0.05, hh - 0.06, nuance(farve, 0.75))
     else:
         kasse(x, y, 0, x + w, y + d, hh, farve)
-# skillevæg mellem de to rum (let væg til 3,0 m)
-kasse(DEL, 0, 0, DEL + 0.1, LY, 3.0, "#eceeef")
 # person som målestok
-kasse(6.0, 1.6, 0, 6.4, 1.85, 1.5, "#6d6d6d", "#444444", 0.3)
-kasse(6.1, 1.63, 1.5, 6.3, 1.82, 1.8, "#d8b79a", "#444444", 0.3)
+kasse(4.3, 2.4, 0, 4.7, 2.65, 1.5, "#6d6d6d", "#444444", 0.3)
+kasse(4.4, 2.43, 1.5, 4.6, 2.62, 1.8, "#d8b79a", "#444444", 0.3)
 for _, p, farve, kant, lw in sorted(flader, key=lambda f: -f[0]):
     ax2.add_patch(Polygon(proj(p), closed=True, fc=farve, ec=kant, lw=lw, joinstyle="round", zorder=2))
 
@@ -206,16 +199,17 @@ def skilt(tekst, p, dx, dy):
 
 skilt("Toilet med håndvask", (tx + tw / 2, ty, 2.4), 0.04, 0.17)
 skilt("Reoler langs sydgavlen", (LX / 2 + 2.3, LY - 0.6, 2.2), 0.0, 0.13)
-skilt("Foder", (3.2, LY - 0.6, 1.1), 0.0, 0.10)
-skilt("Dækkener og hesteudstyr", (4.4, 1.0, 2.2), -0.02, 0.17)
-skilt("Skillevæg", (DEL, 0.0, 3.0), 0.03, 0.22)
 skilt("Hjulstativ til sæsonhjul", (8.65, 0.0, 1.9), 0.14, 0.10)
-skilt("Arbejdsbord og værktøj til maskinerne", (1.35, 0.0, 0.9), -0.10, -0.12)
-skilt("Cykler og haveredskaber", (5.8, 0.0, 1.1), 0.0, -0.13)
+skilt("Arbejdsbord", (1.35, 0.0, 0.9), -0.10, -0.12)
+skilt("Lejepresse", (3.0, 0.0, 1.6), -0.04, 0.13)
+skilt("Værkstedsvogn", (3.9, 0.0, 0.9), 0.0, -0.15)
+skilt("Havebord og havestole, stablet om vinteren", (6.0, 1.45, 1.2), 0.0, 0.15)
+skilt("Grill", (7.55, 1.5, 1.0), 0.07, 0.09)
+skilt("Cykler og haveredskaber", (5.3, 0.0, 1.1), 0.03, -0.13)
 q = proj((DOER[0] + DOER[1] / 2, 0, 0))
-ax2.annotate("døre fra hallen\n(væggen mod hallen er skåret væk)", xy=q, xytext=(q[0], q[1] - 0.10), fontsize=7, ha="center", va="center", color="#cc0000",
+ax2.annotate("dør fra hallen\n(væggen mod hallen er skåret væk)", xy=q, xytext=(q[0], q[1] - 0.10), fontsize=7, ha="center", va="center", color="#cc0000",
              arrowprops=dict(arrowstyle="-", lw=0.5, color="#cc0000"))
-q = proj((6.2, 1.6, 1.8))
+q = proj((4.5, 2.4, 1.8))
 ax2.text(q[0] + 0.035, q[1] - 0.03, "person\n1,8 m", fontsize=6.5, ha="left", va="center", color="#444444")
 ax2.autoscale_view()
 x0, x1 = ax2.get_xlim()
@@ -224,9 +218,12 @@ ax2.set_xlim(x0 - 0.03, x1 + 0.03)
 ax2.set_ylim(y0 - 0.14, y1 + 0.03)
 fig.text(0.07, 0.605, "Perspektiv set fra den åbne hal mod syd (huset ligger til højre)", fontsize=10, weight="bold")
 
-fig.text(0.05, 0.075, "De lukkede rum i hallens sydende, Nældevej 42, 9000 Aalborg", fontsize=12, weight="bold")
-fig.text(0.05, 0.052, f"Mod øst: foder, hesteudstyr og værktøj til maskinerne, med toilet og håndvask til dem, der arbejder i hal, stald og på ridebane. Mod vest: privat opbevaring. Indvendigt i alt {dk(LX)} × {dk(LY, 2)} m, sidehøjde {dk(SIDE)} m, kip {dk(KIP)} m. Adgang kun fra hallen.", fontsize=8)
-fig.text(0.05, 0.030, "Indretningen er vejledende. Rummene er uden vinduer og uden egen udgang til det fri. Perspektivet er ikke målfast.", fontsize=7.5, color="#444444")
+import textwrap
+fig.text(0.05, 0.090, "Det lukkede rum i hallens sydende, Nældevej 42, 9000 Aalborg", fontsize=11, weight="bold")
+_fod = (f"Privat rum til opbevaring med toilet og håndvask til dem, der rider og arbejder med hestene og maskinerne. Indvendigt {dk(LX)} × {dk(LY, 2)} m, sidehøjde {dk(SIDE)} m, kip {dk(KIP)} m. Adgang kun fra hallen. "
+        "Her står lejepresse, værkstedsvogn, sæsonhjul og cykler samt havemøbler, grill og andet udeudstyr, som skal ind om vinteren. Indretningen er vejledende. Rummet er uden vinduer og uden egen udgang til det fri. Perspektivet er ikke målfast.")
+fig.text(0.05, 0.072, "\n".join(textwrap.wrap(_fod, 118)), fontsize=7, va="top", linespacing=1.35)
+tegningshoved(fig, "Hal, det lukkede rum: plan og perspektiv", "1 : 50 (A3)", "A1.6", x=0.62, y=0.012, b=0.36, h=0.06)
 fig.savefig(HER / "hal_rum.pdf")
 fig.savefig(HER / "hal_rum.png", dpi=160)
 print(f"hal_rum.pdf/.png skrevet: {LX:.1f} x {LY:.2f} m = {LX * LY:.1f} m² netto")
